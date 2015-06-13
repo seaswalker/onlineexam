@@ -1,0 +1,74 @@
+body {
+	background-color: #96C9CD;
+}
+/*中间登录部分*/
+.middle {
+	height: 200px;
+	line-height: 200px;
+	background-color: #C4E8E8;
+}
+.table {
+	height: 133px;
+	margin-top: 33px;
+	display: inline-block;
+    margin-left: 150px;
+}
+.login_exam {
+	width: 133px;
+	height: 133px;
+}
+/*标题*/
+.login_title {
+	font-family: "微软雅黑";
+	font-size: 24px;
+	color: #0066FE;
+}
+/*右侧登录表单*/
+.login_right {
+	height: 200px;
+}
+/*主体字体*/
+.main_font {
+    color: #0066FE;
+}
+/*登录按钮*/
+.btn {
+    text-decoration: none;
+    color: #0066FE;
+}
+.error {
+    color: red;
+    font-size: 12px;
+}
+.top {
+    margin-left: 800px;
+    margin-top: 100px;
+}
+.bottom {
+    margin-left: 800px;
+}
+.middle_login {
+    height: 200px;
+    width: 400px;
+    float: left;
+    margin-left: 27px;
+    text-align: center;
+    background-color: #C4E8E8;
+}
+.middle_deco {
+    float: left;
+    margin-left: 300px;
+}
+.login_table {
+    height: 80%;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+/*验证码输入框*/
+.verify_input {
+	border: 0px;
+	width: 112px;
+}
+.verify_image {
+	vertical-align: text-top;
+}

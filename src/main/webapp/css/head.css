@@ -1,0 +1,23 @@
+.head {
+	width: 980px;
+	margin: 0px auto 0px;
+}
+.head_logo {
+	height: 100px;
+	float: left;
+	width: 700px;
+}
+.head_logo img {
+	width: 96px;
+	height: 96px;
+	vertical-align: middle;
+}
+.logo_content {
+	font-size: 30px;
+	font-weight: bold;
+}
+.head_info {
+	float: loeft;
+	height: 100px;
+	font-family: "微软雅黑";
+}
