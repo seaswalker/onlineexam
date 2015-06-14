@@ -136,16 +136,38 @@ public class DataUtil {
 	}
 	
 	/**
+	 * 是不是数字
+	 * @param num
+	 */
+	public static boolean isNumber(String num) {
+		if(!isValid(num)) {
+			return false;
+		}
+		Matcher matcher = pattern.matcher(num);
+		return matcher.matches();
+	}
+	
+	/**
+	 * 一堆字符串是不是数字
+	 * @return 当且仅当全部是数字时返回true
+	 */
+	public static boolean isNumber(String...nums) {
+		for(String num : nums) {
+			if(!isNumber(num)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * 获得页码
 	 * @return 返回>=1的数字
 	 * 如果给定的字符串不合法，返回1
 	 */
 	public static int getPageCode(String str) {
-		if(isValid(str)) {
-			Matcher matcher = pattern.matcher(str);
-			if(matcher.matches()) {
-				return Integer.parseInt(str);
-			}
+		if(isNumber(str)) {
+			return Integer.parseInt(str);
 		}
 		return 1;
 	}

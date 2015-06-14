@@ -9,88 +9,87 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import exam.model.Major;
+import exam.model.Grade;
 import exam.model.page.PageBean;
-import exam.service.MajorService;
+import exam.service.GradeService;
 import exam.util.DataUtil;
 import exam.util.json.JSON;
 import exam.util.json.JSONObject;
 
 /**
- * 管理员专业控制器
+ * 后台年级管理
  * @author skywalker
  *
  */
 @Controller
-@RequestMapping("/admin/major")
-public class AdminMajorController {
+@RequestMapping("/admin/grade")
+public class AdminGradeController {
 
 	@Resource
-	private MajorService majorService;
-	@Value("#{properties['major.pageSize']}")
+	private GradeService gradeService;
+	@Value("#{properties['grade.pageSize']}")
 	private int pageSize;
 	//显示的页码数量
-	@Value("#{properties['major.pageNumber']}")
+	@Value("#{properties['grade.pageNumber']}")
 	private int pageNumber;
 	
 	/**
-	 * 显示专业列表
-	 * bug? 模糊搜索不能使用参数?
+	 * 显示年级列表
 	 */
 	@RequestMapping("/list")
 	public String list(String pn, String search, Model model) {
 		int pageCode = DataUtil.getPageCode(pn);
 		String where = null;
-		if(DataUtil.isValid(search)) {
-			where = " where name like '%" + search + "%'";
+		if(DataUtil.isNumber(search)) {
+			where = " where grade = " + search;
 		}
-		PageBean<Major> pageBean = majorService.pageSearch(pageCode, pageSize, pageNumber, where, null, null);
+		PageBean<Grade> pageBean = gradeService.pageSearch(pageCode, pageSize, pageNumber, where, null, null);
 		model.addAttribute("pageBean", pageBean);
 		model.addAttribute("search", search);
-		return "admin/major_list";
+		return "admin/grade_list";
 	}
 	
 	/**
-	 * 添加专业
+	 * 添加年级
 	 */
 	@RequestMapping("/add")
 	@ResponseBody
-	public void add(String major, HttpServletResponse response) {
+	public void add(String grade, HttpServletResponse response) {
 		JSON json = new JSONObject();
-		if(!DataUtil.isValid(major)) {
-			json.addElement("result", "0").addElement("message", "请输入专业名称");
-		}else if(majorService.findByName(major) != null) {
-			json.addElement("result", "0").addElement("message", "此专业已存在");
+		if(!DataUtil.isNumber(grade)) {
+			json.addElement("result", "0").addElement("message", "请输入数字，比如2012");
+		}else if(gradeService.findByGrade(grade) != null) {
+			json.addElement("result", "0").addElement("message", "此年级已存在");
 		}else {
-			majorService.save(new Major(major));
-			json.addElement("result", "1").addElement("message", "专业添加成功");
+			gradeService.save(new Grade(0, Integer.parseInt(grade)));			
+			json.addElement("result", "1").addElement("message", "年级添加成功");
 		}
 		DataUtil.writeJSON(json, response);
 	}
 	
 	/**
-	 * 修改专业
+	 * 修改年级
 	 * @param id
-	 * @param major
+	 * @param 年级，应该是数字
 	 */
 	@RequestMapping("/edit")
 	@ResponseBody
-	public void edit(String id, String major, HttpServletResponse response) {
+	public void edit(String id, String grade, HttpServletResponse response) {
 		JSON json = new JSONObject();
 		if(!DataUtil.isNumber(id)) {
 			json.addElement("result", "0").addElement("message", "非法数据");
-		}else if(!DataUtil.isValid(major)) {
-			json.addElement("result", "0").addElement("message", "请输入专业名称");
+		}else if(!DataUtil.isNumber(grade)) {
+			json.addElement("result", "0").addElement("message", "请输入数字，比如2012");
 		}else {
 			int _id = Integer.parseInt(id);
-			majorService.update(new Major(_id, major));
+			gradeService.update(new Grade(_id, Integer.parseInt(grade)));
 			json.addElement("result", "1").addElement("message", "修改成功");
 		}
 		DataUtil.writeJSON(json, response);
 	}
 	
 	/**
-	 * 批量删除专业
+	 * 批量删除年级
 	 * @param ids 格式为1,2,3
 	 */
 	@RequestMapping("/delete")
@@ -98,9 +97,9 @@ public class AdminMajorController {
 	public void delete(String ids, HttpServletResponse response) {
 		JSON json = new JSONObject();
 		if(!DataUtil.isValid(ids)) {
-			json.addElement("result", "0").addElement("message", "请选择要删除的id");
+			json.addElement("result", "0").addElement("message", "请选择要删除的记录");
 		}else {
-			majorService.batchDelete(ids);
+			gradeService.batchDelete(ids);
 			json.addElement("result", "1").addElement("message", "删除成功");
 		}
 		DataUtil.writeJSON(json, response);

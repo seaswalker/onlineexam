@@ -104,9 +104,12 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 		return sql;
 	}
 
+	/**
+	 * 这个地方必须手动制定一个别名s，否则controller中where条件没法用，这是个bug?
+	 */
 	@Override
 	protected String getCountSql() {
-		return "select count(id) from student";
+		return "select count(id) from student s";
 	}
 
 }

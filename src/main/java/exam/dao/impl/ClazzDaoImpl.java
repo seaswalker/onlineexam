@@ -12,12 +12,15 @@ import exam.dao.base.BaseDaoImpl;
 import exam.model.Clazz;
 import exam.model.Grade;
 import exam.model.Major;
+import exam.util.DataUtil;
 
 @Repository("clazzDao")
 public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 	
 	//字段匹配
 	private static RowMapper<Clazz> rowMapper;
+	//仅查询班级
+	private static RowMapper<Clazz> clazzOnlyRowMapper;
 	//统一的查询语句，需要查出年级和专业
 	private static String sql = "select c.id as c_id, c.cno as c_cno, g.id as g_id, g.grade as g_grade,m.id as m_id, m.name as m_name from class c join grade g on c.gid = g.id join major m on m.id = c.mid";
 	
@@ -35,6 +38,14 @@ public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 				grade.setGrade(rs.getInt("g_grade"));
 				clazz.setMajor(major);
 				clazz.setGrade(grade);
+				return clazz;
+			}
+		};
+		clazzOnlyRowMapper = new RowMapper<Clazz>() {
+			public Clazz mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Clazz clazz = new Clazz();
+				clazz.setId(rs.getInt("id"));
+				clazz.setCno(rs.getInt("cno"));
 				return clazz;
 			}
 		};
@@ -70,19 +81,33 @@ public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 	
 	@Override
 	public List<Clazz> find(Clazz entity) {
-		StringBuilder sqlBuilder = new StringBuilder(sql).append(" where 1 = 1");
-		if(entity != null) {
-			if(entity.getId() > 0) {
-				sqlBuilder.append(" and c.id = ").append(entity.getId());
+		return find(sql, rowMapper, entity, "c");
+	}
+	
+	public List<Clazz> findClazzOnly(Clazz clazz) {
+		return find("select * from class", clazzOnlyRowMapper, clazz, null);
+	}
+	
+	/**
+	 * 查询班级
+	 * @param sql 查询语句，用来决定是否查出相关联的年级和专业
+	 * @param alias 数据库表别名
+	 */
+	private List<Clazz> find(String querySql, RowMapper<Clazz> rowMapper, Clazz clazz, String alias) {
+		StringBuilder sqlBuilder = new StringBuilder(querySql).append(" where 1 = 1");
+		String _alias = DataUtil.isValid(alias) ? alias + "." : "";
+		if(clazz != null) {
+			if(clazz.getId() > 0) {
+				sqlBuilder.append(" and ").append(_alias).append("id = ").append(clazz.getId());
 			}
-			if(entity.getCno() > 0) {
-				sqlBuilder.append(" and c.cno = ").append(entity.getCno());
+			if(clazz.getCno() > 0) {
+				sqlBuilder.append(" and ").append(_alias).append("cno = ").append(clazz.getCno());
 			}
-			if(entity.getGrade() != null) {
-				sqlBuilder.append(" and c.gid = ").append(entity.getGrade().getId());
+			if(clazz.getGrade() != null) {
+				sqlBuilder.append(" and ").append(_alias).append("gid = ").append(clazz.getGrade().getId());
 			}
-			if(entity.getMajor() != null) {
-				sqlBuilder.append(" and c.mid = ").append(entity.getMajor().getId());
+			if(clazz.getMajor() != null) {
+				sqlBuilder.append(" and ").append(_alias).append("mid = ").append(clazz.getMajor().getId());
 			}
 		}
 		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
@@ -100,7 +125,7 @@ public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 
 	@Override
 	protected String getCountSql() {
-		return "select count(*) from class";
+		return "select count(id) from class";
 	}
 	
 }

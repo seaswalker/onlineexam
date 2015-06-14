@@ -39,6 +39,10 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 		return baseDao.find(entity);
 	}
 	
+	public void batchDelete(String ids) {
+		throw new UnsupportedOperationException();
+	}
+	
 	public PageBean<T> pageSearch(int pageCode, int pageSize, int pageNumber,
 			String where, List<Object> params, HashMap<String, String> orderbys) {
 		return baseDao.pageSearch(pageCode, pageSize, pageNumber, where, params, orderbys);

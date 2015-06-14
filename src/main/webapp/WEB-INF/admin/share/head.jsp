@@ -28,6 +28,7 @@
 				<ul class="nav navbar-nav">
 			        <li><a href="admin/major/list">专业管理</a></li>
 			        <li><a href="admin/grade/list">年级管理</a></li>
+			        <li><a href="admin/student/list">学生管理</a></li>
 			    </ul>
 			</div>
 		</div>

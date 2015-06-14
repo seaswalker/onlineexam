@@ -2,12 +2,16 @@ package exam.model;
 
 import java.io.Serializable;
 
+import exam.util.json.JSON;
+import exam.util.json.JSONAble;
+import exam.util.json.JSONObject;
+
 /**
  * 年级
  * @author skywalker
  *
  */
-public class Grade implements Serializable {
+public class Grade implements Serializable, JSONAble {
 
 	private static final long serialVersionUID = -3270807327813730922L;
 	
@@ -21,6 +25,21 @@ public class Grade implements Serializable {
 	
 	public Grade() {}
 	
+	public Grade(int id, int grade) {
+		this.id = id;
+		this.grade = grade;
+	}
+	
+	/**
+	 * 返回此对象对应的json对象
+	 */
+	public JSON getJSON() {
+		JSONObject object = new JSONObject();
+		object.addElement("id", String.valueOf(id))
+			.addElement("grade", String.valueOf(grade));
+		return object;
+	}
+
 	public int getId() {
 		return id;
 	}

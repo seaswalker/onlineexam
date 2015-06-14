@@ -49,6 +49,20 @@ public class GradeDaoImpl extends BaseDaoImpl<Grade> implements GradeDao {
 		jdbcTemplate.update("update grade set grade = ? where id = ?",
 				entity.getGrade(), entity.getId());
 	}
+	
+	@Override
+	public List<Grade> find(Grade entity) {
+		StringBuilder sqlBuilder = new StringBuilder(sql).append(" where 1 = 1");
+		if(entity != null) {
+			if(entity.getId() > 0) {
+				sqlBuilder.append(" and id = ").append(entity.getId());
+			}
+			if(entity.getGrade() > 0) {
+				sqlBuilder.append(" and grade = ").append(entity.getGrade());
+			}
+		}
+		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
+	}
 
 	@Override
 	public List<Grade> getAll() {

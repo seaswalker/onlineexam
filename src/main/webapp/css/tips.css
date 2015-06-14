@@ -1,0 +1,30 @@
+/*
+	提示窗样式
+ */
+#window_div {
+	position: fixed;
+	display: none;
+	width: 300px;
+	height: 40px;
+	top: 35%;
+	left: 50%;
+	margin-left: -150px;
+	margin-top: -20px;
+	border-radius: 10px;
+	color: white;
+	line-height: 40px;
+	text-align: center;
+	z-index: 999;
+}
+.error_window {
+	background-color: #FF4040;
+	box-shadow: 0px 0px 5px #E42929;
+}
+.message_window {
+	background-color: #3A7DC4;
+	box-shadow: 0px 0px 5px black;
+}
+.success_window {
+	background-color: #2BD620;
+	box-shadow: 0px 0px 5px green;
+}

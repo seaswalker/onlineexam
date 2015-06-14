@@ -15,7 +15,7 @@ function chooseAll(checkbox) {
 /**
  * 批量删除元素
  */
-function deleteMajors() {
+function deleteGrades() {
 	var checkboxes = $("input:checkbox[name=cb]:checked");
 	if (checkboxes.length == 0) {
 		alert("请选择您要删除的记录");
@@ -35,7 +35,7 @@ function deleteMajors() {
  * [[删除单个元素]]
  * @param {[[DOM]]} btn [[触发此函数的按钮]]
  */
-function deleteMajor(btn) {
+function deleteGrade(btn) {
 	var id = $(btn).parent().prev().prev().html();
 	if(confirm("这会导致相应的班级及学生被删除,您确定?")) {
 		sendDeleteRequest("ids=" + id);
@@ -48,7 +48,7 @@ function deleteMajor(btn) {
  */
 function sendDeleteRequest(params) {
 	$.ajax({
-		"url" : "major/delete",
+		"url" : "grade/delete",
 		"data" : "ids=" + ids.join(),
 		"dataType" : "json",
 		"async" : false,
@@ -65,13 +65,20 @@ function sendDeleteRequest(params) {
 
 /**
  * [[检查输入的专业]]
- * @param {[[DOM]]} major [[专业输入input元素]]
+ * @param {[[DOM]]} grade [[专业输入input元素]]
  * @param {[[DOM]]} error [[显示错误的DOM]]
  */
-function _checkMajor(major, major_value, error) {
-	if (major_value == "") {
-		error.innerHTML = "请输入专业名称";
-		major.focus();
+function _checkGrade(grade, grade_value, error) {
+	if (grade_value == "") {
+		error.innerHTML = "请输入年级";
+		grade.focus();
+		return false;
+	}
+	//检查是否是数字
+	var pattern = new RegExp("^[1-9][0-9]*$");
+	if(!grade_value.match(pattern)) {
+		error.innerHTML = "格式有误，示例2012";
+		grade.focus();
 		return false;
 	}
 	return true;
@@ -81,22 +88,22 @@ function _checkMajor(major, major_value, error) {
  * [[添加专业]]
  * @param {[[DOM]]} form [[所在的表单]]
  */
-function addMajor(form) {
-    var major = form.major;
-    var major_value = major.value.trim();
-    var error = document.getElementById("major_add_error");
-    if(_checkMajor(major, major_value, error)) {
+function addGrade(form) {
+    var grade = form.grade;
+    var grade_value = grade.value.trim();
+    var error = document.getElementById("grade_add_error");
+    if(_checkGrade(grade, grade_value, error)) {
         $.ajax({
-            "url": "admin/major/add",
-            "data": "major=" + major_value,
+            "url": "admin/grade/add",
+            "data": "grade=" + grade_value,
             "async": false,
             "dataType": "json",
             "success": function(json) {
                 if(json.result == 0) {
                     error.innerHTML = json.message;
                 }else {
-                    toggleMajorAdd(false);
-                    _resetMajor(major, error);
+                    toggleGradeAdd(false);
+                    _resetGrade(grade, error);
                     Tips.showSuccess(json.message);
                 }
             }
@@ -109,24 +116,24 @@ function addMajor(form) {
  * 编辑专业
  * @param {} form
  */
-function editMajor(form) {
-	var major = form.major;
-    var major_value = major.value.trim();
-    var error = document.getElementById("major_edit_error");
-    if(_checkMajor(major, major_value, error)) {
+function editGrade(form) {
+	var grade = form.grade;
+    var grade_value = grade.value.trim();
+    var error = document.getElementById("grade_edit_error");
+    if(_checkGrade(grade, grade_value, error)) {
         $.ajax({
-            "url": "admin/major/edit",
-            "data": "major=" + major_value + "&id=" + form.id.value,
+            "url": "admin/grade/edit",
+            "data": "grade=" + grade_value + "&id=" + form.id.value,
             "async": false,
             "dataType": "json",
             "success": function(json) {
                 if(json.result == 0) {
                     error.innerHTML = json.message;
                 }else {
-                    toggleMajorEdit(false);
-                    _resetMajor(major, error);
+                    toggleGradeEdit(false);
+                    _resetGrade(grade, error);
                     Tips.showSuccess(json.message);
-                    window.location.href = "admin/major/list";
+                    window.location.href = "admin/grade/list";
                 }
             }
         });
@@ -137,18 +144,18 @@ function editMajor(form) {
 /**
  * [[显示/隐藏专业添加窗口]
  */
-function toggleMajorAdd(isShow) {
-	document.getElementById("major_add").style.display = isShow ? "block"
+function toggleGradeAdd(isShow) {
+	document.getElementById("grade_add").style.display = isShow ? "block"
 			: "none";
 }
 
 /**
  * [[重置专业输入界面]]
- * @param {[[DOM]]} major [[专业输入]]
+ * @param {[[DOM]]} grade [[专业输入]]
  * @param {[[DOM]]} error [[错误显示]]
  */
-function _resetMajor(major, error) {
-    major.value = "";
+function _resetGrade(grade, error) {
+    grade.value = "";
     error.innerHTML = "";
 }
 
@@ -157,15 +164,15 @@ function _resetMajor(major, error) {
  * @param {[[boolean]} [[true--显示]]
  * @param {[[DOM]]} [[如果是显示，那么为触发的按钮]]
  */
-function toggleMajorEdit(isShow, btn) {
-	var major_edit = document.getElementById("major_edit");
+function toggleGradeEdit(isShow, btn) {
+	var grade_edit = document.getElementById("grade_edit");
 	if (isShow) {
 		var name_td = $(btn).parent().prev();
-		$("#major_edit_major").val(name_td.html());
-		$("#major_edit_id").val(name_td.prev().html());
-		major_edit.style.display = "block";
+		$("#grade_edit_grade").val(name_td.html());
+		$("#grade_edit_id").val(name_td.prev().html());
+		grade_edit.style.display = "block";
 	} else {
-		major_edit.style.display = "none";
+		grade_edit.style.display = "none";
 	}
 }
 

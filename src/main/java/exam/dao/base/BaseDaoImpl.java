@@ -57,6 +57,14 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 		throw new UnsupportedOperationException();
 	}
 	
+	public void executeSql(String sql) {
+		jdbcTemplate.execute(sql);
+	}
+	
+	public List<T> queryBySQL(String sql) {
+		throw new UnsupportedOperationException();
+	}
+	
 	public PageBean<T> pageSearch(int pageCode, int pageSize, int pageNumber,
 		String where, List<Object> params, HashMap<String, String> orderbys) {
 		

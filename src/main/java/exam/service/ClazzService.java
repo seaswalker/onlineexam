@@ -22,4 +22,9 @@ public interface ClazzService extends BaseService<Clazz> {
 	 */
 	public List<Clazz> findByCNO(int cno);
 	
+	/**
+	 * 不查出关联的年级和专业
+	 */
+	public List<Clazz> findClazzOnly(Clazz clazz);
+	
 }

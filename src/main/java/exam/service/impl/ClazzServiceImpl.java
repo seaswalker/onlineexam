@@ -36,6 +36,10 @@ public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzSer
 		clazz.setCno(cno);
 		return clazzDao.find(clazz);
 	}
+	
+	public List<Clazz> findClazzOnly(Clazz clazz) {
+		return clazzDao.findClazzOnly(clazz);
+	}
 
 	@Resource(name = "clazzDao")
 	@Override

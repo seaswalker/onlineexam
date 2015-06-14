@@ -20,6 +20,16 @@ public interface BaseDao<T> {
 	public List<T> find(T entity);
 	
 	/**
+	 * 执行一条sql语句
+	 */
+	public void executeSql(String sql);
+	
+	/**
+	 * 根据sql查询
+	 */
+	public List<T> queryBySQL(String sql);
+	
+	/**
 	 * 分页查询
 	 * @param pageCode 需要查询的页码
 	 * @param pageSize 每页的大小

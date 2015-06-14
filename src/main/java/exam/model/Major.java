@@ -2,12 +2,16 @@ package exam.model;
 
 import java.io.Serializable;
 
+import exam.util.json.JSON;
+import exam.util.json.JSONAble;
+import exam.util.json.JSONObject;
+
 /**
  * 专业
  * @author skywalker
  *
  */
-public class Major implements Serializable {
+public class Major implements Serializable, JSONAble {
 
 	private static final long serialVersionUID = 4732029763783198033L;
 	
@@ -18,11 +22,21 @@ public class Major implements Serializable {
 		this.id = id;
 	}
 	
+	public Major(String name) {
+		this.name = name;
+	}
+	
 	public Major() {}
 	
 	public Major(int id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+	
+	public JSON getJSON() {
+		JSONObject json = new JSONObject();
+		json.addElement("id", String.valueOf(id)).addElement("name", name);
+		return json;
 	}
 
 	public int getId() {

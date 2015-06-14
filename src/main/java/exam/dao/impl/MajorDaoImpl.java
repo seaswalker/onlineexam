@@ -49,7 +49,7 @@ public class MajorDaoImpl extends BaseDaoImpl<Major> implements MajorDao {
 				sqlBuilder.append(" and name = '").append(enity.getName()).append("'");
 			}
 		}
-		return jdbcTemplate.query(sql.toString(), rowMapper);
+		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
 	}
 
 	@Override
@@ -67,6 +67,11 @@ public class MajorDaoImpl extends BaseDaoImpl<Major> implements MajorDao {
 	public void update(Major entity) {
 		jdbcTemplate.update("update major set name = ? where id = ?",
 				entity.getName(), entity.getId());
+	}
+	
+	@Override
+	public List<Major> queryBySQL(String sql) {
+		return jdbcTemplate.query(sql, rowMapper);
 	}
 
 	@Override

@@ -48,6 +48,8 @@
 		<tx:attributes>
 			<tx:method name="get*" read-only="true" propagation="NOT_SUPPORTED"/>
 			<tx:method name="find*" read-only="true" propagation="NOT_SUPPORTED"/>
+			<tx:method name="page*" read-only="true" propagation="NOT_SUPPORTED"/>
+			<tx:method name="query*" read-only="true" propagation="NOT_SUPPORTED"/>
 			<tx:method name="*" propagation="REQUIRED"/>
 		</tx:attributes>
 	</tx:advice>
