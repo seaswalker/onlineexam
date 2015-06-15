@@ -30,6 +30,11 @@ public interface BaseDao<T> {
 	public List<T> queryBySQL(String sql);
 	
 	/**
+	 * 单值查询
+	 */
+	public Object queryForObject(String sql, Class<?> clazz);
+	
+	/**
 	 * 分页查询
 	 * @param pageCode 需要查询的页码
 	 * @param pageSize 每页的大小

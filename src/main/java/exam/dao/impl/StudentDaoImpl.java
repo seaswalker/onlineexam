@@ -90,6 +90,11 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 	}
 	
 	@Override
+	public Object queryForObject(String sql, Class<?> clazz) {
+		return jdbcTemplate.queryForObject(sql, clazz);
+	}
+	
+	@Override
 	public List<Student> getAll() {
 		return find(null);
 	}

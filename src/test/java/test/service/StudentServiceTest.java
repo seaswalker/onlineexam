@@ -20,4 +20,9 @@ public class StudentServiceTest extends Base{
 		System.out.println(result.getRecords().size());
 	}
 	
+	@Test
+	public void isExisted() {
+		System.out.println(studentService.isExisted("201201050536"));
+	}
+	
 }

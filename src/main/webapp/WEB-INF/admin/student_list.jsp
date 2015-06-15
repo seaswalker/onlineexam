@@ -51,8 +51,9 @@
 							onchange="chooseAll(this);" id="checkAll"> <label
 							for="checkAll">全选</label></th>
 						<th width="15%">学号</th>
-						<th width="50%">学生姓名</th>
-						<th width="25%">操作</th>
+						<th width="20">学生姓名</th>
+						<th width="40%">班级</th>
+						<th width="15%">操作</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -61,6 +62,7 @@
 							<td><input type="checkbox" name="cb"></td>
 							<td>${student.id}</td>
 							<td>${student.name}</td>
+							<td>${student.clazz.grade.grade}级${student.clazz.major.name}${student.clazz.cno}班</td>
 							<td>
 								<button class="btn btn-default"
 									onclick="toggleStudentEdit(true, this);">编辑</button>
@@ -94,11 +96,17 @@
 		<form action="student/add" method="post" onsubmit="return addStudent(this);">
 			<table>
 				<tr>
+					<td>学号:</td>
+					<td>
+						<input type="text" name="id">
+					</td>
+				</tr>
+				<tr>
 					<td>
 						年级:
 					</td>
 					<td>
-						<select name="grade" id="grade_select" onchange="changeMajor(this);">
+						<select name="grade" id="grade_select_add" onchange="changeMajor(this, true);">
 							<option value="0">年级...</option>
 						</select>
 					</td>
@@ -108,7 +116,7 @@
 						专业:
 					</td>
 					<td>
-						<select id="major_select" name="major" onchange="changeClazz(this);">
+						<select id="major_select_add" name="major" onchange="changeClazz(this, true);">
 							<option value="0">专业...</option>
 						</select>
 					</td>
@@ -118,7 +126,7 @@
 						班级:
 					</td>
 					<td>
-						<select id="clazz_select" name="clazz">
+						<select id="clazz_select_add" name="clazz">
 							<option value="0">班级...</option>
 						</select>
 					</td>
@@ -138,7 +146,7 @@
 		</form>
 	</div>
 	<!--学生修改-->
-	<div class="modal_window form-control" id="student_edit">
+	<div class="student_add form-control" id="student_edit">
 		<!--标题-->
 		<div class="modal_window_title">
 			编辑学生: <img src="images/error.png" onclick="toggleStudentEdit(false);">
@@ -148,9 +156,38 @@
 			<input type="hidden" name="id" id="student_edit_id">
 			<table>
 				<tr>
-					<td>学生姓名:</td>
-					<td><input type="text" name="student" id="student_edit_student">
+					<td>
+						年级:
 					</td>
+					<td>
+						<select name="grade" id="grade_select_edit" onchange="changeMajor(this, false);">
+							<option value="0">年级...</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						专业:
+					</td>
+					<td>
+						<select id="major_select_edit" name="major" onchange="changeClazz(this, false);">
+							<option value="0">专业...</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						班级:
+					</td>
+					<td>
+						<select id="clazz_select_edit" name="clazz">
+							<option value="0">班级...</option>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<td>学生姓名:</td>
+					<td><input type="text" name="student" id="student_edit_name"></td>
 				</tr>
 				<tr style="text-align: center;">
 					<td colspan="2"><span class="error" id="student_edit_error">&nbsp;</span>
