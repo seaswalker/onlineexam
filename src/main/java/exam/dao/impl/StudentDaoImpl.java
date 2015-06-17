@@ -64,12 +64,13 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 	}
 
 	/**
-	 * 学号可以修改吗?
+	 * 学号不可以修改，只能通过先删除，在加入的方式修改
+	 * 管理员的修改不可以修改密码，密码的修改应该是本人完成
 	 */
 	@Override
 	public void update(Student entity) {
-		jdbcTemplate.update("update student set name = ?, password = ?, cid = ? where id = ?",
-				entity.getName(), entity.getPassword(), entity.getClazz().getId(), entity.getId());
+		jdbcTemplate.update("update student set name = ?, cid = ? where id = ?",
+				entity.getName(), entity.getClazz().getId(), entity.getId());
 	}
 	
 	@Override

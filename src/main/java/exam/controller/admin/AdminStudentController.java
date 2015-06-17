@@ -74,6 +74,30 @@ public class AdminStudentController {
 		DataUtil.writeJSON(json, response);
 	}
 	
+	
+	/**
+	 * 学生修改
+	 * @param id 学生id
+	 * @param name 姓名 
+	 * @param clazz 班级id
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public void edit(String id, String name, String clazz, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(!DataUtil.isNumber(clazz) || !DataUtil.isValid(id, name)) {
+			json.addElement("result", "0").addElement("message", "格式非法");
+		}else {
+			Student student = new Student();
+			student.setId(id);
+			student.setName(name);
+			student.setClazz(new Clazz(Integer.parseInt(clazz)));
+			studentService.update(student);
+			json.addElement("result", "1").addElement("message", "修改成功");
+		}
+		DataUtil.writeJSON(json, response);
+	}
+	
 	/**
 	 * 检测学号是否存在
 	 * @param id 学号

@@ -67,34 +67,40 @@ function sendDeleteRequest(params) {
  * [[检查学生]]
  * @param {[[DOM]]} form [[所在表单]]
  * @param {[[DOM]]} error [[显示错误的DOM]]
+ * @param {boolean} isAdd 是否是学生添加，如果不是，那么只需要检查姓名，因为年级、专业以及班级没有空这一选项，并且没有id字段
  */
-function _checkStudent(form, error) {
-	var id = form.id;
-	var id_value = id.value.trim();
-	if (id_value == "") {
-		error.innerHTML = "请输入学号";
-		id.focus();
-		return false;
-	}
-	//检查是否是数字
-	var pattern = new RegExp("^[1-9][0-9]*$");
-	if(!id_value.match(pattern)) {
-		error.innerHTML = "格式有误，示例2012";
-		id.focus();
-		return false;
+function _checkStudent(form, error, isAdd) {
+	if(isAdd) {
+		var id = form.id;
+		var id_value = id.value.trim();
+		if (id_value == "") {
+			error.innerHTML = "请输入学号";
+			id.focus();
+			return false;
+		}
+		//检查是否是数字
+		var pattern = new RegExp("^[1-9][0-9]*$");
+		if(!id_value.match(pattern)) {
+			error.innerHTML = "格式有误，示例2012";
+			id.focus();
+			return false;
+		}
 	}
 	//检测是否选择了年级
-	if($("#grade_select").val() == "0") {
+	var gradeSelectValue = isAdd ? $("#grade_select_add").val() : $("#grade_select_edit").val();
+	if(gradeSelectValue == undefined || gradeSelectValue == "0") {
 		error.innerHTML = "请选择年级";
 		return false;
 	}
 	//检测专业
-	if($("#major_select").val() == "0") {
+	var majorSelectValue = isAdd ? $("#major_select_add").val() : $("#major_select_edit").val();;
+	if(majorSelectValue == undefined || majorSelectValue == "0") {
 		error.innerHTML = "请选择专业";
 		return false;
 	}
 	//检测班级
-	if($("#clazz_select").val() == "0") {
+	var clazzSelectValue = isAdd ? $("#clazz_select_edit").val() : $("#grade_select_edit").val();
+	if(clazzSelectValue == undefined || clazzSelectValue == "0") {
 		error.innerHTML = "请选择班级";
 		return false;
 	}
@@ -106,23 +112,25 @@ function _checkStudent(form, error) {
 		return false;
 	}
 	var flag = true;
-	//检测学号是否存在
-	$.ajax({
-		"url": "admin/student/check",
-		"data": "id=" + id_value,
-		"async": false,
-		"dataType": "json",
-		"success": function(json) {
-			if(json.result == "0") {
-				error.innerHTML = json.message;
-			}else if(json.result == "1") {
-				if(json.exist == "1") {
-					error.innerHTML = "此学号已存在";
-					flag = false;
+	if(isAdd) {
+		//检测学号是否存在
+		$.ajax({
+			"url": "admin/student/check",
+			"data": "id=" + id_value,
+			"async": false,
+			"dataType": "json",
+			"success": function(json) {
+				if(json.result == "0") {
+					error.innerHTML = json.message;
+				}else if(json.result == "1") {
+					if(json.exist == "1") {
+						error.innerHTML = "此学号已存在";
+						flag = false;
+					}
 				}
 			}
-		}
-	});
+		});
+	}
 	return flag;
 }
 
@@ -131,13 +139,11 @@ function _checkStudent(form, error) {
  * @param {[[DOM]]} form [[所在的表单]]
  */
 function addStudent(form) {
-    var student = form.student;
-    var student_value = student.value.trim();
     var error = document.getElementById("student_add_error");
-    if(_checkStudent(form, error)) {
+    if(_checkStudent(form, error, true)) {
         $.ajax({
             "url": "admin/student/add",
-            "data": "id=" + form.id.value.trim() + "&clazz=" + $("#clazz_select").val() + "&name=" + student_value,
+            "data": "id=" + form.id.value + "&clazz=" + $("#clazz_select_add").val() + "&name=" + form.student.value,
             "async": false,
             "dataType": "json",
             "success": function(json) {
@@ -155,17 +161,15 @@ function addStudent(form) {
 }
 
 /**
- * 编辑专业
- * @param {} form
+ * 编辑学生
+ * @param form
  */
 function editStudent(form) {
-	var student = form.student;
-    var student_value = student.value.trim();
     var error = document.getElementById("student_edit_error");
-    if(_checkStudent(student, student_value, error)) {
+    if(_checkStudent(form, error, false)) {
         $.ajax({
             "url": "admin/student/edit",
-            "data": "student=" + student_value + "&id=" + form.id.value,
+            "data": "name=" + form.student.value + "&id=" + form.id.value + "&clazz=" + $("#clazz_select_edit").val(),
             "async": false,
             "dataType": "json",
             "success": function(json) {
@@ -173,7 +177,7 @@ function editStudent(form) {
                     error.innerHTML = json.message;
                 }else {
                     toggleStudentEdit(false);
-                    _resetStudent(student, error);
+                    _resetStudent(form.student, error);
                     Tips.showSuccess(json.message);
                     window.location.href = "admin/student/list";
                 }
@@ -319,7 +323,7 @@ function _loadClazz(majorId, isAdd, callback) {
 function changeClazz(select, isAdd) {
 	var majorId = $(select).val();
 	_loadClazz(majorId, isAdd, function(element) {
-		return "<option value='" + element.id + "'>" + element.cno + "班</option>");
+		return "<option value='" + element.id + "'>" + element.cno + "班</option>";
 	});
 }
 
@@ -350,6 +354,7 @@ function toggleStudentEdit(isShow, btn) {
 		var matches = pattern.exec(clazzInfo);
 		var grade = matches[1];
 		var gradeId = 0;
+		var majorId = 0;
 		var major = matches[2];
 		var clazz = matches[3];
 		//加载年级，并且设置回显
@@ -367,8 +372,18 @@ function toggleStudentEdit(isShow, btn) {
 			var option = "<option value='" + element.id + "'";
 			if(element.name == major) {
 				option += " selected";
+				majorId = element.id;
 			}
 			option += ">" + element.name + "</option>";
+			return option;
+		});
+		//加载班级，并且设置回显
+		_loadClazz(majorId, false, function(element) {
+			var option = "<option value='" + element.id + "'";
+			if(element.cno == clazz) {
+				option += " selected";
+			}
+			option += ">" + element.cno + "班</option>";
 			return option;
 		});
 		var name_td = clazz_td.prev();

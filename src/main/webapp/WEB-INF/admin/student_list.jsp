@@ -93,7 +93,7 @@
 		<div class="modal_window_title">
 			添加学生: <img src="images/error.png" onclick="toggleStudentAdd(false);">
 		</div>
-		<form action="student/add" method="post" onsubmit="return addStudent(this);">
+		<form action="admin/student/add" method="post" onsubmit="return addStudent(this);">
 			<table>
 				<tr>
 					<td>学号:</td>
@@ -151,7 +151,7 @@
 		<div class="modal_window_title">
 			编辑学生: <img src="images/error.png" onclick="toggleStudentEdit(false);">
 		</div>
-		<form action="student/edit" method="post" onsubmit="return editStudent(this);">
+		<form action="" id="student_edit_form" method="post" onsubmit="return editStudent(this);">
 			<!--提交记录id-->
 			<input type="hidden" name="id" id="student_edit_id">
 			<table>
