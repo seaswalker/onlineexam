@@ -64,9 +64,8 @@ public class MajorDaoImpl extends BaseDaoImpl<Major> implements MajorDao {
 	}
 
 	@Override
-	public void update(Major entity) {
-		jdbcTemplate.update("update major set name = ? where id = ?",
-				entity.getName(), entity.getId());
+	public void update(String sql, Object[] params) {
+		jdbcTemplate.update(sql, params);
 	}
 	
 	@Override

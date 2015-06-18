@@ -88,14 +88,20 @@ public class AdminStudentController {
 		if(!DataUtil.isNumber(clazz) || !DataUtil.isValid(id, name)) {
 			json.addElement("result", "0").addElement("message", "格式非法");
 		}else {
-			Student student = new Student();
-			student.setId(id);
-			student.setName(name);
-			student.setClazz(new Clazz(Integer.parseInt(clazz)));
-			studentService.update(student);
+			studentService.update(id, name, Integer.parseInt(clazz));
 			json.addElement("result", "1").addElement("message", "修改成功");
 		}
 		DataUtil.writeJSON(json, response);
+	}
+	
+	/**
+	 * 
+	 * @param id 学生id
+	 */
+	@RequestMapping("/delete")
+	@ResponseBody
+	public void delete(String id, HttpServletResponse response) {
+		//TODO
 	}
 	
 	/**

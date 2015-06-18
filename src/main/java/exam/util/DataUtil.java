@@ -32,13 +32,17 @@ public class DataUtil {
 	 */
 	private static List<String> contentTypes;
 	/**
-	 * 分页使用，判断是否是大于1的数字
+	 * 分页使用，判断是否是大于0的数字
 	 */
 	private static Pattern pattern = Pattern.compile("^[1-9][0-9]*$");
+	
+	public static boolean isValid(String str) {
+		return str != null && !str.trim().equals("");
+	}
 
 	public static boolean isValid(String...strs) {
 		for(String str : strs) {
-			if(str == null || str.trim().equals("")) {
+			if(!isValid(str)) {
 				return false;
 			}
 		}

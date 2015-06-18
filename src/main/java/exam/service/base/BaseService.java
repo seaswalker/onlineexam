@@ -15,8 +15,6 @@ public interface BaseService<T> {
 	
 	public void delete(Object id);
 	
-	public void update(T entity);
-	
 	public List<T> find(T entity);
 	
 	/**

@@ -88,7 +88,7 @@
 	</div>
 	
 	<!--学生添加-->
-	<div class="student_add form-control" id="student_add">
+	<div class="modal_window student_window form-control" id="student_add">
 		<!--标题-->
 		<div class="modal_window_title">
 			添加学生: <img src="images/error.png" onclick="toggleStudentAdd(false);">
@@ -146,7 +146,7 @@
 		</form>
 	</div>
 	<!--学生修改-->
-	<div class="student_add form-control" id="student_edit">
+	<div class="modal_window student_window form-control" id="student_edit">
 		<!--标题-->
 		<div class="modal_window_title">
 			编辑学生: <img src="images/error.png" onclick="toggleStudentEdit(false);">

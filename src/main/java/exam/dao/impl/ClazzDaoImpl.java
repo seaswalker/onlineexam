@@ -58,10 +58,8 @@ public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 	}
 	
 	@Override
-	public void update(Clazz entity) {
-		String sql = "update class set cno = ?, gid = ?, mid = ? where id = ?";
-		jdbcTemplate.update(sql, 
-				new Object[] {entity.getCno(), entity.getGrade().getId(), entity.getMajor().getId(), entity.getId()});
+	public void update(String sql, Object[] params) {
+		jdbcTemplate.update(sql, params);
 	}
 	
 	@Override
@@ -86,6 +84,11 @@ public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 	
 	public List<Clazz> findClazzOnly(Clazz clazz) {
 		return find("select * from class", clazzOnlyRowMapper, clazz, null);
+	}
+	
+	@Override
+	public Object queryForObject(String sql, Class<?> clazz) {
+		return jdbcTemplate.queryForObject(sql, clazz);
 	}
 	
 	/**

@@ -22,7 +22,7 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements TeacherDao {
 		rowMapper = new RowMapper<Teacher>() {
 			public Teacher mapRow(ResultSet rs, int rowNum) throws SQLException {
 				Teacher teacher = new Teacher();
-				teacher.setId(rs.getInt("id"));
+				teacher.setId(rs.getString("id"));
 				teacher.setName(rs.getString("name"));
 				teacher.setPassword(rs.getString("password"));
 				return teacher;
@@ -32,13 +32,12 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements TeacherDao {
 
 	@Override
 	public void save(Teacher entity) {
-		jdbcTemplate.update("insert into teacher values(null, ?, ?)", new Object[] {entity.getName(), entity.getPassword()});
+		jdbcTemplate.update("insert into teacher values(?, ?, ?)", new Object[] {entity.getId(), entity.getName(), entity.getPassword()});
 	}
 	
 	@Override
-	public void update(Teacher entity) {
-		jdbcTemplate.update("update teacher set name = ?, password = ? where id = ?", 
-				new Object[] {entity.getName(), entity.getPassword(), entity.getId()});
+	public void update(String sql, Object[] params) {
+		jdbcTemplate.update(sql, params);
 	}
 	
 	@Override
@@ -48,7 +47,7 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements TeacherDao {
 	
 	@Override
 	public Teacher getById(Object id) {
-		return jdbcTemplate.queryForObject("select * from teacher where id = " + id, Teacher.class);
+		return jdbcTemplate.queryForObject("select * from teacher where id = '" + id + "'", Teacher.class);
 	}
 	
 	@Override
@@ -60,8 +59,8 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements TeacherDao {
 	public List<Teacher> find(Teacher entity) {
 		StringBuilder sqlBuilder = new StringBuilder(sql).append(" where 1 = 1");
 		if(entity != null) {
-			if(entity.getId() > 0) {
-				sqlBuilder.append(" and id = ").append(entity.getId());
+			if(DataUtil.isValid(entity.getId())) {
+				sqlBuilder.append(" and id = '").append(entity.getId()).append("'");
 			}
 			if(DataUtil.isValid(entity.getName())) {
 				sqlBuilder.append(" and name = '").append(entity.getName()).append("'");

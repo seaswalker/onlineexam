@@ -1,5 +1,6 @@
 package exam.service.impl;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -18,6 +19,13 @@ import exam.service.base.BaseServiceImpl;
 public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzService {
 	
 	private ClazzDao clazzDao;
+	
+	@Resource(name = "clazzDao")
+	@Override
+	protected void setBaseDao(BaseDao<Clazz> baseDao) {
+		super.baseDao = baseDao;
+		this.clazzDao = (ClazzDao) baseDao;
+	}
 
 	public List<Clazz> findByMajor(int majorId) {
 		Clazz clazz = new Clazz();
@@ -41,11 +49,11 @@ public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzSer
 		return clazzDao.findClazzOnly(clazz);
 	}
 
-	@Resource(name = "clazzDao")
-	@Override
-	protected void setBaseDao(BaseDao<Clazz> baseDao) {
-		super.baseDao = baseDao;
-		this.clazzDao = (ClazzDao) baseDao;
+	public boolean isExist(int grade, int major, int cno) {
+		StringBuilder sqlBuilder = new StringBuilder("select count(id) from class where gid = ");
+		sqlBuilder.append(grade).append(" and mid = ").append(major).append(" and cno = ").append(cno);
+		BigInteger result = (BigInteger) clazzDao.queryForObject(sqlBuilder.toString(), BigInteger.class);
+		return result.intValue() > 0;
 	}
 
 }

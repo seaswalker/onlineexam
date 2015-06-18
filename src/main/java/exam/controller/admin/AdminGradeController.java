@@ -68,27 +68,6 @@ public class AdminGradeController {
 	}
 	
 	/**
-	 * 修改年级
-	 * @param id
-	 * @param 年级，应该是数字
-	 */
-	@RequestMapping("/edit")
-	@ResponseBody
-	public void edit(String id, String grade, HttpServletResponse response) {
-		JSON json = new JSONObject();
-		if(!DataUtil.isNumber(id)) {
-			json.addElement("result", "0").addElement("message", "非法数据");
-		}else if(!DataUtil.isNumber(grade)) {
-			json.addElement("result", "0").addElement("message", "请输入数字，比如2012");
-		}else {
-			int _id = Integer.parseInt(id);
-			gradeService.update(new Grade(_id, Integer.parseInt(grade)));
-			json.addElement("result", "1").addElement("message", "修改成功");
-		}
-		DataUtil.writeJSON(json, response);
-	}
-	
-	/**
 	 * 批量删除年级
 	 * @param ids 格式为1,2,3
 	 */

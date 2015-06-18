@@ -23,10 +23,6 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 		return baseDao.getAll();
 	}
 	
-	public void update(T entity) {
-		baseDao.update(entity);
-	}
-	
 	public void delete(Object id) {
 		baseDao.delete(id);
 	}

@@ -26,10 +26,8 @@ public class GradeDaoTest {
 	
 	@Test
 	public void update() {
-		Grade grade = new Grade();
-		grade.setId(1);
-		grade.setGrade(2013);
-		gradeDao.update(grade);
+		//Grade grade = new Grade();
+		//gradeDao.update(grade);
 	}
 	
 	@Test

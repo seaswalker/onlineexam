@@ -86,7 +86,7 @@
 	</div>
 	
 	<!--专业添加-->
-	<div class="modal_window form-control" id="major_add">
+	<div class="modal_window grade_window form-control" id="major_add">
 		<!--标题-->
 		<div class="modal_window_title">
 			添加专业: <img src="images/error.png" onclick="toggleMajorAdd(false);">
@@ -108,7 +108,7 @@
 		</form>
 	</div>
 	<!--专业修改-->
-	<div class="modal_window form-control" id="major_edit">
+	<div class="modal_window grade_window form-control" id="major_edit">
 		<!--标题-->
 		<div class="modal_window_title">
 			编辑专业: <img src="images/error.png" onclick="toggleMajorEdit(false);">

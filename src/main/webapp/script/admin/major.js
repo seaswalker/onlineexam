@@ -106,35 +106,6 @@ function addMajor(form) {
 }
 
 /**
- * 编辑专业
- * @param {} form
- */
-function editMajor(form) {
-	var major = form.major;
-    var major_value = major.value.trim();
-    var error = document.getElementById("major_edit_error");
-    if(_checkMajor(major, major_value, error)) {
-        $.ajax({
-            "url": "admin/major/edit",
-            "data": "major=" + major_value + "&id=" + form.id.value,
-            "async": false,
-            "dataType": "json",
-            "success": function(json) {
-                if(json.result == 0) {
-                    error.innerHTML = json.message;
-                }else {
-                    toggleMajorEdit(false);
-                    _resetMajor(major, error);
-                    Tips.showSuccess(json.message);
-                    window.location.href = "admin/major/list";
-                }
-            }
-        });
-    }
-    return false;
-}
-
-/**
  * [[显示/隐藏专业添加窗口]
  */
 function toggleMajorAdd(isShow) {
@@ -150,23 +121,6 @@ function toggleMajorAdd(isShow) {
 function _resetMajor(major, error) {
     major.value = "";
     error.innerHTML = "";
-}
-
-/**
- * [[显示/隐藏专业编辑窗口]]
- * @param {[[boolean]} [[true--显示]]
- * @param {[[DOM]]} [[如果是显示，那么为触发的按钮]]
- */
-function toggleMajorEdit(isShow, btn) {
-	var major_edit = document.getElementById("major_edit");
-	if (isShow) {
-		var name_td = $(btn).parent().prev();
-		$("#major_edit_major").val(name_td.html());
-		$("#major_edit_id").val(name_td.prev().html());
-		major_edit.style.display = "block";
-	} else {
-		major_edit.style.display = "none";
-	}
 }
 
 /**

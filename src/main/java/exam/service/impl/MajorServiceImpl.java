@@ -43,5 +43,10 @@ public class MajorServiceImpl extends BaseServiceImpl<Major> implements MajorSer
 				+ "(select mid from grade_major where gid = " + grade + ")";
 		return majorDao.queryBySQL(sql);
 	}
+	
+	public void update(int id, String name) {
+		String sql = "update major set name = ? where id = ?";
+		majorDao.update(sql, new Object[] {name, id});
+	}
 
 }

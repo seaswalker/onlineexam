@@ -15,7 +15,11 @@ public interface BaseDao<T> {
 	
 	public void delete(Object id);
 	
-	public void update(T entity);
+	/**
+	 * 换种更新方式，是不是更好?
+	 * 这样可以解决学生、老师修改时密码和姓名不同时修改的问题
+	 */
+	public void update(String sql, Object[] params);
 	
 	public List<T> find(T entity);
 	

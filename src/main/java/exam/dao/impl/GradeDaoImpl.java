@@ -45,9 +45,8 @@ public class GradeDaoImpl extends BaseDaoImpl<Grade> implements GradeDao {
 	}
 
 	@Override
-	public void update(Grade entity) {
-		jdbcTemplate.update("update grade set grade = ? where id = ?",
-				entity.getGrade(), entity.getId());
+	public void update(String sql, Object[] params) {
+		jdbcTemplate.update(sql, params);
 	}
 	
 	@Override

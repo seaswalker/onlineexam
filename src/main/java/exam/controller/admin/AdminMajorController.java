@@ -83,7 +83,7 @@ public class AdminMajorController {
 			json.addElement("result", "0").addElement("message", "请输入专业名称");
 		}else {
 			int _id = Integer.parseInt(id);
-			majorService.update(new Major(_id, major));
+			majorService.update(_id, major);
 			json.addElement("result", "1").addElement("message", "修改成功");
 		}
 		DataUtil.writeJSON(json, response);

@@ -49,7 +49,7 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 		throw new UnsupportedOperationException();
 	}
 
-	public void update(T entity) {
+	public void update(String sql, Object[] params) {
 		throw new UnsupportedOperationException();
 	}
 
