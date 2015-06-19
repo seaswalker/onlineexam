@@ -1,5 +1,7 @@
 package exam.service.impl;
 
+import java.math.BigInteger;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -31,6 +33,12 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 	public void updatePassword(String id, String password) {
 		String sql = "update teacher set password = ? where id = ?";
 		teacherDao.update(sql, new Object[] {StringUtil.md5(password), id});
+	}
+	
+	public boolean isExist(String id) {
+		String sql = "select count(id) from teacher where id = '" + id + "'";
+		BigInteger result = (BigInteger) teacherDao.queryForObject(sql, BigInteger.class);
+		return result.intValue() > 0;
 	}
 	
 }

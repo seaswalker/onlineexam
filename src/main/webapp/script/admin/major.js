@@ -114,6 +114,51 @@ function toggleMajorAdd(isShow) {
 }
 
 /**
+ * [editMajor 编辑专业]
+ */
+function editMajor(form) {
+	var major = form.major;
+    var major_value = major.value.trim();
+    var error = document.getElementById("major_edit_error");
+    if(_checkMajor(major, major_value, error)) {
+        $.ajax({
+            "url": "admin/major/edit",
+            "data": "id=" + form.id.value + "&major=" + major_value,
+            "async": false,
+            "dataType": "json",
+            "success": function(json) {
+                if(json.result == 0) {
+                    error.innerHTML = json.message;
+                }else {
+                    toggleMajorEdit(false);
+                    _resetMajor(major, error);
+                    Tips.showSuccess(json.message);
+                }
+            }
+        });
+    }
+    return false;
+}
+
+/**
+ * [toggleMajorEdit 专业编辑窗口的显示/隐藏]
+ * @param  {Boolean} isShow [是否显示]
+ * @param  {[type]}  btn    [触发的按钮]
+ */
+function toggleMajorEdit(isShow, btn) {
+	var majorEdit = document.getElementById("major_edit");
+	if(isShow) {
+		//设置专业名称和id
+		var $nameTd = $(btn).parent().prev();
+		$("#major_edit_major").val($nameTd.html());
+		$("#major_edit_id").val($nameTd.prev().html());
+		majorEdit.style.display = "block";
+	}else {
+		majorEdit.style.display = "none";
+	}
+}
+
+/**
  * [[重置专业输入界面]]
  * @param {[[DOM]]} major [[专业输入]]
  * @param {[[DOM]]} error [[错误显示]]

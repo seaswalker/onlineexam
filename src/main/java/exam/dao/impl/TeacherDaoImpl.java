@@ -71,6 +71,11 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements TeacherDao {
 		}
 		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
 	}
+	
+	@Override
+	public Object queryForObject(String sql, Class<?> clazz) {
+		return jdbcTemplate.queryForObject(sql, clazz);
+	}
 
 	@Override
 	protected RowMapper<Teacher> getRowMapper() {

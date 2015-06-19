@@ -119,13 +119,59 @@ function addTeacher(form) {
                     error.innerHTML = json.message;
                 }else {
                     toggleTeacherAdd(false);
-                    _resetTeacher(form.teacher, error);
+                    _resetTeacher(form.name, error);
                     Tips.showSuccess(json.message);
                 }
             }
         });
     }
     return false;
+}
+
+/**
+ * [toggleTeacherEdit 切换教师编辑界面]
+ * @param  {Boolean} isShow [显示/隐藏]
+ * @param  {[DOM]}  btn    [触发操作的按钮]
+ */
+function toggleTeacherEdit(isShow, btn) {
+	var teacherEdit = document.getElementById("teacher_edit");
+	if(isShow) {
+		//设置教职工号
+		var $nameTd = $(btn).parent().prev();
+		$("#teacher_edit_id").val($nameTd.prev().html());
+		//设置教师姓名
+		$("#teacher_edit_name").val($nameTd.html());
+		teacherEdit.style.display = "block";
+	}else {
+		teacherEdit.style.display = "none";
+	}
+}
+
+/**
+ * [editTeacher 教师编辑]
+ * @param  {[DOM]} form [所在的表单]
+ */
+function editTeacher(form) {
+	var error = document.getElementById("teacher_edit_error");
+	var result = _checkTeacher(form, error);
+	if(result.result) {
+		$.ajax({
+			"url": "admin/teacher/edit",
+			"data": "id=" + result.id + "&name=" + result.name,
+			"async": false,
+			"dataType": "json",
+			"success": function(json) {
+				if(json.result == "0") {
+					Tips.showError(json.message);
+				}else if(json.result == "1") {
+					toggleTeacherEdit(false);
+					_resetTeacher(form.name, error);
+					Tips.showSuccess(json.message);
+				}
+			}
+		});
+	}
+	return false;
 }
 
 /**

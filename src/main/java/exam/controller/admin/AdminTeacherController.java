@@ -4,16 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import exam.model.page.PageBean;
 import exam.model.role.Teacher;
 import exam.service.TeacherService;
 import exam.util.DataUtil;
+import exam.util.StringUtil;
+import exam.util.json.JSONObject;
 
 /**
  * 管理员老师管理
@@ -52,6 +56,47 @@ public class AdminTeacherController {
 		model.addAttribute("pageBean", pageBean);
 		model.addAttribute("name", name);
 		return "admin/teacher_list";
+	}
+	
+	/**
+	 * 教师添加
+	 * @param id 教职工号
+	 * @param name 教师姓名
+	 */
+	@RequestMapping("/add")
+	@ResponseBody
+	public void add(String id, String name, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(!DataUtil.isValid(id, name)) {
+			json.addElement("result", "0").addElement("message", "格式非法");
+		}else if(teacherService.isExist(id)) {
+			json.addElement("result", "0").addElement("message", "此教师已存在");
+		}else {
+			Teacher teacher = new Teacher();
+			teacher.setId(id);
+			teacher.setName(name);
+			//TODO 硬编码?
+			teacher.setPassword(StringUtil.md5("1234"));
+			teacherService.save(teacher);
+			json.addElement("result", "1").addElement("message", "保存成功");
+		}
+		DataUtil.writeJSON(json, response);
+	}
+	
+	/**
+	 * 教师编辑
+	 */
+	@RequestMapping("/edit")
+	@ResponseBody
+	public void edit(String id, String name, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(!DataUtil.isValid(id, name)) {
+			json.addElement("result", "0").addElement("message", "格式非法");
+		}else {
+			teacherService.updateName(id, name);
+			json.addElement("result", "1").addElement("message", "保存成功");
+		}
+		DataUtil.writeJSON(json, response);
 	}
 	
 }

@@ -16,4 +16,11 @@ public interface TeacherService extends BaseService<Teacher> {
 	 */
 	public void updatePassword(String id, String password);
 	
+	/**
+	 * 检查教师是否存在
+	 * @param id 教职工号
+	 * @return 存在返回true
+	 */
+	public boolean isExist(String id);
+	
 }

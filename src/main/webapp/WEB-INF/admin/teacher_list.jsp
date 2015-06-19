@@ -62,6 +62,7 @@
 							<td>${teacher.id}</td>
 							<td>${teacher.name}</td>
 							<td>
+								<button class="btn btn-default" onclick="toggleTeacherEdit(true,this);">编辑</button>
 								<button class="btn btn-danger" onclick="deleteTeacher(this);">删除</button>
 							</td>
 						</tr>
@@ -103,6 +104,34 @@
 				</tr>
 				<tr style="text-align: center;">
 					<td colspan="2"><span class="error" id="teacher_add_error">&nbsp;</span>
+					</td>
+				</tr>
+				<tr style="text-align: center;">
+					<td colspan="2"><input type="submit" value="提交"></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 教师修改 -->
+	<div class="modal_window teacher_window form-control" id="teacher_edit">
+		<!--标题-->
+		<div class="modal_window_title">
+			编辑教师: <img src="images/error.png" onclick="toggleTeacherEdit(false);">
+		</div>
+		<form action="" method="post" onsubmit="return editTeacher(this);">
+			<table>
+				<tr>
+					<td>教职工号:</td>
+					<td>
+						<input type="text" name="id" id="teacher_edit_id" readonly="readonly">
+					</td>
+				</tr>
+				<tr>
+					<td>教师姓名:</td>
+					<td><input type="text" name="name" id="teacher_edit_name"></td>
+				</tr>
+				<tr style="text-align: center;">
+					<td colspan="2"><span class="error" id="teacher_edit_error">&nbsp;</span>
 					</td>
 				</tr>
 				<tr style="text-align: center;">
