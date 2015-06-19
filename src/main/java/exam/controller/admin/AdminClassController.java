@@ -54,11 +54,11 @@ public class AdminClassController {
 		String where = "where 1 = 1 ";
 		List<Object> params = new ArrayList<Object>(2);
 		if(DataUtil.isNumber(grade)) {
-			where += "and gid = ?";
+			where += " and gid = ? ";
 			params.add(Integer.parseInt(grade));
 		}
 		if(DataUtil.isNumber(major)) {
-			where += "and mid = ?";
+			where += " and mid = ? ";
 			params.add(Integer.parseInt(major));
 		}
 		PageBean<Clazz> pageBean = clazzService.pageSearch(pageCode, pageSize, pageNumber, where, params, null);

@@ -7,7 +7,7 @@
 	<!--显示登录的用户-->
 	<div class="head_info">
 		<div style="height: 80px;"></div>
-		<span>欢迎:</span> <span style="color: red;">${sessionScope.manager.name}</span>
+		<span>欢迎:</span> <span style="color: red;">${sessionScope.admin.name}</span>
 		&nbsp;&nbsp; <span id="cur_time"></span>
 	</div>
 	<!--bootstrap导航条-->
@@ -31,6 +31,7 @@
 			        <li><a href="admin/clazz/list">班级管理</a></li>
 			        <li><a href="admin/student/list">学生管理</a></li>
 			        <li><a href="admin/teacher/list">教师管理</a></li>
+			        <li><a href="admin/logout">退出系统</a></li>
 			    </ul>
 			</div>
 		</div>

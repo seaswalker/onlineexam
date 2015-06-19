@@ -51,7 +51,7 @@ public class LoginController {
 				return "login";
 			}
 			manager.setPassword(password);
-			session.setAttribute("manager", manager);
+			session.setAttribute("admin", manager);
 			return "redirect:/admin/index";
 		}
 		return "";
