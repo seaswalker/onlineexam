@@ -48,6 +48,13 @@ public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzSer
 	public List<Clazz> findClazzOnly(Clazz clazz) {
 		return clazzDao.findClazzOnly(clazz);
 	}
+	
+	public List<Clazz> findByTeacher(String tid) {
+		StringBuilder sqlBuilder = new StringBuilder(clazzDao.getSql());
+		sqlBuilder.append(" where c.id in (select cid from teacher_class where tid = '")
+			.append(tid).append("')");
+		return clazzDao.queryBySQL(sqlBuilder.toString());
+	}
 
 	public boolean isExist(int grade, int major, int cno) {
 		StringBuilder sqlBuilder = new StringBuilder("select count(id) from class where gid = ");

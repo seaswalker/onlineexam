@@ -23,4 +23,9 @@ public interface TeacherService extends BaseService<Teacher> {
 	 */
 	public boolean isExist(String id);
 	
+	/**
+	 * 保存所教的班级
+	 */
+	public void updateTeachClazzs(String ids, String tid);
+	
 }

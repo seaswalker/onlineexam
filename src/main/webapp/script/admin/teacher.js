@@ -1,4 +1,67 @@
 /**
+ * [variables 全局变量]
+ * @type {Object}
+ */
+var variables = {
+	//已选班级是否已经改变
+	hasClazzChanged: false,
+	//已教班级记录
+	clazzNotes: null,
+	//当前活动的老师
+	currentTeacher: 0
+};
+
+/**
+ * [ClazzNote 已教的班级的记录，用以避免重复选择]
+ * @param cno 班号
+ */
+function ClazzNote(clazzId, cno) {
+	this.clazzId = clazzId;
+	this.cno = cno;
+}
+
+/**
+ * [equals 比较两个ClazzNote对象是否相等]
+ * @param  {[ClazzNote]} note
+ * @return {[boolean]}      [相等返回true]
+ */
+ClazzNote.prototype.equals = function(clazzId) {
+	return this.clazzId == clazzId;
+};
+
+/**
+ * [deleteByClazzId 按照班级id从数组中删除一个元素]
+ * @return 返回被删除的元素
+ */
+ClazzNote.deleteByClazzId = function(clazzId) {
+	//所找元素的下标
+	var index = 0;
+	for(index;index < variables.clazzNotes.length;index ++) {
+		if(variables.clazzNotes[index].equals(clazzId)) {
+			break;
+		}
+	}
+	if(index < variables.clazzNotes.length) {
+		var removed = variables.clazzNotes[index];	
+		variables.clazzNotes.splice(index, 1);
+		return removed;
+	}
+	return null;
+}
+
+/**
+ * [contains clazzNotes数组是否包含此条记录]
+ */
+ClazzNote.contains = function(clazzId) {
+	for(var i = 0;i < variables.clazzNotes.length;i ++) {
+		if(variables.clazzNotes[i].equals(clazzId)) {
+			return true;
+		}
+	}
+	return false;
+}
+
+/**
  * [全选]
  * @param  {[DOM]} checkbox [全选按钮]
  */
@@ -202,4 +265,259 @@ function search(form) {
 	var id = form.id.value.trim();
 	var name = form.name.value.trim();
 	return id != "" || name != "";
+}
+
+/**
+ * [_handleJSON 处理json请求结果]
+ * @param  {[Object]}   json [json结果]
+ * @param  {[jquery]}   container [容器]
+ * @param  {Function} callback  [回调函数，可以接受一个当前json对象的参数]
+ * @param  {String} tipsOption  [提示选项，比如<option value='0'>年级...</option>, 可选]
+ */
+function _handleJSON(json, container, callback, tipsOption) {
+	if(json.result == "0") {
+		Tips.showError(json.message);
+	}else if(json.result == "1") {
+		container.empty();
+		var options = new Array();
+		if(tipsOption != undefined) {
+			options.push(tipsOption);
+		}
+		for(var i = 0;i < json.data.length;i ++) {
+			options.push(callback(json.data[i]));
+		}
+		container.append($(options.join("")));
+	}
+}
+
+/**
+ * [_loadTeachClazz 加载所教的班级]
+ * @param  {[jquery对象]} $clazzList [班级列表容器]
+ * @param [String] tid 教师id
+ */
+function _loadTeachClazz($clazzList, tid) {
+	$.ajax({
+		"url": "admin/teacher/clazz/list",
+		"data": "tid=" + tid,
+		"async": false,
+		"dataType": "json",
+		"success": function(json) {
+			variables.clazzNotes = new Array();
+			_handleJSON(json, $("#clazz_list"), function(element) {
+				//添加已教班级记录
+				variables.clazzNotes.push(new ClazzNote(element.id, element.cno));
+				return "<li><input type='checkbox' name='clazzs' value='" + element.id + "'><span>" + element.grade.grade + "级" + 
+				element.major.name + element.cno + "班</span></li>";
+			});
+		}
+	});
+}
+
+/**
+ * [_loadGrade 加载年级到年级列表]
+ */
+function _loadGrade() {
+	$.ajax({
+		"url": "grade/ajax",
+		"async": false,
+		"dataType": "json",
+		"success": function(json) {
+			_handleJSON(json, $("#grade_select"), function(grade) {
+				return "<option value='" + grade.id + "'>" + grade.grade + "</option>";
+			}, "<option value='0'>年级...</option>");
+		}
+	})
+}
+
+/**
+ * [toggleClazzEdit 所教班级修改界面的显示/隐藏]
+ * @param  {Boolean} isShow [是否显示]
+ * @param  {[DOM]}  btn    [触发的按钮]
+ */
+function toggleClazzEdit(isShow, btn) {
+	var clazzEdit = document.getElementById("teacher_clazz_edit");
+	if(isShow) {
+		var $clazzList = $("#clazz_list");
+		$clazzList.append("<li>正在努力加载...</li>");
+		clazzEdit.style.display = "block";
+		//加载已教班级
+		var tid = $(btn).parent().prev().prev().html();
+		variables.currentTeacher = tid;
+		_loadTeachClazz($clazzList, tid);
+		//加载年级
+		_loadGrade();
+	}else {
+		_resetClazzEdit();
+		clazzEdit.style.display = "none";
+	}
+}
+
+/**
+ * [_resetClazzEdit 重置班级修改界面]
+ */
+function _resetClazzEdit() {
+	$("#grade_select option:gt(0)").remove();
+	$("#clazz_select option:gt(0)").remove();
+	$("#major_select option:gt(0)").remove();
+	$("#clazz_error").html("&nbsp;");
+}
+
+/**
+ * [removeClazz 移除选中的班级]
+ */
+function removeClazz() {
+	var $checkeds = $("input:checkbox[name=clazzs]:checked");
+	if($checkeds.length > 0) {
+		variables.hasClazzChanged = true;
+		var $clazzSelect = $("#clazz_select");
+		var $this = null;
+		$checkeds.each(function() {
+			$this = $(this);
+			//将此条记录从已教班级索引删除，并且加入班级下拉列表
+			var removed = ClazzNote.deleteByClazzId($this.val());
+			//加入班级下拉列表
+			if($("#grade_select").val() != "0" && $("#grade_select").val() != "0" && removed != null) {
+				$clazzSelect.append($("<option value='" + $this.val() + "'>" + removed.cno + "班</option>"));
+			}
+			$this.next().remove();
+			$this.remove();
+		});
+	}
+}
+
+/**
+ * [_loadMajor 加载专业]
+ * @param  {[jquery]} $majorSelect [专业下拉列表]
+ * @param  {[int]} gradeId      [年级id]
+ */
+function _loadMajor($majorSelect, gradeId) {
+	$.ajax({
+		"url": "major/ajax",
+		"data": "grade=" + gradeId,
+		"async": false,
+		"dataType": "json",
+		"success": function(json) {
+			_handleJSON(json, $majorSelect, function(element) {
+				return "<option value='" + element.id + "'>" + element.name + "</option>";
+			}, "<option value='0'>专业...</option>");
+		}
+	});
+}
+
+/**
+ * [changeMajor 跟随年级的变化联动修改专业]
+ * @param  {[DOM]} gradeSelect [年级下拉选单]
+ */
+function changeMajor(gradeSelect) {
+	var gradeId = $(gradeSelect).val();
+	_loadMajor($("#major_select"), gradeId);
+}
+
+/**
+ * [_loadClazz 加载班级]
+ * @param  {[jquery]} $clazzSelect [班级列表]
+ */
+function _loadClazz(gradeId, majorId, $clazzSelect) {
+	$.ajax({
+		"url": "clazz/ajax",
+		"data": "grade=" + gradeId + "&major=" + majorId,
+		"async": false,
+		"dataType": "json",
+		"success": function(json) {
+			_handleJSON(json, $clazzSelect, function(element) {
+				//在已教列表中不存在才会添加进入列表
+				if(ClazzNote.contains(element.id)) {
+					return "";
+				}else {
+					variables.clazzNotes.push(new ClazzNote(element.id, element.cno));
+					return "<option value='" + element.id + "'>" + element.cno + "班</option>";
+				}
+			}, "<option value='0'>班级...</option>");
+		}
+	});
+}
+
+/**
+ * [changeClazz 班级随专业和年级联动]
+ * @param  {[DOM]} majorSelect [专业列表]
+ */
+function changeClazz(majorSelect) {
+	var gradeId = $("#grade_select").val();
+	var majorId = $(majorSelect).val();
+	_loadClazz(gradeId, majorId, $("#clazz_select"));
+}
+
+function _checkClazz($gradeSelect, $majorSelect) {
+	var $error = $("#clazz_error");
+	if($gradeSelect.val() == "0") {
+		$error.html("请选择年级");
+		return false;
+	}
+	if($majorSelect.val() == "0") {
+		$error.html("请选择专业");
+		return false;
+	}
+	return true;
+}
+
+/**
+ * [addClazz 把下拉列表选中的班级添加到"已教班级"中，班级可以不选，这样的话会添加当前年级、专业下的所有班级]
+ */
+function addClazz() {
+	var $gradeSelect = $("#grade_select");
+	var $majorSelect = $("#major_select");
+	var $clazzSelect = $("#clazz_select");
+	if(_checkClazz($gradeSelect, $majorSelect)) {
+		var clazzId = $clazzSelect.val();
+		//被选中的年级和专业option元素
+		var $selectedGrade = $("#grade_select option:selected");
+		var $selectedMajor = $("#major_select option:selected");
+		//结果数组，直接可以append到已教列表
+		var result = new Array();
+		var $element = null;
+		var temp = "";
+		if(clazzId == "0") {
+			if(confirm("您没有选择班级,这会导致所有班级会被加入,您确定?")) {
+				var $clazzs = $("#clazz_select option:gt(0)");
+				$clazzs.each(function() {
+					$element = $(this);
+					temp = "<li><input type='checkbox' name='clazzs' value='" + $element.val() + 
+						"'><span>" + $selectedGrade.html() + "级" + $selectedMajor.html() + $element.html() + "</span></li>";
+					result.push(temp);
+				});
+			}
+		}else {
+			var $selectedClazz = $clazzSelect.children("option:selected");
+			temp = "<li><input type='checkbox' name='clazzs' value='" + $selectedClazz.val() + 
+						"'><span>" + $selectedGrade.html() + "级" + $selectedMajor.html() + $selectedClazz.html() + "</span></li>";
+			result.push(temp);
+			//添加到已教班级列表后，应该从班级下拉列表删除
+			$selectedClazz.remove();
+		}
+		variables.hasClazzChanged = true;
+		$("#clazz_list").append($(result.join("")));
+	}
+}
+
+/**
+ * [save 保存]
+ */
+function save() {
+	var clazzIds = new Array();
+	$("input:checkbox[name=clazzs]").each(function() {
+		clazzIds.push(this.value);
+	});
+	$.ajax({
+		"url": "admin/teacher/clazz/save",
+		"data": "ids=" + clazzIds.join() + "&tid=" + variables.currentTeacher,
+		"async": false,
+		"success": function(json) {
+			if(json.result == "0") {
+				Tips.showError(json.message);
+			}else if(json.result == "1") {
+				toggleClazzEdit(false);
+				Tips.showSuccess(json.message);
+			}
+		}
+	});
 }

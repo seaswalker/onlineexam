@@ -58,11 +58,6 @@ public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 	}
 	
 	@Override
-	public void update(String sql, Object[] params) {
-		jdbcTemplate.update(sql, params);
-	}
-	
-	@Override
 	public void delete(Object id) {
 		jdbcTemplate.update("delete from class where id = " + id);
 	}
@@ -84,11 +79,6 @@ public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 	
 	public List<Clazz> findClazzOnly(Clazz clazz) {
 		return find("select * from class", clazzOnlyRowMapper, clazz, null);
-	}
-	
-	@Override
-	public Object queryForObject(String sql, Class<?> clazz) {
-		return jdbcTemplate.queryForObject(sql, clazz);
 	}
 	
 	/**
@@ -116,18 +106,15 @@ public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
 	}
 
-	@Override
-	protected RowMapper<Clazz> getRowMapper() {
+	public RowMapper<Clazz> getRowMapper() {
 		return rowMapper;
 	}
 
-	@Override
-	protected String getSql() {
+	public String getSql() {
 		return sql;
 	}
 
-	@Override
-	protected String getCountSql() {
+	public String getCountSql() {
 		return "select count(id) from class";
 	}
 	

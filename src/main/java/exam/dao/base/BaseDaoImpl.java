@@ -29,10 +29,6 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 	//数量查询语句
 	protected String countSql = getCountSql();
 	
- 	protected abstract RowMapper<T> getRowMapper();
- 	protected abstract String getSql();
- 	protected abstract String getCountSql();
-
 	public T getById(Object id) {
 		throw new UnsupportedOperationException();
 	}
@@ -50,7 +46,7 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 	}
 
 	public void update(String sql, Object[] params) {
-		throw new UnsupportedOperationException();
+		jdbcTemplate.update(sql, params);
 	}
 
 	public List<T> find(T entity) {
@@ -62,11 +58,11 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 	}
 	
 	public List<T> queryBySQL(String sql) {
-		throw new UnsupportedOperationException();
+		return jdbcTemplate.query(sql, rowMapper);
 	}
 	
 	public Object queryForObject(String sql, Class<?> clazz) {
-		throw new UnsupportedOperationException();
+		return jdbcTemplate.queryForObject(sql, clazz);
 	}
 	
 	public PageBean<T> pageSearch(int pageCode, int pageSize, int pageNumber,

@@ -64,11 +64,6 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 	}
 
 	@Override
-	public void update(String sql, Object[] params) {
-		jdbcTemplate.update(sql, params);
-	}
-	
-	@Override
 	public List<Student> find(Student entity) {
 		StringBuilder sqlBuilder = new StringBuilder(sql).append(" where 1 = 1");
 		if(entity != null) {
@@ -95,21 +90,18 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 		return find(null);
 	}
 
-	@Override
-	protected RowMapper<Student> getRowMapper() {
+	public RowMapper<Student> getRowMapper() {
 		return rowMapper;
 	}
 
-	@Override
-	protected String getSql() {
+	public String getSql() {
 		return sql;
 	}
 
 	/**
 	 * 这个地方必须手动制定一个别名s，否则controller中where条件没法用，这是个bug?
 	 */
-	@Override
-	protected String getCountSql() {
+	public String getCountSql() {
 		return "select count(id) from student s";
 	}
 

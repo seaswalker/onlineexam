@@ -41,4 +41,18 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 		return result.intValue() > 0;
 	}
 	
+	public void updateTeachClazzs(String ids, String tid) {
+		//首先删除记录
+		String sql = "delete from teacher_class where tid = '" + tid + "'";
+		teacherDao.executeSql(sql);
+		//批量插入
+		StringBuilder sqlBuilder = new StringBuilder("insert into teacher_class values");
+		String[] notes = ids.split(",");
+		for(String note : notes) {
+			sqlBuilder.append("(null, '").append(tid).append("', '").append(note).append("'),");
+		}
+		sqlBuilder.deleteCharAt(sqlBuilder.length() - 1);
+		teacherDao.executeSql(sqlBuilder.toString());
+	}
+	
 }

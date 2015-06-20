@@ -36,11 +36,6 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements TeacherDao {
 	}
 	
 	@Override
-	public void update(String sql, Object[] params) {
-		jdbcTemplate.update(sql, params);
-	}
-	
-	@Override
 	public void delete(Object id) {
 		jdbcTemplate.update("delete from teacher where id = " + id);
 	}
@@ -72,23 +67,15 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements TeacherDao {
 		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
 	}
 	
-	@Override
-	public Object queryForObject(String sql, Class<?> clazz) {
-		return jdbcTemplate.queryForObject(sql, clazz);
-	}
-
-	@Override
-	protected RowMapper<Teacher> getRowMapper() {
+	public RowMapper<Teacher> getRowMapper() {
 		return rowMapper;
 	}
 
-	@Override
-	protected String getSql() {
+	public String getSql() {
 		return sql;
 	}
 
-	@Override
-	protected String getCountSql() {
+	public String getCountSql() {
 		return "select count(id) from teacher";
 	}
 	

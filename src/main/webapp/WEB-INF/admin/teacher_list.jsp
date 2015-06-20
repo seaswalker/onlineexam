@@ -51,8 +51,8 @@
 							<input type="checkbox" onchange="chooseAll(this);" id="checkAll">
 							<label for="checkAll">全选</label></th>
 						<th width="35%">教职工号</th>
-						<th width="35%">姓名</th>
-						<th width="30%">操作</th>
+						<th width="20%">姓名</th>
+						<th width="35%">操作</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -63,6 +63,7 @@
 							<td>${teacher.name}</td>
 							<td>
 								<button class="btn btn-default" onclick="toggleTeacherEdit(true,this);">编辑</button>
+								<button class="btn btn-default" onclick="toggleClazzEdit(true,this);">设置所教班级</button>
 								<button class="btn btn-danger" onclick="deleteTeacher(this);">删除</button>
 							</td>
 						</tr>
@@ -139,6 +140,33 @@
 				</tr>
 			</table>
 		</form>
+	</div>
+	<!-- 所教班级设置界面 -->
+	<div class="modal_window teacher_clazz_window form-control" id="teacher_clazz_edit">
+		<div class="modal_window_title">
+			所教班级: <img src="images/error.png" onclick="toggleClazzEdit(false);">
+		</div>
+		<div style="text-align: center;height: 100px;overflow-y: scroll;overflow-x: hidden;">
+			<ul style="list-style: none;padding: 0px;margin: 0px;" id="clazz_list"></ul>
+		</div>
+		<div style="text-align: center;border-top: 1px solid #E2E2E2;margin-top: 5px;">
+			<button onclick="removeClazz();">移除所选</button>
+		</div>
+		<div class="modal_window_title">
+			添加班级:
+		</div>
+		<div>
+			年级:<select id="grade_select" onchange="changeMajor(this);"></select>
+			专业:<select id="major_select" onchange="changeClazz(this);"><option>专业...</option></select>
+			班级:<select id="clazz_select"><option>班级...</option></select>
+		</div>
+		<div class="error" style="text-align: center;" id="clazz_error">
+			&nbsp;
+		</div>
+		<div style="text-align: center;margin-top: 10px;">
+			<button onclick="addClazz();">添加</button>
+			<button onclick="save();">保存</button>
+		</div>
 	</div>
 </body>
 </html>

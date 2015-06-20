@@ -12,11 +12,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import exam.model.Clazz;
 import exam.model.page.PageBean;
 import exam.model.role.Teacher;
+import exam.service.ClazzService;
 import exam.service.TeacherService;
 import exam.util.DataUtil;
 import exam.util.StringUtil;
+import exam.util.json.JSONArray;
 import exam.util.json.JSONObject;
 
 /**
@@ -30,6 +33,8 @@ public class AdminTeacherController {
 	
 	@Resource
 	private TeacherService teacherService;
+	@Resource
+	private ClazzService clazzService;
 	@Value("#{properties['teacher.pageSize']}")
 	private int pageSize;
 	@Value("#{properties['teacher.pageNumber']}")
@@ -95,6 +100,44 @@ public class AdminTeacherController {
 		}else {
 			teacherService.updateName(id, name);
 			json.addElement("result", "1").addElement("message", "保存成功");
+		}
+		DataUtil.writeJSON(json, response);
+	}
+	
+	/**
+	 * 以json格式返回此老师所教的班级
+	 * @param tid 教师的教职工号
+	 */
+	@RequestMapping("/clazz/list")
+	@ResponseBody
+	public void clazz(String tid, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(!DataUtil.isValid(tid)) {
+			json.addElement("result", "0").addElement("message", "数据格式非法");
+		}else {
+			List<Clazz> clazzs = clazzService.findByTeacher(tid);
+			JSONArray array = new JSONArray();
+			for(Clazz c : clazzs) {
+				array.addObject(c.getJSON());
+			}
+			json.addElement("result", "1").addElement("data", array);
+		}
+		DataUtil.writeJSON(json, response);
+	}
+	
+	/**
+	 * 更改教师所教的班级
+	 * @param ids 班级id，格式1,2,3
+	 */
+	@RequestMapping("/clazz/save")
+	@ResponseBody
+	public void clazzSave(String ids, String tid, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if(!DataUtil.isValid(ids, tid)) {
+			json.addElement("result", "0").addElement("message", "格式非法");
+		}else {
+			teacherService.updateTeachClazzs(ids, tid);
+			json.addElement("result", "1").addElement("message", "修改成功");
 		}
 		DataUtil.writeJSON(json, response);
 	}

@@ -63,28 +63,15 @@ public class MajorDaoImpl extends BaseDaoImpl<Major> implements MajorDao {
 		jdbcTemplate.update("delete from major where id = " + id);
 	}
 
-	@Override
-	public void update(String sql, Object[] params) {
-		jdbcTemplate.update(sql, params);
-	}
-	
-	@Override
-	public List<Major> queryBySQL(String sql) {
-		return jdbcTemplate.query(sql, rowMapper);
-	}
-
-	@Override
-	protected RowMapper<Major> getRowMapper() {
+	public RowMapper<Major> getRowMapper() {
 		return rowMapper;
 	}
 
-	@Override
-	protected String getSql() {
+	public String getSql() {
 		return sql;
 	}
 
-	@Override
-	protected String getCountSql() {
+	public String getCountSql() {
 		return "select count(id) from major";
 	}
 

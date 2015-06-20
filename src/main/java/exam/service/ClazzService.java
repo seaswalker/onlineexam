@@ -28,6 +28,11 @@ public interface ClazzService extends BaseService<Clazz> {
 	public List<Clazz> findClazzOnly(Clazz clazz);
 	
 	/**
+	 * 根据教师id查出所教的班级
+	 */
+	public List<Clazz> findByTeacher(String tid);
+	
+	/**
 	 * 检查班级是否存在
 	 * @param grade 年级id
 	 * @param major 专业id

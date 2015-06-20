@@ -3,6 +3,8 @@ package exam.dao.base;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.jdbc.core.RowMapper;
+
 import exam.model.page.PageBean;
 
 public interface BaseDao<T> {
@@ -39,6 +41,21 @@ public interface BaseDao<T> {
 	public Object queryForObject(String sql, Class<?> clazz);
 	
 	/**
+	 * 获取用于统计记录数量的sql语句
+	 */
+	public String getCountSql();
+
+	/**
+	 * 获取用于查询此实体类的sql
+	 */
+	public String getSql();
+
+	/**
+	 * 获取特定与某一个实体的mapper
+	 */
+	public RowMapper<T> getRowMapper();
+	
+	/**
 	 * 分页查询
 	 * @param pageCode 需要查询的页码
 	 * @param pageSize 每页的大小
@@ -50,5 +67,5 @@ public interface BaseDao<T> {
 	 */
 	public PageBean<T> pageSearch(int pageCode, int pageSize, int pageNumber, String where,
 			List<Object> params, HashMap<String, String> orderbys);
-	
+
 }

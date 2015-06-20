@@ -45,11 +45,6 @@ public class GradeDaoImpl extends BaseDaoImpl<Grade> implements GradeDao {
 	}
 
 	@Override
-	public void update(String sql, Object[] params) {
-		jdbcTemplate.update(sql, params);
-	}
-	
-	@Override
 	public List<Grade> find(Grade entity) {
 		StringBuilder sqlBuilder = new StringBuilder(sql).append(" where 1 = 1");
 		if(entity != null) {
@@ -63,23 +58,19 @@ public class GradeDaoImpl extends BaseDaoImpl<Grade> implements GradeDao {
 		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
 	}
 
-	@Override
 	public List<Grade> getAll() {
 		return jdbcTemplate.query(sql, rowMapper);
 	}
 
-	@Override
-	protected RowMapper<Grade> getRowMapper() {
+	public RowMapper<Grade> getRowMapper() {
 		return rowMapper;
 	}
 
-	@Override
-	protected String getSql() {
+	public String getSql() {
 		return sql;
 	}
 
-	@Override
-	protected String getCountSql() {
+	public String getCountSql() {
 		return "select count(id) from grade";
 	}
 
