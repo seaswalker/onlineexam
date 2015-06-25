@@ -57,6 +57,10 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 		jdbcTemplate.execute(sql);
 	}
 	
+	public List<T> queryBySQL(String sql, Object... params) {
+		return jdbcTemplate.query(sql, params, rowMapper);
+	}
+	
 	public List<T> queryBySQL(String sql) {
 		return jdbcTemplate.query(sql, rowMapper);
 	}

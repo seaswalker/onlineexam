@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import exam.model.role.Manager;
+import exam.model.role.Teacher;
 import exam.service.ManagerService;
+import exam.service.TeacherService;
 import exam.util.DataUtil;
 import exam.util.StringUtil;
 import exam.util.json.JSON;
@@ -26,6 +28,8 @@ public class LoginController {
 	
 	@Resource
 	private ManagerService managerService;
+	@Resource
+	private TeacherService teacherService;
 
 	/**
 	 * 转到登录页面
@@ -53,6 +57,15 @@ public class LoginController {
 			manager.setPassword(password);
 			session.setAttribute("admin", manager);
 			return "redirect:/admin/index";
+		}else if(role == 2) {
+			Teacher teacher = teacherService.login(username, password);
+			if(teacher == null) {
+				model.addAttribute("error", "用户名或密码错误");
+				return "login";
+			}
+			teacher.setPassword(password);
+			session.setAttribute("teacher", teacher);
+			return "redirect:/teacher/index";
 		}
 		return "";
 	}

@@ -16,6 +16,7 @@
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/head.css">
 <link rel="stylesheet" type="text/css" href="css/list_main.css">
+<link rel="stylesheet" type="text/css" href="css/modal.css">
 <script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 <script src="script/admin/student.js"></script>

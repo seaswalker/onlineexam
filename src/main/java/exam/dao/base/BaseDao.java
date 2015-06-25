@@ -35,6 +35,8 @@ public interface BaseDao<T> {
 	 */
 	public List<T> queryBySQL(String sql);
 	
+	public List<T> queryBySQL(String sql, Object...params);
+	
 	/**
 	 * 单值查询
 	 */

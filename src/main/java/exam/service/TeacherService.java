@@ -28,4 +28,10 @@ public interface TeacherService extends BaseService<Teacher> {
 	 */
 	public void updateTeachClazzs(String ids, String tid);
 	
+	/**
+	 * 教师登录
+	 * @param password 未经过md5加密的密码
+	 */
+	public Teacher login(String name, String password);
+	
 }

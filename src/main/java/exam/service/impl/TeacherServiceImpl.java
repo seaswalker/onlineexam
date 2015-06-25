@@ -1,6 +1,7 @@
 package exam.service.impl;
 
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.annotation.Resource;
 
@@ -11,6 +12,7 @@ import exam.dao.base.BaseDao;
 import exam.model.role.Teacher;
 import exam.service.TeacherService;
 import exam.service.base.BaseServiceImpl;
+import exam.util.DataUtil;
 import exam.util.StringUtil;
 
 @Service("teacherService")
@@ -53,6 +55,12 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 		}
 		sqlBuilder.deleteCharAt(sqlBuilder.length() - 1);
 		teacherDao.executeSql(sqlBuilder.toString());
+	}
+	
+	public Teacher login(String name, String password) {
+		String sql = "select * from teacher where name = ? and password = ?";
+		List<Teacher> result = teacherDao.queryBySQL(sql, name, StringUtil.md5(password));
+		return DataUtil.isValid(result) ? result.get(0) : null;
 	}
 	
 }

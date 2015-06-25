@@ -26,8 +26,28 @@
 			<div class="collapse navbar-collapse"
 				id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-			        <li><a href="admin/grade/list">年级管理</a></li>
-			        <li><a href="admin/logout">退出系统</a></li>
+			         <li class="dropdown">
+			            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							试卷
+			               <b class="caret"></b>
+			            </a>
+			            <ul class="dropdown-menu">
+			               <li><a href="teacher/exam/list">列表</a></li>
+			               <li><a href="#">添加</a></li>
+			            </ul>
+			         </li>
+			         <li class="dropdown">
+			            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							题库
+			               <b class="caret"></b>
+			            </a>
+			            <ul class="dropdown-menu">
+			               <li><a href="#">列表</a></li>
+			               <li><a href="#">添加</a></li>
+			            </ul>
+			         </li>
+			         <li><a href="#">修改密码</a></li>
+			         <li><a href="#">退出系统</a></li>
 			    </ul>
 			</div>
 		</div>
