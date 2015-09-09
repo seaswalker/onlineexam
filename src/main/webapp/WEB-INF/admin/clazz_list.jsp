@@ -124,7 +124,7 @@
 					<td>
 						<!-- 此处由ajax动态加载 -->
 						<select id="major_select" name="major">
-							<option value="0">班级...</option>
+							<option value="0">专业...</option>
 						</select>
 					</td>
 				</tr>

@@ -21,6 +21,11 @@ public interface MajorService extends BaseService<Major> {
 	public List<Major> findByGrade(int grade);
 	
 	/**
+	 * 获取所有专业
+	 */
+	public List<Major> findAll();
+	
+	/**
 	 * 专业修改
 	 */
 	public void update(int id, String name);

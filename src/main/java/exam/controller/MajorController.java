@@ -34,13 +34,18 @@ public class MajorController {
 	@ResponseBody
 	public void ajax(String grade, HttpServletResponse response) {
 		JSONObject json = new JSONObject();
-		if(!DataUtil.isNumber(grade)) {
+		List<Major> majors = null;;
+		if (!DataUtil.isValid(grade)) {
+			majors = majorService.findAll();
+		} else if (!DataUtil.isNumber(grade)) {
 			json.addElement("result", "0").addElement("message", "年级格式非法");
-		}else {
-			List<Major> majors = majorService.findByGrade(Integer.parseInt(grade));
+		} else {
+			majors = majorService.findByGrade(Integer.parseInt(grade));
+		}
+		if (majors != null) {
 			json.addElement("result", "1");
 			JSONArray array = new JSONArray();
-			for(Major major : majors) {
+			for (Major major : majors) {
 				array.addObject(major.getJSON());
 			}
 			json.addElement("data", array);

@@ -98,7 +98,7 @@ function _checkClazz(form, error) {
 
 /**
  * [changeMajor 动态加载专业]
- * @param  {[type]} gradeSelect [年级下拉列表]
+ * @param  {[DOM]} gradeSelect [年级下拉列表]
  */
 function changeMajor(gradeSelect) {
 	var value = $(gradeSelect).val();
@@ -107,7 +107,6 @@ function changeMajor(gradeSelect) {
 		var $majorSelect = $("#major_select");
 		$.ajax({
 			"url": "major/ajax",
-			"data": "grade=" + value,
 			"async": false,
 			"dataType": "json",
 			"success": function(json) {
@@ -146,6 +145,7 @@ function addClazz(form) {
                     toggleClazzAdd(false);
                     _resetClazz(form.clazz, error);
                     Tips.showSuccess(json.message);
+                    window.location.reload();
                 }
             }
         });
