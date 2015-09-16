@@ -1,0 +1,64 @@
+.main, .bottom {
+	width: 980px;
+	margin: 10px auto 0px;
+}
+.bottom {
+	margin-bottom: 50px;
+}
+.title {
+	font-size: 20px;
+	font-weight: bold;
+}
+.single_points {
+	font-size: 20px;
+}
+.single_points input {
+	width: 100px;
+}
+#single_questions, #multi_questions, #judge_questions {
+	margin-left: 30px;
+}
+.single_question, .multi_question, .judge_question {
+	margin-top: 20px;
+}
+/*单选题表单*/
+.question_table {
+	height: 220px;
+	width: 450px;
+}
+/*判断题表格*/
+.judge_question_table {
+	height: 100px;
+	width: 400px;
+}
+.btns {
+	text-align: center;
+	margin-top: 10px;
+}
+.setting_table {
+	margin-top: 20px;
+	margin-left: 20px;
+    height: 120px;
+}
+/*题库*/
+#question_bank {
+	width: 350px;
+	height: 200px;
+}
+.error {
+	font-size: 12px;
+	color: red;
+}
+/*题目列表*/
+.questions_area {
+	text-align: center;
+	overflow-x: false;
+	overflow-y: auto; 
+	height: 100px;
+	border-bottom: 1px solid #E8E8E8;
+}
+.questions_area ul {
+	list-style: none;
+	margin: 0px;
+	padding: 0px;
+}

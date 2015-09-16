@@ -33,7 +33,7 @@
 			            </a>
 			            <ul class="dropdown-menu">
 			               <li><a href="teacher/exam/list">列表</a></li>
-			               <li><a href="#">添加</a></li>
+			               <li><a href="teacher/exam/add">添加</a></li>
 			            </ul>
 			         </li>
 			         <li class="dropdown">

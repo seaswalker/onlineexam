@@ -20,14 +20,7 @@ public class Question implements Serializable {
 	private String optionC;
 	private String optionD;
 	private String answer;
-	/**
-	 * 问题类型
-	 * 1单选
-	 * 2多选
-	 * 3判断
-	 * 4简单
-	 */
-	private int type;
+	private QuestionType type;
 	private int point;
 	private Teacher teacher;
 	
@@ -73,11 +66,8 @@ public class Question implements Serializable {
 	public void setAnswer(String answer) {
 		this.answer = answer;
 	}
-	public int getType() {
+	public QuestionType getType() {
 		return type;
-	}
-	public void setType(int type) {
-		this.type = type;
 	}
 	public int getPoint() {
 		return point;

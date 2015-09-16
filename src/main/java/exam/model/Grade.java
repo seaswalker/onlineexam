@@ -39,6 +39,11 @@ public class Grade implements Serializable, JSONAble {
 			.addElement("grade", String.valueOf(grade));
 		return object;
 	}
+	
+	@Override
+	public String toString() {
+		return "Grade [id=" + id + ", grade=" + grade + "]";
+	}
 
 	public int getId() {
 		return id;

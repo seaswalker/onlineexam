@@ -23,14 +23,12 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements ExamDao {
 				Exam exam = new Exam();
 				exam.setId(rs.getInt("id"));
 				exam.setTitle(rs.getString("title"));
-				exam.setBeginTime(rs.getTimestamp("begintime"));
-				exam.setClose(rs.getBoolean("close"));
+				exam.setStatus(rs.getBoolean("status"));
 				exam.setEndTime(rs.getTimestamp("endtime"));
 				exam.setJudgePoints(rs.getInt("judgepoints"));
 				exam.setLimit(rs.getInt("limit"));
 				exam.setMultiPoints(rs.getInt("multipoints"));
 				exam.setPoints(rs.getInt("points"));
-				exam.setShortPoints(rs.getInt("shortpoints"));
 				exam.setSinglePoints(rs.getInt("singlepoints"));
 				return exam;
 			}
