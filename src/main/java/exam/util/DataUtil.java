@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -12,6 +13,15 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import exam.model.Clazz;
+import exam.model.Exam;
+import exam.model.Grade;
+import exam.model.Major;
+import exam.model.Question;
+import exam.model.QuestionType;
+import exam.model.role.Teacher;
 import exam.util.json.JSON;
 
 /**
@@ -174,6 +184,90 @@ public class DataUtil {
 			return Integer.parseInt(str);
 		}
 		return 1;
+	}
+	
+	/**
+	 * 根据给定的json串解析为一套试卷
+	 * @param json 
+	 * @param teacher 设置为和试卷的关联关系
+	 * @return 解析完的试题
+	 */
+	public static Exam parseExam(String json, Teacher teacher) {
+		if (!isValid(json) || teacher == null) {
+			return null;
+		}
+		JSONObject node = JSONObject.fromObject(json);
+		Exam exam = new Exam();
+		//解析单选题
+		int singlePoints = 0,
+			multiPoints = 0,
+			judgePoints = 0,
+			sumPoints = 0;
+		sumPoints += (singlePoints = parseQuestion(exam, JSONArray.fromObject(node.get("singles")), QuestionType.SINGLE, teacher));
+		sumPoints += (multiPoints = parseQuestion(exam, JSONArray.fromObject(node.get("multis")), QuestionType.MULTI, teacher));
+		sumPoints += (judgePoints = parseQuestion(exam, JSONArray.fromObject(node.get("judges")), QuestionType.JUDGE, teacher));
+		exam.setSinglePoints(singlePoints);
+		exam.setMultiPoints(multiPoints);
+		exam.setJudgePoints(judgePoints);
+		exam.setPoints(sumPoints);
+		//解析设置选项
+		JSONObject setting = JSONObject.fromObject(node.get("setting"));
+		exam.setLimit(setting.getInt("timeLimit"));
+		int status = setting.getInt("status");
+		if (status == 1) {
+			exam.setStatus(true);
+			Calendar calendar = Calendar.getInstance();
+			calendar.add(Calendar.DATE, setting.getInt("runTime"));
+			exam.setEndTime(calendar.getTime());
+		}
+		//解析适用的班级
+		//TODO 暂且只实现添加一个班级，未来可能改进为添加整个年级、专业
+		Clazz clazz = new Clazz();
+		clazz.setCno(setting.getInt("clazz"));
+		clazz.setGrade(new Grade(setting.getInt("grade")));
+		clazz.setMajor(new Major(setting.getInt("major")));
+		exam.addClazz(clazz);
+		exam.setTitle(setting.getString("title"));
+		return exam;
+	}
+	
+	/**
+	 * 解析出一道题目
+	 * @param exam 试卷对象，解析完成后直接加入试卷
+	 * @param nodes 题目节点
+	 * @param type 题目类型
+	 * @return 返回此组题目的总分值
+	 */
+	private static int parseQuestion(Exam exam, JSONArray nodes, QuestionType type, Teacher teacher) {
+		Question question = new Question();
+		JSONObject jsonQuestion = null;
+		//计算此组题目的分值
+		int points = 0, point = 0;
+		for (Object o : nodes) {
+			question = new Question();
+			jsonQuestion = JSONObject.fromObject(o);
+			question.setTitle(jsonQuestion.getString("title"));
+			if (type != QuestionType.JUDGE) {
+				question.setOptionA(jsonQuestion.getString("optionA"));
+				question.setOptionB(jsonQuestion.getString("optionB"));
+				question.setOptionC(jsonQuestion.getString("optionC"));
+				question.setOptionD(jsonQuestion.getString("optionD"));
+			}
+			point = jsonQuestion.getInt("point");
+			question.setPoint(point);
+			points += point;
+			question.setAnswer(jsonQuestion.getString("answer"));
+			question.setType(type);
+			question.setTeacher(teacher);
+			if (type == QuestionType.SINGLE) {
+				exam.addSingleQuestion(question);
+			} else if (type == QuestionType.MULTI) {
+				exam.addMultiQuestion(question);
+			} else {
+				exam.addJudgeQuestion(question);
+			}
+		}
+		return points;
 	}
 	
 }

@@ -35,7 +35,7 @@ $(function() {
 function setValidators() {
 	//设置非空校验器
 	var requireds = 
-		$("#single_questions input[class=required], #multi_questions input[class=required], #judge_questions input[class=required]").toArray(),
+		$("#single_questions input[class=required], #multi_questions input[class=required], #judge_questions input[class=required], #other-setting input[class=required]").toArray(),
 		$this;
 	$.each(requireds, function() {
 		$this = $(this);
@@ -301,18 +301,21 @@ function submit() {
 	result.setting.grade = $("#grade_select").val();
 	result.setting.major = $("#major_select").val();
 	result.setting.clazz = $("#clazz_select").val();
+	result.setting.title = $otherSetting.find("input[name=exam_title]").val();
 	if ($otherSetting.find("input:checked").val() === "1") {
 		result.setting.status = 1;
 		result.setting.runTime = $otherSetting.find("input[name=run_time]").val();
 	} else {
 		result.setting.status = 0;
 	}
-	$.post("teacher/exam/save", {json: JSON.stringify(result)}, function(data) {
+	$.post("teacher/exam/save", {exam: JSON.stringify(result)}, function(data) {
 		if (data.result === "1") {
 			Tips.showSuccess("添加成功");
 			setTimeout(function() {
-				window.location.href = "teacher/index";
+				window.location.href = data.url;
 			}, 3000);
+		} else {
+			window.location.href = data.url;
 		}
 	}, "json");
 }

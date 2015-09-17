@@ -38,6 +38,19 @@ public class Exam implements Serializable {
 	private List<Question> multiQuestions = new ArrayList<Question>();
 	//判断题
 	private List<Question> judgeQuestions = new ArrayList<Question>();
+	//此套试卷适用的班级
+	private List<Clazz> clazzs = new ArrayList<Clazz>();
+	
+	@Override
+	public String toString() {
+		return "Exam [id=" + id + ", title=" + title + ", limit=" + limit
+				+ ", endTime=" + endTime + ", status=" + status + ", points="
+				+ points + ", singlePoints=" + singlePoints + ", multiPoints="
+				+ multiPoints + ", judgePoints=" + judgePoints
+				+ ", singleQuestions=" + singleQuestions + ", multiQuestions="
+				+ multiQuestions + ", judgeQuestions=" + judgeQuestions
+				+ ", clazzs=" + clazzs + "]";
+	}
 	
 	public int getId() {
 		return id;
@@ -139,6 +152,18 @@ public class Exam implements Serializable {
 	
 	public List<Question> getJudgeQuestions() {
 		return Collections.unmodifiableList(judgeQuestions);
+	}
+	
+	/**
+	 * 添加适用的班级
+	 * @param clazz
+	 */
+	public void addClazz(Clazz clazz) {
+		this.clazzs.add(clazz);
+	}
+	
+	public List<Clazz> getClazzs() {
+		return Collections.unmodifiableList(clazzs);
 	}
 	
 }

@@ -33,6 +33,11 @@ public class Major implements Serializable, JSONAble {
 		this.name = name;
 	}
 	
+	@Override
+	public String toString() {
+		return "Major [id=" + id + ", name=" + name + "]";
+	}
+
 	public JSON getJSON() {
 		JSONObject json = new JSONObject();
 		json.addElement("id", String.valueOf(id)).addElement("name", name);

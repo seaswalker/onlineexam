@@ -24,6 +24,14 @@ public class Question implements Serializable {
 	private int point;
 	private Teacher teacher;
 	
+	@Override
+	public String toString() {
+		return "Question [id=" + id + ", title=" + title + ", optionA="
+				+ optionA + ", optionB=" + optionB + ", optionC=" + optionC
+				+ ", optionD=" + optionD + ", answer=" + answer + ", type="
+				+ type + ", point=" + point + "]";
+	}
+	
 	public int getId() {
 		return id;
 	}
@@ -68,6 +76,9 @@ public class Question implements Serializable {
 	}
 	public QuestionType getType() {
 		return type;
+	}
+	public void setType(QuestionType type) {
+		this.type = type;
 	}
 	public int getPoint() {
 		return point;

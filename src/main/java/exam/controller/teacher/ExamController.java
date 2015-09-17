@@ -1,6 +1,7 @@
 package exam.controller.teacher;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import exam.model.Exam;
 import exam.model.page.PageBean;
+import exam.model.role.Teacher;
 import exam.service.ExamService;
 import exam.util.DataUtil;
 import exam.util.json.JSON;
@@ -64,9 +66,16 @@ public class ExamController {
 	 */
 	@RequestMapping("/save")
 	@ResponseBody
-	public void add(String exam, Model model, HttpServletResponse response) {
+	public void add(String exam, Model model, HttpServletRequest request, HttpServletResponse response) {
+		Teacher teacher = (Teacher) request.getSession().getAttribute("teacher");
 		JSON json = new JSONObject();
-		json.addElement("result", "1");
+		if (teacher == null) {
+			json.addElement("result", "0").addElement("url", "teacher/index");
+		} else {
+			Exam result = DataUtil.parseExam(exam, teacher);
+			examService.save(result);
+			json.addElement("result", "1").addElement("url", "teacher/exam/list");
+		}
 		DataUtil.writeJSON(json, response);
 	}
 	

@@ -260,6 +260,13 @@
 			<div class="title">选项设置:</div>
 			<table class="setting_table">
 				<tr>
+					<td>试卷题目:</td>
+					<td>
+						<input class="required" type="text" name="exam_title"></input>
+					</td>
+					<td><span class="error"></span></td>
+				</tr>
+				<tr>
 					<td>时间限制:</td>
 					<td>
 						<input type="text" class="number" name="time_limit">分钟

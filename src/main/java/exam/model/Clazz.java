@@ -27,6 +27,12 @@ public class Clazz implements Serializable, JSONAble {
 	
 	public Clazz() {}
 	
+	@Override
+	public String toString() {
+		return "Clazz [id=" + id + ", cno=" + cno + ", major=" + major
+				+ ", grade=" + grade + "]";
+	}
+
 	public JSON getJSON() {
 		JSONObject json = new JSONObject();
 		json.addElement("id", String.valueOf(id)).addElement("cno", String.valueOf(cno));
