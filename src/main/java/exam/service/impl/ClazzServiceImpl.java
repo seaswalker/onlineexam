@@ -44,8 +44,13 @@ public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzSer
 		clazz.setCno(cno);
 		return clazzDao.find(clazz);
 	}
-	
-	public List<Clazz> findClazzOnly(Clazz clazz) {
+
+    @Override
+    public List<Clazz> findByExam(Integer examId) {
+        return clazzDao.findByExam(examId);
+    }
+
+    public List<Clazz> findClazzOnly(Clazz clazz) {
 		return clazzDao.findClazzOnly(clazz);
 	}
 	
@@ -63,4 +68,16 @@ public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzSer
 		return result.intValue() > 0;
 	}
 
+    @Override
+    public void resetExamClass(int examId, String clazzIds) {
+        //首先删除此试卷的已有的关联关系
+        String sql = "delete from exam_class where eid = " + examId;
+        clazzDao.executeSql(sql);
+        //重建
+        StringBuilder sb = new StringBuilder("insert into exam_class values");
+        for (String id : clazzIds.split(",")) {
+            sb.append("(null,").append(examId).append(",").append(id).append("),");
+        }
+        clazzDao.executeSql(sb.deleteCharAt(sb.length() - 1).toString());
+    }
 }

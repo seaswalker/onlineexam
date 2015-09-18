@@ -93,7 +93,7 @@
 				function page(pageCode) {
 					var grade = document.getElementById("search_grade").value;
 					var major = document.getElementById("search_major").value;
-					window.location.href = "admin/clazz/list?pn=" + pageCode + "&grade=" + grade + "&major=" + major;
+					window.location.href = "${pageContext.request.contextPath}/admin/clazz/list?pn=" + pageCode + "&grade=" + grade + "&major=" + major;
 				}
 			</script>
 			<jsp:include page="../share/page.jsp"></jsp:include>

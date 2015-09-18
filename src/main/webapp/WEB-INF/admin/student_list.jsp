@@ -81,7 +81,7 @@
 			<script type="text/javascript">
 				function page(pageCode) {
 					var search = document.getElementById("search_content").value;
-					window.location.href = "admin/student/list?pn=" + pageCode + "&search=" + search;
+					window.location.href = "${pageContext.request.contextPath}/admin/student/list?pn=" + pageCode + "&search=" + search;
 				}
 			</script>
 			<jsp:include page="../share/page.jsp"></jsp:include>

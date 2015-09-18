@@ -206,6 +206,7 @@ function toggleTeacherEdit(isShow, btn) {
 		$("#teacher_edit_name").val($nameTd.html());
 		teacherEdit.style.display = "block";
 	}else {
+		document.getElementById("teacher_edit_error").innerHTML = "";
 		teacherEdit.style.display = "none";
 	}
 }
@@ -241,8 +242,13 @@ function editTeacher(form) {
  * [[显示/隐藏教师添加窗口]
  */
 function toggleTeacherAdd(isShow) {
-	document.getElementById("teacher_add").style.display = isShow ? "block"
-			: "none";
+	var teacherAdd = document.getElementById("teacher_add");
+	if (isShow) {
+		teacherAdd.style.display = "block";
+	} else {
+		document.getElementById("teacher_add_error").innerHTML = "";
+		teacherAdd.style.display = "none";
+	}
 }
 
 /**

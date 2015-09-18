@@ -79,14 +79,14 @@
 			<script type="text/javascript">
 				function page(pageCode) {
 					var search = document.getElementById("search_content").value;
-					window.location.href = "admin/teacher/list?pn=" + pageCode + "&name=" + search;
+					window.location.href = "${pageContext.request.contextPath}/admin/teacher/list?pn=" + pageCode + "&name=" + search;
 				}
 			</script>
 			<jsp:include page="../share/page.jsp"></jsp:include>
 		</div>
 	</div>
 	
-	<!--班级添加-->
+	<!--教师添加-->
 	<div class="modal_window teacher_window form-control" id="teacher_add">
 		<!--标题-->
 		<div class="modal_window_title">
