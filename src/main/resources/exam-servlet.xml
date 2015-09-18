@@ -14,6 +14,14 @@
 	<mvc:annotation-driven />
 	<!-- 启用对静态资源使用默认servlet处理，非REST方式不需要 -->
 	<mvc:default-servlet-handler/>
+    
+    <!--配置拦截器-->
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="exam.intercepter.LoginIntercepter"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
 	
 	<!-- 配置视图 -->
 	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver">

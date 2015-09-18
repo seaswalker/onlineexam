@@ -228,6 +228,7 @@ public class DataUtil {
 		clazz.setMajor(new Major(setting.getInt("major")));
 		exam.addClazz(clazz);
 		exam.setTitle(setting.getString("title"));
+        exam.setTeacher(teacher);
 		return exam;
 	}
 	

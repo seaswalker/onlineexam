@@ -66,7 +66,7 @@ public class ExamController {
 	 */
 	@RequestMapping("/save")
 	@ResponseBody
-	public void add(String exam, Model model, HttpServletRequest request, HttpServletResponse response) {
+	public void add(String exam, HttpServletRequest request, HttpServletResponse response) {
 		Teacher teacher = (Teacher) request.getSession().getAttribute("teacher");
 		JSON json = new JSONObject();
 		if (teacher == null) {

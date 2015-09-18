@@ -19,7 +19,7 @@
 <link rel="stylesheet" type="text/css" href="css/modal.css">
 <script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-<script src="script/teacher/exam.js"></script>
+<script src="script/teacher/exam_list.js"></script>
 <script src="script/time.js"></script>
 <script src="script/tips.js"></script>
 </head>
@@ -51,7 +51,7 @@
 							<td>${exam.id}</td>
 							<td>${exam.title}</td>
 							<td><a href="javascript:showClazz();">显示</a></td>
-							<td>${exam.close ? '关闭' : '运行'}</td>
+							<td>${exam.status ? '关闭' : '运行'}</td>
 							<td>
 								<button class="btn btn-danger" onclick="deleteExam(this);">删除</button>
 							</td>
@@ -76,12 +76,32 @@
 		</div>
 	</div>
 	
-	<!--班级添加-->
-	<div class="modal_window clazz_window form-control" id="clazz_add">
-		<!--标题-->
-		<div class="modal_window_title">
-			适用的班级: <img src="images/error.png" onclick="toggleClazzAdd(false);">
-		</div>
-	</div>
+	<!-- 适用班级的显示&编辑 -->
+    <div class="modal_window teacher_clazz_window form-control" id="clazz-show">
+        <div class="modal_window_title">
+            所教班级: <img src="images/error.png" id="show-clazz-btn">
+        </div>
+        <div style="text-align: center;height: 100px;overflow-y: scroll;overflow-x: hidden;">
+            <ul style="list-style: none;padding: 0px;margin: 0px;" id="clazz_list"></ul>
+        </div>
+        <div style="text-align: center;border-top: 1px solid #E2E2E2;margin-top: 5px;">
+            <button id="remove-class-btn">移除所选</button>
+        </div>
+        <div class="modal_window_title">
+            添加班级:
+        </div>
+        <div>
+            年级:<select id="grade_select" onchange="changeMajor(this);"></select>
+            专业:<select id="major_select" onchange="changeClazz(this);"><option>专业...</option></select>
+            班级:<select id="clazz_select"><option>班级...</option></select>
+        </div>
+        <div class="error" style="text-align: center;" id="clazz_error">
+            &nbsp;
+        </div>
+        <div style="text-align: center;margin-top: 10px;">
+            <button onclick="addClazz();">添加</button>
+            <button onclick="save();">保存</button>
+        </div>
+    </div>
 </body>
 </html>

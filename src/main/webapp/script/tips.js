@@ -55,3 +55,6 @@
 			);
 		}
 	 }
+
+	 function test() {
+	 }
