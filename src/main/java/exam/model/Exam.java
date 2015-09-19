@@ -23,8 +23,8 @@ public class Exam implements Serializable {
 	private int limit;
 	//试卷的截止时间，客户端传来的实际上是运行时间(runTime)，此字段由此计算而来
 	private Date endTime;
-	//试卷的运行状态，true代表正在运行
-	private boolean status;
+	//试卷的运行状态
+	private ExamStatus status;
 	//总分,应在解析json字符串是计算而来
 	private int points;
 	private int singlePoints;
@@ -106,13 +106,14 @@ public class Exam implements Serializable {
 	public void setTeacher(Teacher teacher) {
 		this.teacher = teacher;
 	}
-	public boolean isStatus() {
-		return status;
-	}
-	public void setStatus(boolean status) {
-		this.status = status;
-	}
-	/**
+    public ExamStatus getStatus() {
+        return status;
+    }
+    public void setStatus(ExamStatus status) {
+        this.status = status;
+    }
+
+    /**
 	 * 添加一个单选题
 	 */
 	public void addSingleQuestion(Question question) {

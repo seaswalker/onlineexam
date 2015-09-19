@@ -45,22 +45,25 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 		throw new UnsupportedOperationException();
 	}
 
-	public void update(String sql, Object[] params) {
-		jdbcTemplate.update(sql, params);
-	}
-
 	public List<T> find(T entity) {
 		throw new UnsupportedOperationException();
 	}
-	
+
+    /**
+     * 此方法使用update实现，因为从源码得知，execute()一般用于DDL，而不是DML
+     */
 	public void executeSql(String sql) {
-		jdbcTemplate.execute(sql);
+		jdbcTemplate.update(sql);
 	}
-	
+
+    public void executeSql(String sql, Object[] params) {
+        jdbcTemplate.update(sql, params);
+    }
+
 	public List<T> queryBySQL(String sql, Object... params) {
 		return jdbcTemplate.query(sql, params, rowMapper);
 	}
-	
+
 	public List<T> queryBySQL(String sql) {
 		return jdbcTemplate.query(sql, rowMapper);
 	}

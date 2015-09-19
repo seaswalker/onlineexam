@@ -23,7 +23,7 @@ import exam.util.json.JSONObject;
  * @author skywalker
  *
  */
-@Controller
+@Controller("exam.controller.teacher.ExamController")
 @RequestMapping("/teacher/exam")
 public class ExamController {
 	
@@ -78,5 +78,42 @@ public class ExamController {
 		}
 		DataUtil.writeJSON(json, response);
 	}
-	
+
+    /**
+     * 删除一套试题
+     * @param examId 试卷id
+     * @param response
+     */
+    @RequestMapping("/remove")
+    @ResponseBody
+    public void delete(Integer examId, HttpServletResponse response) {
+        JSONObject json = new JSONObject();
+        if (!DataUtil.isValid(examId)) {
+            json.addElement("result", "0");
+        } else {
+            examService.delete(examId);
+            json.addElement("result", "1");
+        }
+        DataUtil.writeJSON(json, response);
+    }
+
+    /**
+     * 切换试卷的状态
+     * @param examId 试卷id
+     * @param days 运行的天数，此参数仅在切换至正正在运行(RUNNING)状态时才有效
+     * @param status 要切换到的状态
+     */
+    @RequestMapping("/status")
+    @ResponseBody
+    public void switchStatus(Integer examId, String status, Integer days, HttpServletResponse response) {
+        JSONObject json = new JSONObject();
+        if (!DataUtil.isValid(examId) || !DataUtil.isValid(status)) {
+            json.addElement("result", "0");
+        } else {
+            examService.switchStatus(examId, status, days);
+            json.addElement("result", "1");
+        }
+        DataUtil.writeJSON(json, response);
+    }
+
 }

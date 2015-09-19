@@ -31,13 +31,13 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
 	}
 	
 	public void update(String id, String name, int cid) {
-		String sql = "update student set name = ?, cid = ? where id = ?";
-		studentDao.update(sql, new Object[] {name, cid, id});
+		String sql = "executeSql student set name = ?, cid = ? where id = ?";
+		studentDao.executeSql(sql, new Object[]{name, cid, id});
 	}
 	
 	public void updatePassword(String id, String password) {
-		String sql = "update student set password = ? where id = ?";
-		studentDao.update(sql, new Object[] {StringUtil.md5(password), id});
+		String sql = "executeSql student set password = ? where id = ?";
+		studentDao.executeSql(sql, new Object[]{StringUtil.md5(password), id});
 	}
 
 }

@@ -32,7 +32,7 @@ public class MajorDaoTest {
 	@Test
 	public void update() {
 		/*Major major = new Major(3, "计算机科学与技术");
-		majorDao.update(major);*/
+		majorDao.executeSql(major);*/
 	}
 	
 	@Test

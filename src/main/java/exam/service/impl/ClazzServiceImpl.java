@@ -45,9 +45,15 @@ public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzSer
 		return clazzDao.find(clazz);
 	}
 
+    /**
+     * 由于班级对象并没有试卷的信息，而是通过第三张表建立关联关系，所以没有借助find方法实现
+     * @param examId 试卷id
+     * @return 班级列表
+     */
     @Override
     public List<Clazz> findByExam(Integer examId) {
-        return clazzDao.findByExam(examId);
+        String sql = clazzDao.getSql() + " where c.id in (select cid from exam_class where eid = " + examId + ")";
+        return clazzDao.queryBySQL(sql);
     }
 
     public List<Clazz> findClazzOnly(Clazz clazz) {

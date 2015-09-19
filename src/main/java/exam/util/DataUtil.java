@@ -13,14 +13,9 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import exam.model.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import exam.model.Clazz;
-import exam.model.Exam;
-import exam.model.Grade;
-import exam.model.Major;
-import exam.model.Question;
-import exam.model.QuestionType;
 import exam.model.role.Teacher;
 import exam.util.json.JSON;
 
@@ -215,12 +210,12 @@ public class DataUtil {
 		exam.setLimit(setting.getInt("timeLimit"));
 		int status = setting.getInt("status");
 		if (status == 1) {
-			exam.setStatus(true);
 			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.DATE, setting.getInt("runTime"));
-			exam.setEndTime(calendar.getTime());
-		}
-		//解析适用的班级
+            calendar.add(Calendar.DATE, setting.getInt("runTime"));
+            exam.setEndTime(calendar.getTime());
+        }
+        exam.setStatus(ExamStatus.NOTRUN);
+        //解析适用的班级
 		//TODO 暂且只实现添加一个班级，未来可能改进为添加整个年级、专业
 		Clazz clazz = new Clazz();
 		clazz.setCno(setting.getInt("clazz"));

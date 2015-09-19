@@ -35,9 +35,10 @@
 					<tr>
 						<th width="15%">id</th>
 						<th width="25%">标题</th>
-						<th width="30%">适用班级</th>
-						<th width="15%">状态</th>
-						<th width="25%">操作</th>
+						<th width="20%">适用班级</th>
+						<th width="20%">状态</th>
+						<th width="15%">切换状态</th>
+						<th width="15%">操作</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -45,10 +46,35 @@
 						<tr>
 							<td>${exam.id}</td>
 							<td>${exam.title}</td>
-							<td><button name="show-clazz-btn" class="btn btn-default">显示</button></td>
-							<td>${exam.status ? '关闭' : '运行'}</td>
+							<td><button name="show-clazz-btn" class="btn btn-default btn-xs">显示</button></td>
+							<c:choose>
+								<c:when test="${exam.status == 'NOTRUN'}">
+									<td>
+										尚未运行
+									</td>
+									<td>
+										<button class="btn btn-success btn-xs" name="show-run-time-btn">开始运行</button>
+									</td>
+								</c:when>
+								<c:when test="${exam.status == 'RUNNING'}">
+									<td>
+										正在运行
+									</td>
+									<td>
+										<button class="btn btn-danger btn-xs" name="stop-run-btn">立即停止</button>
+									</td>
+								</c:when>
+								<c:otherwise>
+									<td>
+										运行结束(<a href="#">成绩统计</a>)
+									</td>
+									<td>
+										<button class="btn btn-success btn-xs" name="show-run-time-btn">重新运行</button>
+									</td>
+								</c:otherwise>
+							</c:choose>
 							<td>
-								<button class="btn btn-danger" name="delete-exam-btn">删除</button>
+								<button class="btn btn-danger btn-xs" name="delete-exam-btn">删除</button>
 							</td>
 						</tr>
 					</c:forEach>
@@ -98,6 +124,28 @@
             <button id="clazz-save-btn">保存</button>
         </div>
     </div>
+    <!--设置运行天数-->
+	<div class="modal_window teacher_window form-control" id="run-time-set">
+		<!--标题-->
+		<div class="modal_window_title">
+			运行天数: <img src="images/error.png" id="close-run-time-btn">
+		</div>
+		<table>
+			<tr>
+				<td>运行天数::</td>
+				<td>
+					<input type="text" name="id">
+				</td>
+			</tr>
+			<tr style="text-align: center;">
+				<td colspan="2"><span class="error" id="run-time-error">&nbsp;</span>
+				</td>
+			</tr>
+			<tr style="text-align: center;">
+				<td colspan="2"><button id="run-time-save-btn">保存</button></td>
+			</tr>
+		</table>
+	</div>
 </body>
 <script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>

@@ -7,6 +7,6 @@ public interface ManagerService {
 	/**
 	 * 用户登录
 	 */
-	public Manager login(String name, String password);
+	Manager login(String name, String password);
 	
 }

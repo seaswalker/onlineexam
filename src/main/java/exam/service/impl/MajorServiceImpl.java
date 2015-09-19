@@ -49,8 +49,8 @@ public class MajorServiceImpl extends BaseServiceImpl<Major> implements MajorSer
 	}
 	
 	public void update(int id, String name) {
-		String sql = "update major set name = ? where id = ?";
-		majorDao.update(sql, new Object[] {name, id});
+		String sql = "executeSql major set name = ? where id = ?";
+		majorDao.executeSql(sql, new Object[]{name, id});
 	}
 
 }

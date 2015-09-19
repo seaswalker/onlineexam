@@ -9,53 +9,53 @@ import exam.model.page.PageBean;
 
 public interface BaseDao<T> {
 
-	public T getById(Object id);
+	T getById(Object id);
 	
-	public List<T> getAll();
+	List<T> getAll();
 	
-	public void save(T entity);
+	void save(T entity);
 	
-	public void delete(Object id);
+	void delete(Object id);
 	
 	/**
 	 * 换种更新方式，是不是更好?
 	 * 这样可以解决学生、老师修改时密码和姓名不同时修改的问题
 	 */
-	public void update(String sql, Object[] params);
+	void executeSql(String sql, Object[] params);
 	
-	public List<T> find(T entity);
+	List<T> find(T entity);
 	
 	/**
 	 * 执行一条sql语句
 	 */
-	public void executeSql(String sql);
+	void executeSql(String sql);
 	
 	/**
 	 * 根据sql查询
 	 */
-	public List<T> queryBySQL(String sql);
+	List<T> queryBySQL(String sql);
 	
-	public List<T> queryBySQL(String sql, Object...params);
+	List<T> queryBySQL(String sql, Object...params);
 	
 	/**
 	 * 单值查询
 	 */
-	public Object queryForObject(String sql, Class<?> clazz);
+	Object queryForObject(String sql, Class<?> clazz);
 	
 	/**
 	 * 获取用于统计记录数量的sql语句
 	 */
-	public String getCountSql();
+	String getCountSql();
 
 	/**
 	 * 获取用于查询此实体类的sql
 	 */
-	public String getSql();
+	String getSql();
 
 	/**
 	 * 获取特定与某一个实体的mapper
 	 */
-	public RowMapper<T> getRowMapper();
+	RowMapper<T> getRowMapper();
 	
 	/**
 	 * 分页查询
@@ -67,7 +67,7 @@ public interface BaseDao<T> {
 	 * @param orderbys 排序条件，比如id desc
 	 * @return {@link PageBean}
 	 */
-	public PageBean<T> pageSearch(int pageCode, int pageSize, int pageNumber, String where,
+	PageBean<T> pageSearch(int pageCode, int pageSize, int pageNumber, String where,
 			List<Object> params, HashMap<String, String> orderbys);
 
 }

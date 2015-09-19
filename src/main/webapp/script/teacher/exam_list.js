@@ -9,6 +9,12 @@ var ExamList = {
 	$gradeOptions: null,
 	//缓存当前正在操作的试卷的id
 	examId: 0,
+	//校验正整数
+	numberCheckPattern: /^[1-9][0-9]*$/,
+	//辅助函数，获取当前行的试卷的id
+	_getId: function(element) {
+		return $(element).parent().parent().children("td:first")[0].innerHTML;
+	},
 	//绑定exam_list.jsp中的事件监听函数
 	initListeners: function() {
 		var that = this;
@@ -35,6 +41,18 @@ var ExamList = {
 		$("#clazz-add-btn").click(that.addClass);
 		//班级保存
 		$("#clazz-save-btn").click(that.saveClass);
+		//开始运行按钮
+		$("#clazz-list button[name=show-run-time-btn]").click(function() {
+			that.showRunTime(this);
+		});
+		//关闭运行时间设置按钮
+		$("#close-run-time-btn").click(that.closeRunTime);
+		//保存运行时间
+		$("#run-time-save-btn").click(that.saveRunTime);
+		//立即停止
+		$("#clazz-list button[name=stop-run-btn]").click(function() {
+			that.stopRun(this);
+		});
 	},
 	//显示适用的班级
 	//button 触发事件的dom对象
@@ -90,7 +108,19 @@ var ExamList = {
 	//移除选定的试卷
 	//button dom对象，触发事件的按钮
 	removeExam: function(button) {
-
+		if (confirm("您确定删除此试题以及所有的成绩记录?")) {
+			var id = ExamList._getId(button);
+			$.post("teacher/exam/remove", "examId=" + id, function(data) {
+				if (data.result === "0") {
+					Tips.showError("参数错误!");
+				} else if (data.result === "1") {
+					Tips.showSuccess("删除成功");
+					setTimeout(function() {
+						window.location.reload();
+					}, 3000);
+				}
+			}, "json");
+		}
 	},
 	//当年级改变时，改变(加载)专业列表
 	//gradeSelect 年级下拉列表dom对象
@@ -209,5 +239,63 @@ var ExamList = {
 		$gs.empty().append(ExamList.$gradeOptions.clone());
 		$ms.empty().append("<option value='0'>专业...</option>");
 		$cs.empty().append("<option value='0'>班级...</option>");
+	},
+	//显示运行时间设置界面
+	showRunTime: function(button) {
+		//保存正在操作的试卷的id
+		ExamList.examId = ExamList._getId(button);
+		$("#run-time-set").show();
+	},
+	//关闭运行时间设置按钮
+	closeRunTime: function() {
+		//清空输入框的内容的错误提示信息
+		var $runTimeSet = $("#run-time-set");
+		$runTimeSet.find("input").val("");
+		$("#run-time-error").html("");
+		$runTimeSet.hide();
+	},
+	//保存运行天数
+	saveRunTime: function() {
+		var $runTimeSet = $("#run-time-set");
+		var $input = $runTimeSet.find("input");
+		var days = $input.val();
+		var $error = $("#run-time-error");
+		if ($.trim(days) === "") {
+			$error.html("请输入天数");
+			$input.focus();
+			return;
+		} else if (!days.match(ExamList.numberCheckPattern)) {
+			$error.html("请输入正整数");
+			$input.focus();
+			return;
+		}
+		//同步提交
+		ExamList._sendStatusRequest(ExamList.examId, "RUNNING", days);
+	},
+	//发送切换试卷状态请求
+	_sendStatusRequest: function(id, status, days) {
+		//同步提交
+		$.ajax({
+			url: "teacher/exam/status",
+			data: "examId=" + id + "&status=" + status + "&days=" + (days || ""),
+			dataType: "json",
+			async: false,
+			success: function(data) {
+				if (data.result === "0") {
+					Tips.showError("参数错误!");
+				} else if (data.result === "1") {
+					Tips.showSuccess("保存成功");
+					setTimeout(function() {
+						window.location.reload();
+					}, 3000);
+				}
+			} 
+		});
+	},
+	//停止
+	stopRun: function(button) {
+		var id = ExamList._getId(button);
+		//同步提交
+		ExamList._sendStatusRequest(id, "RUNNED");
 	}
 };

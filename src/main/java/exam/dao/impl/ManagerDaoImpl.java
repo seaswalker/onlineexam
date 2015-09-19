@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import exam.dao.base.BaseDaoImpl;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -15,22 +16,35 @@ import exam.model.role.Manager;
 import exam.util.DataUtil;
 
 @Repository("managerDao")
-public class ManagerDaoImpl implements ManagerDao {
-	
-	@Resource
-	private JdbcTemplate jdbcTemplate;
-	
-	public Manager login(String name, String password) {
-		String sql = "select * from manager where name = ? and password = ?";
-		List<Manager> managers =  jdbcTemplate.query(sql, new Object[] {name, password},  new RowMapper<Manager>() {
-			public Manager mapRow(ResultSet rs, int rowNum) throws SQLException {
-				Manager manager = new Manager();
-				manager.setId(rs.getInt("id"));
-				manager.setName(rs.getString("name"));
-				manager.setPassword(rs.getString("password"));
-				return manager;
-			}
-		});
-		return DataUtil.isValid(managers) ? managers.get(0) : null;
-	}
+public class ManagerDaoImpl extends BaseDaoImpl<Manager> implements ManagerDao {
+
+    private static RowMapper<Manager> rowMapper;
+
+    {
+        rowMapper = new RowMapper<Manager>() {
+            @Override
+            public Manager mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Manager manager = new Manager();
+                manager.setId(rs.getInt("id"));
+                manager.setName(rs.getString("name"));
+                manager.setPassword(rs.getString("password"));
+                return manager;
+            }
+        };
+    }
+
+    @Override
+    public String getCountSql() {
+        return "select count(id) from manager";
+    }
+
+    @Override
+    public String getSql() {
+        return "select * from manager";
+    }
+
+    @Override
+    public RowMapper<Manager> getRowMapper() {
+        return rowMapper;
+    }
 }

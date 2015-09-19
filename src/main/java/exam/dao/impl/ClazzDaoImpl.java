@@ -82,17 +82,6 @@ public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 	}
 
     /**
-     * 由于班级对象并没有试卷的信息，而是通过第三张表建立关联关系，所以没有借助find方法实现
-     * @param examId 试卷id
-     * @return 班级列表
-     */
-    @Override
-    public List<Clazz> findByExam(Integer examId) {
-        String querySql = sql + " where c.id in (select cid from exam_class where eid = " + examId + ")";
-        return jdbcTemplate.query(querySql, new Object[] {}, rowMapper);
-    }
-
-    /**
 	 * 查询班级
 	 * @param sql 查询语句，用来决定是否查出相关联的年级和专业
 	 * @param alias 数据库表别名

@@ -28,13 +28,13 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 	}
 	
 	public void updateName(String id, String name) {
-		String sql = "update teacher set name = ? where id = ?";
-		teacherDao.update(sql, new Object[] {name, id});
+		String sql = "executeSql teacher set name = ? where id = ?";
+		teacherDao.executeSql(sql, new Object[]{name, id});
 	}
 
 	public void updatePassword(String id, String password) {
-		String sql = "update teacher set password = ? where id = ?";
-		teacherDao.update(sql, new Object[] {StringUtil.md5(password), id});
+		String sql = "executeSql teacher set password = ? where id = ?";
+		teacherDao.executeSql(sql, new Object[]{StringUtil.md5(password), id});
 	}
 	
 	public boolean isExist(String id) {

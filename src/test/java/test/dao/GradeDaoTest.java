@@ -27,7 +27,7 @@ public class GradeDaoTest {
 	@Test
 	public void update() {
 		//Grade grade = new Grade();
-		//gradeDao.update(grade);
+		//gradeDao.executeSql(grade);
 	}
 	
 	@Test

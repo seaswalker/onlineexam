@@ -12,6 +12,4 @@ public interface ClazzDao extends BaseDao<Clazz> {
 	 */
 	List<Clazz> findClazzOnly(Clazz clazz);
 
-    List<Clazz> findByExam(Integer examId);
-	
 }
