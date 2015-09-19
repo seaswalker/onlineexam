@@ -62,5 +62,11 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 		List<Teacher> result = teacherDao.queryBySQL(sql, name, StringUtil.md5(password));
 		return DataUtil.isValid(result) ? result.get(0) : null;
 	}
-	
+
+    @Override
+    public void modifyPassword(String id, String newPassword) {
+        String sql = "update teacher set password = '" + StringUtil.md5(newPassword) + "' where id = '"
+                + id + "'";
+        teacherDao.executeSql(sql);
+    }
 }

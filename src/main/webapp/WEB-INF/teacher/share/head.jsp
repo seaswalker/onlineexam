@@ -46,7 +46,7 @@
 			               <li><a href="#">添加</a></li>
 			            </ul>
 			         </li>
-			         <li><a href="#">修改密码</a></li>
+			         <li><a href="teacher/password">修改密码</a></li>
 			         <li><a href="#">退出系统</a></li>
 			    </ul>
 			</div>
