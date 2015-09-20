@@ -5,9 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 
 import exam.model.ExamStatus;
 import org.springframework.jdbc.core.PreparedStatementCreator;
@@ -19,11 +16,7 @@ import org.springframework.stereotype.Repository;
 import exam.dao.ExamDao;
 import exam.dao.base.BaseDaoImpl;
 import exam.dao.base.GenerateKeyCallback;
-import exam.model.Clazz;
 import exam.model.Exam;
-import exam.model.Question;
-import exam.model.role.Teacher;
-import exam.util.DataUtil;
 
 @Repository("examDao")
 public class ExamDaoImpl extends BaseDaoImpl<Exam> implements ExamDao {
@@ -57,11 +50,9 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements ExamDao {
      * @param object 传递给回调函数的参数
 	 * @return 生成的自增id
 	 */
-    @Override
 	public int getKeyHelper(final String sql, final GenerateKeyCallback callback, final Object object) {
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(new PreparedStatementCreator() {
-            @Override
             public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
                 PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
                 callback.setParameters(ps, object);
