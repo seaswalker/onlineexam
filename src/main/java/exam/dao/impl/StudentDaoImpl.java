@@ -47,21 +47,6 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 		};
 	}
 	
-	@Override
-	public Student getById(Object id) {
-		return jdbcTemplate.queryForObject("select * from student where id = ?", Student.class, new Object[] {id});
-	}
-
-	@Override
-	public void save(Student entity) {
-		jdbcTemplate.update("insert into student values(?, ?, ?, ?)",
-				new Object[] {entity.getId(), entity.getName(), entity.getPassword(), entity.getClazz().getId()});
-	}
-
-	@Override
-	public void delete(Object id) {
-		jdbcTemplate.update("delete from student where id = " + id);
-	}
 
 	@Override
 	public List<Student> find(Student entity) {
@@ -80,11 +65,6 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
 	}
 	
-	@Override
-	public List<Student> getAll() {
-		return find(null);
-	}
-
 	public RowMapper<Student> getRowMapper() {
 		return rowMapper;
 	}

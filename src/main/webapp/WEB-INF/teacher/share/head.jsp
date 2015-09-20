@@ -26,29 +26,25 @@
 			<div class="collapse navbar-collapse"
 				id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-			         <li class="dropdown">
-			            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							试卷
-			               <b class="caret"></b>
-			            </a>
-			            <ul class="dropdown-menu">
-			               <li><a href="teacher/exam/list">列表</a></li>
-			               <li><a href="teacher/exam/add">添加</a></li>
-			            </ul>
-			         </li>
-			         <li class="dropdown">
-			            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							题库
-			               <b class="caret"></b>
-			            </a>
-			            <ul class="dropdown-menu">
-			               <li><a href="#">列表</a></li>
-			               <li><a href="#">添加</a></li>
-			            </ul>
-			         </li>
-			         <li><a href="teacher/password">修改密码</a></li>
-			         <li><a href="#">退出系统</a></li>
-			    </ul>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"> 试卷 <b class="caret"></b>
+					</a>
+						<ul class="dropdown-menu">
+							<li><a href="teacher/exam/list">列表</a></li>
+							<li><a href="teacher/exam/add">添加</a></li>
+						</ul></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle"
+						data-toggle="dropdown"> 题库 <b class="caret"></b>
+					</a>
+						<ul class="dropdown-menu">
+							<li><a href="teacher/question/singles">单选题</a></li>
+							<li><a href="teacher/question/multis">多选题</a></li>
+							<li><a href="teacher/question/judges">判断题</a></li>
+							<li><a href="teacher/question/add">添加</a></li>
+						</ul></li>
+					<li><a href="teacher/password">修改密码</a></li>
+					<li><a href="teacher/logout">退出系统</a></li>
+				</ul>
 			</div>
 		</div>
 	</nav>

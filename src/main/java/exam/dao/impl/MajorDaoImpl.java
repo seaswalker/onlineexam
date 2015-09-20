@@ -29,15 +29,6 @@ public class MajorDaoImpl extends BaseDaoImpl<Major> implements MajorDao {
 		};
 	}
 	
-	public Major getById(Object id) {
-		return find(new Major((Integer)id)).get(0);
-	}
-	
-	@Override
-	public List<Major> getAll() {
-		return find(null);
-	}
-	
 	@Override
 	public List<Major> find(Major enity) {
 		StringBuilder sqlBuilder = new StringBuilder(sql).append(" where 1 = 1");
@@ -52,16 +43,6 @@ public class MajorDaoImpl extends BaseDaoImpl<Major> implements MajorDao {
 		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
 	}
 
-	@Override
-	public void save(Major entity) {
-		jdbcTemplate.update("insert into major values(null, ?)",
-				entity.getName());
-	}
-
-	@Override
-	public void delete(Object id) {
-		jdbcTemplate.update("delete from major where id = " + id);
-	}
 
 	public RowMapper<Major> getRowMapper() {
 		return rowMapper;

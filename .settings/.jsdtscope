@@ -9,5 +9,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.wst.jsdt.launching.baseBrowserLibrary"/>
+	<classpathentry kind="con" path="org.eclipselabs.jsdt.jquery.core.CoflictLibrary_1.11"/>
 	<classpathentry kind="output" path=""/>
 </classpath>

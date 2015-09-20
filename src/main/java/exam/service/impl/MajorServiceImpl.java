@@ -25,6 +25,7 @@ public class MajorServiceImpl extends BaseServiceImpl<Major> implements MajorSer
 		this.majorDao = (MajorDao) baseDao;
 	}
 	
+	@Override
 	public Major findByName(String name) {
 		Major major = new Major();
 		major.setName(name);
@@ -32,8 +33,9 @@ public class MajorServiceImpl extends BaseServiceImpl<Major> implements MajorSer
 		return DataUtil.isValid(majors) ? majors.get(0) : null;
 	}
 	
+	@Override
 	public List<Major> findAll() {
-		return majorDao.getAll();
+		return majorDao.find(null);
 	}
 	
 	@Override
@@ -42,15 +44,26 @@ public class MajorServiceImpl extends BaseServiceImpl<Major> implements MajorSer
 		majorDao.executeSql(sql);
 	}
 	
+	@Override
 	public List<Major> findByGrade(int grade) {
 		String sql = "select * from major where id in "
 				+ "(select mid from class where gid = " + grade + ")";
 		return majorDao.queryBySQL(sql);
 	}
 	
+	@Override
 	public void update(int id, String name) {
 		String sql = "executeSql major set name = ? where id = ?";
 		majorDao.executeSql(sql, new Object[]{name, id});
 	}
+	
+	@Override
+	public void save(Major entity) {
+		majorDao.executeSql("insert into major values(null, ?)", new Object[] {entity.getName()});
+	}
 
+	@Override
+	public void delete(Object id) {
+		majorDao.executeSql("delete from major where id = " + id);
+	}
 }

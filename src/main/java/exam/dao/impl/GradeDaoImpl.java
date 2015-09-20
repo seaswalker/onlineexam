@@ -29,22 +29,6 @@ public class GradeDaoImpl extends BaseDaoImpl<Grade> implements GradeDao {
 	}
 	
 	@Override
-	public Grade getById(Object id) {
-		return jdbcTemplate.queryForObject("select * from grade where id = " + id, Grade.class);
-	}
-
-	@Override
-	public void save(Grade entity) {
-		jdbcTemplate.update("insert into grade values(null, ?)",
-				entity.getGrade());
-	}
-
-	@Override
-	public void delete(Object id) {
-		jdbcTemplate.update("delete from grade where id = " + id);
-	}
-
-	@Override
 	public List<Grade> find(Grade entity) {
 		StringBuilder sqlBuilder = new StringBuilder(sql).append(" where 1 = 1");
 		if(entity != null) {
@@ -56,10 +40,6 @@ public class GradeDaoImpl extends BaseDaoImpl<Grade> implements GradeDao {
 			}
 		}
 		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
-	}
-
-	public List<Grade> getAll() {
-		return jdbcTemplate.query(sql, rowMapper);
 	}
 
 	public RowMapper<Grade> getRowMapper() {

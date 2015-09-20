@@ -164,7 +164,7 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
             ps.setString(4, question.getOptionC());
             ps.setString(5, question.getOptionD());
             ps.setInt(6, question.getPoint());
-            ps.setInt(7, question.getType().type());
+            ps.setString(7, question.getType().name());
             ps.setString(8, question.getAnswer());
             ps.setString(9, question.getTeacher().getId());
         }

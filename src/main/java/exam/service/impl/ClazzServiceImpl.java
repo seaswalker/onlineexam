@@ -26,6 +26,17 @@ public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzSer
 		super.baseDao = baseDao;
 		this.clazzDao = (ClazzDao) baseDao;
 	}
+	
+	@Override
+	public void delete(Object id) {
+		clazzDao.executeSql("delete from class where id = " + id);
+	}
+	
+	@Override
+	public void save(Clazz entity) {
+		String sql = "insert into class values(null, ?, ?, ?)";
+		clazzDao.executeSql(sql, new Object[] {entity.getCno(), entity.getGrade().getId(), entity.getMajor().getId()});
+	}
 
 	public List<Clazz> findByMajor(int majorId) {
 		Clazz clazz = new Clazz();
@@ -43,6 +54,11 @@ public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzSer
 		Clazz clazz = new Clazz();
 		clazz.setCno(cno);
 		return clazzDao.find(clazz);
+	}
+	
+	@Override
+	public List<Clazz> findAll() {
+		return clazzDao.find(null);
 	}
 
     /**

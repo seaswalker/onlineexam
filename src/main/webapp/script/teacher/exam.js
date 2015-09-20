@@ -201,12 +201,12 @@ function checkAll() {
  * var result = {
 		singles: [
 			{
-				title: "XXX",
-				optionA: "XXX",
-				optionB: "XXX",
-				optionC: "XXX",
-				optionD: "XXX",
-				answer: "XXX",
+				title: "X",
+				optionA: "X",
+				optionB: "X",
+				optionC: "X",
+				optionD: "X",
+				answer: "X",
 				point: 10
 			}
 		],
@@ -215,8 +215,8 @@ function checkAll() {
 		],
 		judges: [
 			{
-				title: "XXX",
-				answer: "XXX",
+				title: "X",
+				answer: "X",
 				point: 10
 			}
 		],

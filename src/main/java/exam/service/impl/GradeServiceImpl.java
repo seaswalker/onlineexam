@@ -25,6 +25,7 @@ public class GradeServiceImpl extends BaseServiceImpl<Grade> implements GradeSer
 		this.gradeDao = (GradeDao) baseDao;
 	}
 	
+	@Override
 	public Grade findByGrade(String grade) {
 		Grade _grade = new Grade();
 		_grade.setGrade(Integer.parseInt(grade));
@@ -33,8 +34,23 @@ public class GradeServiceImpl extends BaseServiceImpl<Grade> implements GradeSer
 	}
 	
 	@Override
+	public List<Grade> findAll() {
+		return gradeDao.find(null);
+	}
+	
+	@Override
+	public void save(Grade entity) {
+		gradeDao.executeSql("insert into grade values(null, " + entity.getGrade() + ")");
+	}
+	
+	@Override
+	public void delete(Object id) {
+		gradeDao.executeSql("delete from grade where id = " + id);
+	}
+	
+	@Override
 	public void batchDelete(String ids) {
-		//TODO
+		//TODO 年级批量删除未实现
 	}
 
 }

@@ -35,7 +35,7 @@ public class GradeController {
 	public void ajax(HttpServletResponse response) {
 		JSONObject json = new JSONObject();
 		JSONArray array = new JSONArray();
-		List<Grade> grades = gradeService.getAll();
+		List<Grade> grades = gradeService.findAll();
 		json.addElement("result", "1");
 		for(Grade grade : grades) {
 			array.addObject(grade.getJSON());

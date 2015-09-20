@@ -63,8 +63,8 @@ public class AdminClassController {
 		}
 		PageBean<Clazz> pageBean = clazzService.pageSearch(pageCode, pageSize, pageNumber, where, params, null);
 		//加载年级和专业列表
-		List<Grade> grades = gradeService.getAll();
-		List<Major> majors = majorService.getAll();
+		List<Grade> grades = gradeService.findAll();
+		List<Major> majors = majorService.findAll();
 		model.addAttribute("pageBean", pageBean);
 		model.addAttribute("grades", grades);
 		model.addAttribute("majors", majors);
@@ -110,7 +110,7 @@ public class AdminClassController {
 	@RequestMapping("/delete")
 	@ResponseBody
 	public void delete(String ids, HttpServletResponse response) {
-		//TODO
+		//TODO 班级删除了，学生怎么办?考试记录怎么办?
 	}
 	
 }

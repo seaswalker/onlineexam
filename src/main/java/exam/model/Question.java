@@ -12,6 +12,8 @@ import exam.model.role.Teacher;
 public class Question implements Serializable {
 
 	private static final long serialVersionUID = 3817117285809180416L;
+	private static String[] answerFacades = {"A", "B", "C", "D"};
+	private static String[] judgeAnserFacades = {"对", "错"};
 	
 	private int id;
 	private String title;
@@ -20,9 +22,18 @@ public class Question implements Serializable {
 	private String optionC;
 	private String optionD;
 	private String answer;
+	//答案存储的是序号，比如1，但是显示在页面上的应该是字母的选项或是对错的形式
+	private String answerFacade;
 	private QuestionType type;
 	private int point;
 	private Teacher teacher;
+	
+	/**
+	 * 返回此题的门面答案
+	 */
+	public String getAnswerFacade() {
+		return this.answerFacade;
+	}
 	
 	@Override
 	public String toString() {
@@ -71,8 +82,24 @@ public class Question implements Serializable {
 	public String getAnswer() {
 		return answer;
 	}
+	/**
+	 * TODO 此方法需要先设置题型，这是一个隐藏的bug?
+	 */
 	public void setAnswer(String answer) {
 		this.answer = answer;
+		//设置其门面
+		if (this.type == QuestionType.SINGLE) {
+			this.answerFacade = answerFacades[Integer.parseInt(answer)];
+		} else if (this.type == QuestionType.MULTI) {
+			String[] answers = this.answer.split(",");
+			StringBuilder facade = new StringBuilder();
+			for (String a : answers) {
+				facade.append(answerFacades[Integer.parseInt(a)]).append(",");
+			}
+			this.answerFacade = facade.deleteCharAt(facade.length() - 1).toString();
+		} else {
+			this.answerFacade = judgeAnserFacades[Integer.parseInt(answer)];
+		}
 	}
 	public QuestionType getType() {
 		return type;

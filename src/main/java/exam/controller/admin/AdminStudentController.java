@@ -101,7 +101,7 @@ public class AdminStudentController {
 	@RequestMapping("/delete")
 	@ResponseBody
 	public void delete(String id, HttpServletResponse response) {
-		//TODO
+		//TODO 学生的删除未实现
 	}
 	
 	/**

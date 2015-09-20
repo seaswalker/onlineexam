@@ -9,14 +9,6 @@ import exam.model.page.PageBean;
 
 public interface BaseDao<T> {
 
-	T getById(Object id);
-	
-	List<T> getAll();
-	
-	void save(T entity);
-	
-	void delete(Object id);
-	
 	/**
 	 * 换种更新方式，是不是更好?
 	 * 这样可以解决学生、老师修改时密码和姓名不同时修改的问题

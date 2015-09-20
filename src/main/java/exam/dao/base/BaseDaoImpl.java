@@ -29,22 +29,6 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 	//数量查询语句
 	protected String countSql = getCountSql();
 	
-	public T getById(Object id) {
-		throw new UnsupportedOperationException();
-	}
-
-	public List<T> getAll() {
-		throw new UnsupportedOperationException();
-	}
-
-	public void save(T entity) {
-		throw new UnsupportedOperationException();
-	}
-
-	public void delete(Object id) {
-		throw new UnsupportedOperationException();
-	}
-
 	public List<T> find(T entity) {
 		throw new UnsupportedOperationException();
 	}

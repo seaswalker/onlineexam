@@ -52,27 +52,6 @@ public class ClazzDaoImpl extends BaseDaoImpl<Clazz> implements ClazzDao {
 	}
 
 	@Override
-	public void save(Clazz entity) {
-		String sql = "insert into class values(null, ?, ?, ?)";
-		jdbcTemplate.update(sql, new Object[] {entity.getCno(), entity.getGrade().getId(), entity.getMajor().getId()});
-	}
-	
-	@Override
-	public void delete(Object id) {
-		jdbcTemplate.update("delete from class where id = " + id);
-	}
-	
-	@Override
-	public Clazz getById(Object id) {
-		return jdbcTemplate.queryForObject("select * from class where id = " + id, Clazz.class);
-	}
-	
-	@Override
-	public List<Clazz> getAll() {
-		return find(null);
-	}
-	
-	@Override
 	public List<Clazz> find(Clazz entity) {
 		return find(sql, rowMapper, entity, "c");
 	}

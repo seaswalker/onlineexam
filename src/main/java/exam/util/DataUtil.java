@@ -252,8 +252,8 @@ public class DataUtil {
 			point = jsonQuestion.getInt("point");
 			question.setPoint(point);
 			points += point;
-			question.setAnswer(jsonQuestion.getString("answer"));
 			question.setType(type);
+			question.setAnswer(jsonQuestion.getString("answer"));
 			question.setTeacher(teacher);
 			if (type == QuestionType.SINGLE) {
 				exam.addSingleQuestion(question);

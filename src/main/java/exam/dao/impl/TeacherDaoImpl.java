@@ -31,26 +31,6 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements TeacherDao {
 	}
 
 	@Override
-	public void save(Teacher entity) {
-		jdbcTemplate.update("insert into teacher values(?, ?, ?)", new Object[] {entity.getId(), entity.getName(), entity.getPassword()});
-	}
-	
-	@Override
-	public void delete(Object id) {
-		jdbcTemplate.update("delete from teacher where id = " + id);
-	}
-	
-	@Override
-	public Teacher getById(Object id) {
-		return jdbcTemplate.queryForObject("select * from teacher where id = '" + id + "'", Teacher.class);
-	}
-	
-	@Override
-	public List<Teacher> getAll() {
-		return find(null);
-	}
-	
-	@Override
 	public List<Teacher> find(Teacher entity) {
 		StringBuilder sqlBuilder = new StringBuilder(sql).append(" where 1 = 1");
 		if(entity != null) {

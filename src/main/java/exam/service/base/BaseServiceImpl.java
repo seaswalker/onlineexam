@@ -15,20 +15,20 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 	 */
 	protected abstract void setBaseDao(BaseDao<T> baseDao);
 	
-	public T getById(Object id) {
-		return baseDao.getById(id);
-	}
-	
-	public List<T> getAll() {
-		return baseDao.getAll();
+	public List<T> findAll() {
+		throw new UnsupportedOperationException();
 	}
 	
 	public void delete(Object id) {
-		baseDao.delete(id);
+		throw new UnsupportedOperationException();
 	}
 	
 	public void save(T entity) {
-		baseDao.save(entity);
+		throw new UnsupportedOperationException();
+	}
+	
+	public void update(T entity) {
+		throw new UnsupportedOperationException();
 	}
 	
 	public List<T> find(T entity) {

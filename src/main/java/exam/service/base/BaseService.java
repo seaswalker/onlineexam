@@ -7,15 +7,15 @@ import exam.model.page.PageBean;
 
 public interface BaseService<T> {
 
-	public T getById(Object id);
-	
-	public List<T> getAll();
+	public List<T> findAll();
 	
 	public void save(T entity);
 	
 	public void delete(Object id);
 	
 	public List<T> find(T entity);
+	
+	public void update(T entity);
 	
 	/**
 	 * 批量删除

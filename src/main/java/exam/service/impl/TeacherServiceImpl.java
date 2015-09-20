@@ -27,22 +27,26 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 		this.teacherDao = (TeacherDao) baseDao;
 	}
 	
+	@Override
 	public void updateName(String id, String name) {
 		String sql = "executeSql teacher set name = ? where id = ?";
 		teacherDao.executeSql(sql, new Object[]{name, id});
 	}
 
+	@Override
 	public void updatePassword(String id, String password) {
 		String sql = "executeSql teacher set password = ? where id = ?";
 		teacherDao.executeSql(sql, new Object[]{StringUtil.md5(password), id});
 	}
 	
+	@Override
 	public boolean isExist(String id) {
 		String sql = "select count(id) from teacher where id = '" + id + "'";
 		BigInteger result = (BigInteger) teacherDao.queryForObject(sql, BigInteger.class);
 		return result.intValue() > 0;
 	}
 	
+	@Override
 	public void updateTeachClazzs(String ids, String tid) {
 		//首先删除记录
 		String sql = "delete from teacher_class where tid = '" + tid + "'";
@@ -57,6 +61,7 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 		teacherDao.executeSql(sqlBuilder.toString());
 	}
 	
+	@Override
 	public Teacher login(String name, String password) {
 		String sql = "select * from teacher where name = ? and password = ?";
 		List<Teacher> result = teacherDao.queryBySQL(sql, name, StringUtil.md5(password));
@@ -69,4 +74,14 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
                 + id + "'";
         teacherDao.executeSql(sql);
     }
+    
+    @Override
+	public void save(Teacher entity) {
+    	teacherDao.executeSql("insert into teacher values(?, ?, ?)", new Object[] {entity.getId(), entity.getName(), entity.getPassword()});
+	}
+	
+	@Override
+	public void delete(Object id) {
+		teacherDao.executeSql("delete from teacher where id = " + id);
+	}
 }
