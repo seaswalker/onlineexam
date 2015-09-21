@@ -9,13 +9,11 @@ public interface BaseService<T> {
 
 	public List<T> findAll();
 	
-	public void save(T entity);
+	public void saveOrUpdate(T entity);
 	
 	public void delete(Object id);
 	
 	public List<T> find(T entity);
-	
-	public void update(T entity);
 	
 	/**
 	 * 批量删除

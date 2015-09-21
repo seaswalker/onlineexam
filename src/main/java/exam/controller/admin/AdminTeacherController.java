@@ -82,7 +82,7 @@ public class AdminTeacherController {
 			teacher.setName(name);
 			//TODO 硬编码?
 			teacher.setPassword(StringUtil.md5("1234"));
-			teacherService.save(teacher);
+			teacherService.saveOrUpdate(teacher);
 			json.addElement("result", "1").addElement("message", "保存成功");
 		}
 		DataUtil.writeJSON(json, response);

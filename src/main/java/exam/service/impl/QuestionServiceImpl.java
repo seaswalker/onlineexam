@@ -41,12 +41,24 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
 		return getQuestionsByType(tid, QuestionType.JUDGE);
 	}
 	
+	/**
+	 * 保存或者修改
+	 * 此方法是update和save真正的实现，判断的依据是question的id是否大于0
+	 * @param question 问题
+	 */
 	@Override
-	public void update(Question entity) {
-		String sql = "update question set title = ?, optionA = ?, optionB = ?, optionC = ?, optionD = ?" +
-				", answer = ?, point = ? where id = ?";
-		questionDao.executeSql(sql, new Object[] {entity.getTitle(), entity.getOptionA(), entity.getOptionB(),
-				entity.getOptionC(), entity.getOptionD(), entity.getAnswer(), entity.getPoint(), entity.getId()});
+	public void saveOrUpdate(Question question) {
+		if (question.getId() > 0) {
+			String sql = "update question set title = ?, optionA = ?, optionB = ?, optionC = ?, optionD = ?" +
+					", answer = ?, point = ? where id = ?";
+			questionDao.executeSql(sql, new Object[] {question.getTitle(), question.getOptionA(), question.getOptionB(),
+					question.getOptionC(), question.getOptionD(), question.getAnswer(), question.getPoint(), question.getId()});
+		} else {
+			String sql = "insert into question values(null, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+			questionDao.executeSql(sql, new Object[] {question.getTitle(), question.getOptionA(), question.getOptionB(),
+					question.getOptionC(), question.getOptionD(), question.getPoint(), question.getType().name(),
+					question.getAnswer(), question.getTeacher().getId()});
+		}
 	}
 	
 	@Override

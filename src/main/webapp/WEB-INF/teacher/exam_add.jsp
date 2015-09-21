@@ -171,10 +171,10 @@
 							<td colspan="2"></td>
 							<td>答案:</td>
 							<td name="multi-options-container">
-								<input type="radio" value="0">A&nbsp;&nbsp;
-								<input type="radio" value="1">B&nbsp;&nbsp;
-								<input type="radio" value="2">C&nbsp;&nbsp;
-								<input type="radio" value="3">D
+								<input type="checkbox" value="0">A&nbsp;&nbsp;
+	                            <input type="checkbox" value="1">B&nbsp;&nbsp;
+	                            <input type="checkbox" value="2">C&nbsp;&nbsp;
+	                            <input type="checkbox" value="3">D
 							</td>
 							<td><span class="error"></span></td>
 						</tr>
@@ -427,10 +427,10 @@
                         <td colspan="2"></td>
                         <td>答案:</td>
                         <td name="multi-options-container">
-                            <input type="radio" value="0">A&nbsp;&nbsp;
-                            <input type="radio" value="1">B&nbsp;&nbsp;
-                            <input type="radio" value="2">C&nbsp;&nbsp;
-                            <input type="radio" value="3">D
+                            <input type="checkbox" value="0">A&nbsp;&nbsp;
+                            <input type="checkbox" value="1">B&nbsp;&nbsp;
+                            <input type="checkbox" value="2">C&nbsp;&nbsp;
+                            <input type="checkbox" value="3">D
                         </td>
                         <td><span class="error"></span></td>
                     </tr>

@@ -39,8 +39,10 @@ public class GradeServiceImpl extends BaseServiceImpl<Grade> implements GradeSer
 	}
 	
 	@Override
-	public void save(Grade entity) {
-		gradeDao.executeSql("insert into grade values(null, " + entity.getGrade() + ")");
+	public void saveOrUpdate(Grade entity) {
+		if (entity.getId() <= 0) {
+			gradeDao.executeSql("insert into grade values(null, " + entity.getGrade() + ")");
+		}
 	}
 	
 	@Override

@@ -68,7 +68,7 @@ public class AdminStudentController {
 			//默认密码1234
 			student.setPassword(StringUtil.md5("1234"));
 			student.setClazz(new Clazz(Integer.parseInt(clazz)));
-			studentService.save(student);
+			studentService.saveOrUpdate(student);
 			json.addElement("result", "1").addElement("message", "学生添加成功");
 		}
 		DataUtil.writeJSON(json, response);

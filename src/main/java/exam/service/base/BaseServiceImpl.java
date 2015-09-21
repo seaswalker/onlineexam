@@ -23,11 +23,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 		throw new UnsupportedOperationException();
 	}
 	
-	public void save(T entity) {
-		throw new UnsupportedOperationException();
-	}
-	
-	public void update(T entity) {
+	public void saveOrUpdate(T entity) {
 		throw new UnsupportedOperationException();
 	}
 	

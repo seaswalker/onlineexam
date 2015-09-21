@@ -58,8 +58,10 @@ public class MajorServiceImpl extends BaseServiceImpl<Major> implements MajorSer
 	}
 	
 	@Override
-	public void save(Major entity) {
-		majorDao.executeSql("insert into major values(null, ?)", new Object[] {entity.getName()});
+	public void saveOrUpdate(Major entity) {
+		if (entity.getId() <= 0) {
+			majorDao.executeSql("insert into major values(null, ?)", new Object[] {entity.getName()});
+		}
 	}
 
 	@Override

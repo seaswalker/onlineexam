@@ -11,6 +11,7 @@ import exam.dao.base.BaseDao;
 import exam.model.role.Student;
 import exam.service.StudentService;
 import exam.service.base.BaseServiceImpl;
+import exam.util.DataUtil;
 import exam.util.StringUtil;
 
 @Service("studentService")
@@ -44,9 +45,11 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
 	}
 	
 	@Override
-	public void save(Student entity) {
-		studentDao.executeSql("insert into student values(?, ?, ?, ?)",
-				new Object[] {entity.getId(), entity.getName(), entity.getPassword(), entity.getClazz().getId()});
+	public void saveOrUpdate(Student entity) {
+		if (DataUtil.isValid(entity.getId())) {
+			studentDao.executeSql("insert into student values(?, ?, ?, ?)",
+					new Object[] {entity.getId(), entity.getName(), entity.getPassword(), entity.getClazz().getId()});
+		}
 	}
 
 	@Override

@@ -33,9 +33,11 @@ public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzSer
 	}
 	
 	@Override
-	public void save(Clazz entity) {
-		String sql = "insert into class values(null, ?, ?, ?)";
-		clazzDao.executeSql(sql, new Object[] {entity.getCno(), entity.getGrade().getId(), entity.getMajor().getId()});
+	public void saveOrUpdate(Clazz entity) {
+		if (entity.getId() <= 0) {
+			String sql = "insert into class values(null, ?, ?, ?)";
+			clazzDao.executeSql(sql, new Object[] {entity.getCno(), entity.getGrade().getId(), entity.getMajor().getId()});
+		}
 	}
 
 	public List<Clazz> findByMajor(int majorId) {

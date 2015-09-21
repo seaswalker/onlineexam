@@ -40,14 +40,16 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
      * 所以导致了两个关联关系无法建立，所以删除了外键。。。
      */
     @Override
-    public void save(Exam entity) {
-        //首先保存exam,需要获取新插入的记录的主键
-        int examId = saveExam(entity);
-        List<Integer> questionIds = saveQuestions(entity);
-        //设置试卷和班级的关联关系
-        saveExamClassRelationships(entity.getClazzs(), examId);
-        //设置题目和试卷的关联关系
-        saveExamQuestionRelationships(questionIds, examId);
+    public void saveOrUpdate(Exam entity) {
+    	if (entity.getId() <= 0) {
+	        //首先保存exam,需要获取新插入的记录的主键
+	        int examId = saveExam(entity);
+	        List<Integer> questionIds = saveQuestions(entity);
+	        //设置试卷和班级的关联关系
+	        saveExamClassRelationships(entity.getClazzs(), examId);
+	        //设置题目和试卷的关联关系
+	        saveExamQuestionRelationships(questionIds, examId);
+    	}
     }
 
     /**

@@ -62,7 +62,7 @@ public class AdminMajorController {
 		}else if(majorService.findByName(major) != null) {
 			json.addElement("result", "0").addElement("message", "此专业已存在");
 		}else {
-			majorService.save(new Major(major));
+			majorService.saveOrUpdate(new Major(major));
 			json.addElement("result", "1").addElement("message", "专业添加成功");
 		}
 		DataUtil.writeJSON(json, response);

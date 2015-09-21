@@ -96,7 +96,7 @@ public class AdminClassController {
 				clazzObj.setCno(cno);
 				clazzObj.setGrade(new Grade(gradeId));
 				clazzObj.setMajor(new Major(majorId));
-				clazzService.save(clazzObj);
+				clazzService.saveOrUpdate(clazzObj);
 				json.addElement("result", "1").addElement("message", "添加成功");
 			}
 		}

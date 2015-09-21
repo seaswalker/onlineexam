@@ -73,7 +73,7 @@ public class ExamController {
 			json.addElement("result", "0").addElement("url", "teacher/index");
 		} else {
 			Exam result = DataUtil.parseExam(exam, teacher);
-			examService.save(result);
+			examService.saveOrUpdate(result);
 			json.addElement("result", "1").addElement("url", "teacher/exam/list");
 		}
 		DataUtil.writeJSON(json, response);

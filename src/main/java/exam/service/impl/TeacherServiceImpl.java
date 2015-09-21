@@ -76,8 +76,10 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
     }
     
     @Override
-	public void save(Teacher entity) {
-    	teacherDao.executeSql("insert into teacher values(?, ?, ?)", new Object[] {entity.getId(), entity.getName(), entity.getPassword()});
+	public void saveOrUpdate(Teacher entity) {
+    	if (DataUtil.isValid(entity.getId())) {
+    		teacherDao.executeSql("insert into teacher values(?, ?, ?)", new Object[] {entity.getId(), entity.getName(), entity.getPassword()});
+    	}
 	}
 	
 	@Override

@@ -46,38 +46,92 @@ public class QuestionController {
 	 * @throws IOException
 	 */
 	@RequestMapping("/singles")
-	public String singleHelper(HttpServletRequest request, Model model) throws IOException {
-		return single("1", null, request, model);
+	public String singlesHelper(HttpServletRequest request, Model model) throws IOException {
+		return singles("1", null, request, model);
 	}
 	
 	/**
 	 * 返回所有的单选题
 	 */
 	@RequestMapping("/singles/{pn}")
-	public String single(@PathVariable String pn, String search, HttpServletRequest request, Model model) {
-		Teacher teacher = (Teacher) request.getSession().getAttribute("teacher");
-		int pageCode = DataUtil.getPageCode(pn);
-		String where = "where tid = '" + teacher.getId() + "' and type = '" + QuestionType.SINGLE.name() + "'";
-		if (DataUtil.isValid(search)) {
-			where += " and title like '%" + search + "%'"; 
-		}
-		PageBean<Question> pageBean = questionService.pageSearch(pageCode, pageSize, pageNumber, where, null, null);
-		model.addAttribute("pageBean", pageBean);
-		model.addAttribute("search", search);
-		return "teacher/single_list";
+	public String singles(@PathVariable String pn, String search, HttpServletRequest request, Model model) {
+		return questions(DataUtil.getPageCode(pn), search, QuestionType.SINGLE, request, model);
 	}
 	
+	/**
+	 * 多选查询辅助
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/multis")
+	public String multisHelper(HttpServletRequest request, Model model) {
+		return multis("1", null, request, model);
+	}
+	
+	/**
+	 * 分页查询多选题
+	 * @param pn 页码
+	 * @param search 搜索内容
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/multis/{pn}")
+	public String multis(@PathVariable String pn, String search, HttpServletRequest request, Model model) {
+		return questions(DataUtil.getPageCode(pn), search, QuestionType.MULTI, request, model);
+	}
+	
+	/**
+	 * 判断查询辅助
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/judges")
+	public String judgesHelper(HttpServletRequest request, Model model) {
+		return judges("1", null, request, model);
+	}
+	
+	/**
+	 * 分页查询判断题
+	 * @param pn 页码
+	 * @param search 搜索内容
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/judges/{pn}")
+	public String judges(@PathVariable String pn, String search, HttpServletRequest request, Model model) {
+		return questions(DataUtil.getPageCode(pn), search, QuestionType.JUDGE, request, model);
+	}
+	
+	/**
+	 * 添加和修改
+	 * @param id 如果id为负值，那么即为添加，反之修改
+	 * @param title 
+	 * @param optionA
+	 * @param optionB
+	 * @param optionC
+	 * @param optionD
+	 * @param answer
+	 * @param point
+	 * @param type
+	 * @param request
+	 * @param response
+	 */
 	@RequestMapping("/save")
 	@ResponseBody
 	public void save(Integer id, String title, String optionA, String optionB, String optionC, String optionD,
 			String answer, Integer point, String type, HttpServletRequest request, HttpServletResponse response) {
 		JSONObject json = new JSONObject();
-		if (!DataUtil.isValid(id, point) || !DataUtil.isValid(title, answer, type)
+		if (!DataUtil.isValid(point) || !DataUtil.isValid(title, answer, type)
 				|| (QuestionType.valueOf(type) != QuestionType.JUDGE && !DataUtil.isValid(optionA, 
 						optionB, optionC, optionD))) {
 			json.addElement("result", "0");
 		} else {
 			Question question = new Question();
+			question.setType(QuestionType.valueOf(type));
 			question.setAnswer(answer);
 			question.setId(id);
 			question.setOptionA(optionA);
@@ -86,7 +140,8 @@ public class QuestionController {
 			question.setOptionD(optionD);
 			question.setPoint(point);
 			question.setTitle(title);
-			questionService.update(question);
+			question.setTeacher((Teacher) request.getSession().getAttribute("teacher"));
+			questionService.saveOrUpdate(question);
 			json.addElement("result", "1");
 		}
 		DataUtil.writeJSON(json, response);
@@ -108,6 +163,27 @@ public class QuestionController {
 			json.addElement("result", "1").addElement("message", "删除成功");
 		}
 		DataUtil.writeJSON(json, response);
+	}
+	
+	/**
+	 * 分页查出各种题型，此方法是singles/multis/judges的真正实现
+	 * @param pn 页码
+	 * @param search 搜索内容
+	 * @param request 
+	 * @param model
+	 * @return 转向的地址
+	 */
+	private String questions(int pageCode, String search, QuestionType type, HttpServletRequest request, Model model) {
+		Teacher teacher = (Teacher) request.getSession().getAttribute("teacher");
+		String where = "where tid = '" + teacher.getId() + "' and type = '" + type.name() + "'";
+		if (DataUtil.isValid(search)) {
+			where += " and title like '%" + search + "%'"; 
+		}
+		PageBean<Question> pageBean = questionService.pageSearch(pageCode, pageSize, pageNumber, where, null, null);
+		model.addAttribute("pageBean", pageBean);
+		model.addAttribute("search", search);
+		model.addAttribute("type", type.name());
+		return "teacher/question_list";
 	}
 	
 }

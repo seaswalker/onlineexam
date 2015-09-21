@@ -1,13 +1,24 @@
 $(function() {
 	QuestionHelper.initListeners();
 	QuestionHelper.initValidators();
+	QuestionHelper.questionType = $("#question-type").val();
+	QuestionHelper.isSingle = (QuestionHelper.questionType === "SINGLE");
+	QuestionHelper.isMulti = (QuestionHelper.questionType === "MULTI");
+	QuestionHelper.isJudge = (QuestionHelper.questionType === "JUDGE");
 });
 
 var QuestionHelper = {
+	//题型,可取的值:SINGLE MULTI JUDGE
+	questionType: null,
+	//是添加还是编辑，默认编辑
+	isEdit: true,
 	//缓存当前正在操作的question
 	current: null,
 	//记录题目是否真正的被修改了
 	modified: false,
+	isSingle: true,
+	isMulti: false,
+	isJudge: false,
 	Question: {
 		//答案映射会数字(序号)
 		answerMapper: {
@@ -16,6 +27,10 @@ var QuestionHelper = {
 			C: "2",
 			D: "3"
 		},
+		judgeMapper: {
+			"对": "0",
+			"错": "1"
+		},
 		//创建一个Question对象
 		//$tr -> 触发showEdit函数的button所在的tr，以此可以获取所有的题目信息
 		create: function($tr) {
@@ -23,12 +38,27 @@ var QuestionHelper = {
 			var $tds = $tr.children("td");
 			question.id = $tds[0].innerHTML;
 			question.title = $tds[1].innerHTML;
-			question.optionA = $tds[2].innerHTML;
-			question.optionB = $tds[3].innerHTML;
-			question.optionC = $tds[4].innerHTML;
-			question.optionD = $tds[5].innerHTML;
-			question.answer = this.answerMapper[$tds[6].innerHTML];
-			question.point = $tds[7].innerHTML;
+			if (QuestionHelper.isJudge) {
+				question.answer = this.judgeMapper[$tds[2].innerHTML];
+				question.point = $tds[3].innerHTML;
+			} else {
+				question.optionA = $tds[2].innerHTML;
+				question.optionB = $tds[3].innerHTML;
+				question.optionC = $tds[4].innerHTML;
+				question.optionD = $tds[5].innerHTML;
+				if (QuestionHelper.isSingle) {
+					question.answer = this.answerMapper[$tds[6].innerHTML];
+				} else {
+					//B,C
+					var str = $tds[6].innerHTML;
+					var arr = [], as = str.split(",");
+					for (var i = 0, l = as.length;i < l;i ++) {
+						arr.push(this.answerMapper[as[i]]);
+					}
+					question.answer = arr.join(",");
+				}
+				question.point = $tds[7].innerHTML;
+			}
 			return question;
 		}
 	},
@@ -45,6 +75,8 @@ var QuestionHelper = {
 		$("#question-list button[name=delete-btn]").click(function() {
 			QuestionHelper.deleteQuestion(this);
 		});
+		//添加题目
+		$("#add-question-btn").click(QuestionHelper.showAdd);
 	},
 	//加载校验器
 	initValidators: function() {
@@ -105,7 +137,7 @@ var QuestionHelper = {
 				return false;
 			}
 			//判断是否和原值一样
-			if (!QuestionHelper.modified && value !== QuestionHelper.current[input.name]) {
+			if (QuestionHelper.isEdit && !QuestionHelper.modified && value !== QuestionHelper.current[input.name]) {
 				QuestionHelper.modified = true;
 			}
 			return value;
@@ -120,7 +152,7 @@ var QuestionHelper = {
 				return false;
 			}
 			//判断是否和原值一样
-			if (!QuestionHelper.modified && value !== QuestionHelper.current[input.name]) {
+			if (QuestionHelper.isEdit && !QuestionHelper.modified && value !== QuestionHelper.current[input.name]) {
 				QuestionHelper.modified = true;
 			}
 			return value;
@@ -135,12 +167,25 @@ var QuestionHelper = {
 		var question = QuestionHelper.current = this.Question.create($tr);
 		var $inputs = $questionEdit.find("input[type=text]");
 		$inputs[0].value = question.title;
-		$inputs[1].value = question.optionA;
-		$inputs[2].value = question.optionB;
-		$inputs[3].value = question.optionC;
-		$inputs[4].value = question.optionD;
-		$inputs[5].value = question.point;
-		$questionEdit.find("input[type=radio]")[question.answer].checked = "checked";
+		if (QuestionHelper.isJudge) {
+			$inputs[1].value = question.point;
+			$questionEdit.find("input[type=radio]")[question.answer].checked = "checked";
+		} else {
+			$inputs[1].value = question.optionA;
+			$inputs[2].value = question.optionB;
+			$inputs[3].value = question.optionC;
+			$inputs[4].value = question.optionD;
+			$inputs[5].value = question.point;
+			if (QuestionHelper.isSingle) {
+				$questionEdit.find("input[type=radio]")[question.answer].checked = "checked";
+			} else {
+				var $boxes = $questionEdit.find("input[type=checkbox]");
+				var as = question.answer.split(",");
+				for (var i = 0, l = as.length;i < l;i ++) {
+					$boxes[as[i]].checked = "checked";
+				}
+			}
+		}
 		$questionEdit.show();
 	},
 	//关闭题目编辑
@@ -148,19 +193,40 @@ var QuestionHelper = {
 		var $questionEdit = $("#question-edit");
 		$questionEdit.hide();
 		//关闭时清空各个错误信息显示框
-		var array = QuestionHelper.Validator.cache.requires;
+		var array = QuestionHelper.Validator.cache.requires, e
 		for (var i = 0, l = array.length;i < l;i ++) {
-			array[i].error.innerHTML = "";
+			e = array[i];
+			e.error.innerHTML = "";
+			e.input.value = "";
 		}
 		array = QuestionHelper.Validator.cache.numbers;
 		for (i = 0, l = array.length;i < l;i ++) {
-			array[i].error.innerHTML = "";
+			e = array[i];
+			e.error.innerHTML = "";
+			e.input.value = "";
 		}
+		QuestionHelper.isEdit = true;
 	},
 	saveQuestion: function() {
-		var answer = $("#question-answer-container input:checked").val();
+		//支持单选和多选
+		var answer, i, l,
+			$checkeds = $("#question-answer-container input:checked");
+		if (QuestionHelper.questionType === "MULTI") {
+			if ($checkeds.length < 2) {
+				$("#question-error").html("请选择至少两个答案");
+				return;
+			}
+			//拼接答案串
+			var array = [];
+			for (i = 0, l = $checkeds.length;i < l;i ++) {
+				array.push($checkeds[i].value);
+			}
+			answer = array.join(",");
+		} else {
+			answer = $checkeds[0].value;
+		}
 		//如果有内容做出了修改，执行下面的步骤才是有意义的
-		if (QuestionHelper.modified || answer !== QuestionHelper.current.answer) {
+		if (!QuestionHelper.isEdit || QuestionHelper.modified || answer !== QuestionHelper.current.answer) {
 			//触发所有校验
 			var requires = QuestionHelper.Validator.cache.requires,
 				requireValidator = QuestionHelper.Validator.notNullValidator;
@@ -184,10 +250,16 @@ var QuestionHelper = {
 				}
 				values.push(value);
 			}
-			//参数串
-			var data = "id=" + QuestionHelper.current.id + "&title=" + values[0] + "&optionA=" + values[1] +
-				"&optionB=" + values[2] + "&optionC=" + values[3] + "&optionD=" + values[4] + "&point=" + values[5]
-				+ "&answer=" + answer + "&type=SINGLE";//TODO 此处的题目类型不应写死
+			var data;
+			if (QuestionHelper.isJudge) {
+				data = "id=" + (QuestionHelper.current ? QuestionHelper.current.id : "-1") + "&title=" + values[0] + 
+					"&point=" + values[1] + "&answer=" + answer + "&type=" + QuestionHelper.questionType;
+			} else {
+				//参数串
+				data = "id=" + (QuestionHelper.current ? QuestionHelper.current.id : "-1") + "&title=" + values[0] + "&optionA=" + values[1] +
+					"&optionB=" + values[2] + "&optionC=" + values[3] + "&optionD=" + values[4] + "&point=" + values[5]
+					+ "&answer=" + answer + "&type=" + QuestionHelper.questionType;
+			}
 			//提交
 			$.post("teacher/question/save", data, function(data) {
 				if (data.result === "0") {
@@ -221,5 +293,10 @@ var QuestionHelper = {
 				}
 			});
 		}
+	},
+	//显示题目添加
+	showAdd: function() {
+		$("#question-edit").show();
+		QuestionHelper.isEdit = false;
 	}
 };

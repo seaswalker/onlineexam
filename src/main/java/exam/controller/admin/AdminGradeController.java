@@ -61,7 +61,7 @@ public class AdminGradeController {
 		}else if(gradeService.findByGrade(grade) != null) {
 			json.addElement("result", "0").addElement("message", "此年级已存在");
 		}else {
-			gradeService.save(new Grade(0, Integer.parseInt(grade)));			
+			gradeService.saveOrUpdate(new Grade(0, Integer.parseInt(grade)));			
 			json.addElement("result", "1").addElement("message", "年级添加成功");
 		}
 		DataUtil.writeJSON(json, response);
