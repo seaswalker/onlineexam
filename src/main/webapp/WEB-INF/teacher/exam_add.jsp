@@ -28,6 +28,7 @@
 	
 	<!--中间主体部分-->
 	<div class="main">
+		<input type="hidden" id="base-path" value="<%=basePath%>" />
 		<!--单选题-->
 		<div>
 			<!--题目题型-->
@@ -40,6 +41,8 @@
 			<!--题目-->
 			<div id="single_questions">
 				<div class="single_question">
+					<!-- 记录此题的id -->
+            		<input type="hidden" name="question-id" />
 					<table class="question_table">
 						<tr>
 							<td name="single_index" width="5%">1</td>
@@ -125,6 +128,8 @@
 			</div>
 			<div id="multi_questions">
 				<div class="multi_question">
+					<!-- 记录此题的id -->
+            		<input type="hidden" name="question-id" />
 					<table class="question_table">
 						<tr>
 							<td name="multi_index" width="5%">1</td>
@@ -209,6 +214,8 @@
 			</div>
 			<div id="judge_questions">
 				<div class="judge_question">
+					<!-- 记录此题的id -->
+            		<input type="hidden" name="question-id" />
 					<table class="judge_question_table">
 						<tr>
 							<td name="multi_index" width="5%">1</td>
@@ -280,20 +287,12 @@
 					<td>
 						<select id="grade_select">
 							<option value="0">年级...</option>
-							<option value="1">2012</option>
-							<option value="2">2013</option>
-							<option value="3">2014</option>
 						</select>
 						<select id="major_select">
 							<option value="0">专业...</option>
-							<option value="1">土木工程</option>
-							<option value="2">计算机</option>
-							<option value="3">电科</option>
 						</select>
 						<select id="clazz_select">
 							<option value="0">班级</option>
-							<option value="1">1</option>
-							<option value="2">2</option>
 						</select>
 					</td>
                     <td>
@@ -328,6 +327,8 @@
 	<div style="display:none;">
         <div id="single_question_model">
             <div class="single_question">
+            	<!-- 记录此题的id -->
+            	<input type="hidden" name="question-id" />
                 <table class="question_table">
                     <tr>
                         <td name="single_index" width="5%">1</td>
@@ -389,6 +390,8 @@
          </div>
         <div id="multi_question_model">
             <div class="multi_question">
+            	<!-- 记录此题的id -->
+            	<input type="hidden" name="question-id" />
                 <table class="question_table">
                    <tr>
 						<td name="multi_index" width="5%">1</td>
@@ -453,6 +456,8 @@
         </div>
         <div id="judge_question_model">
             <div class="judge_question">
+            	<!-- 记录此题的id -->
+            	<input type="hidden" name="question-id" />
                 <table class="judge_question_table">
                     <tr>
 						<td name="judge_index" width="5%">1</td>
@@ -496,28 +501,7 @@
         	选择题目: <img src="images/error.png" alt="关闭" id="hide-bank">
         </div>
         <div class="questions_area">
-        	<ul>
-        		<li optionA="3" optionB="2" optionC="4" optionD="1" point="10" answer="1">
-        			<input type="checkbox">
-        			<span>阿森纳是第几?</span>
-        		</li>
-        		<li>
-        			<input type="checkbox">
-        			<span>阿森纳是第几?</span>
-        		</li>
-        		<li>
-        			<input type="checkbox">
-        			<span>阿森纳是第几?</span>
-        		</li>
-        		<li>
-        			<input type="checkbox">
-					<span>阿森纳是第几?</span>
-        		</li>
-        		<li>
-        			<input type="checkbox">
-        			<span>阿森纳是第几?</span>
-        		</li>
-        	</ul>
+        	<ul id="bank-container"></ul>
         </div>
         <div class="btns">
         	<button id="add-question-bank-btn">添加</button>

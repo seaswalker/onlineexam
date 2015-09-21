@@ -8,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
  * @author skywalker
  *
  */
-public class StringUtil {
+public abstract class StringUtil {
 	
 
 	/**

@@ -1,6 +1,7 @@
 package exam.controller.teacher;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import exam.model.page.PageBean;
 import exam.model.role.Teacher;
 import exam.service.QuestionService;
 import exam.util.DataUtil;
+import exam.util.json.JSONArray;
 import exam.util.json.JSONObject;
 
 /***
@@ -161,6 +163,32 @@ public class QuestionController {
 		} else {
 			questionService.delete(id);
 			json.addElement("result", "1").addElement("message", "删除成功");
+		}
+		DataUtil.writeJSON(json, response);
+	}
+	
+	/**
+	 * 反应当前教师的指定题型的所有题目
+	 * @param type 题型: SINGLE/MULTI/JUDGE
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping("/ajax")
+	@ResponseBody
+	public void list(String type, HttpServletRequest request, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if (!DataUtil.isValid(type)) {
+			json.addElement("result", "0");
+		} else {
+			QuestionType qt = QuestionType.valueOf(type);
+			String tid = ((Teacher) request.getSession().getAttribute("teacher")).getId(); 
+			List<Question> questions = qt == QuestionType.SINGLE ? questionService.getSingles(tid) :
+				(qt == QuestionType.MULTI ? questionService.getMultis(tid) : questionService.getJudges(tid));
+			JSONArray array = new JSONArray();
+			for (Question q : questions) {
+				array.addObject(q.getJSON());
+			}
+			json.addElement("result", "1").addElement("data", array);
 		}
 		DataUtil.writeJSON(json, response);
 	}

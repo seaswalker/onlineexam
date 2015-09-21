@@ -1,4 +1,4 @@
-package exam.controller;
+package exam.controller.ajax;
 
 import java.util.List;
 

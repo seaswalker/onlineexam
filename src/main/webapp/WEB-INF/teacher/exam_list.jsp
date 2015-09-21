@@ -119,7 +119,7 @@
         <div class="error" style="text-align: center;" id="clazz_error">
             &nbsp;
         </div>
-        <div style="text-align: center;margin-top: 10px;">
+        <div style="text-align: center;">
             <button id="clazz-add-btn">添加</button>
             <button id="clazz-save-btn">保存</button>
         </div>

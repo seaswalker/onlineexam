@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author skywalker
  *
  */
-public class CookieUtil {
+public abstract class CookieUtil {
 	
 	/**
 	 * 设置cookie

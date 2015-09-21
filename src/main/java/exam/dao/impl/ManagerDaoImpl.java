@@ -15,7 +15,7 @@ public class ManagerDaoImpl extends BaseDaoImpl<Manager> implements ManagerDao {
 
     private static RowMapper<Manager> rowMapper;
 
-    {
+    static {
         rowMapper = new RowMapper<Manager>() {
             public Manager mapRow(ResultSet rs, int rowNum) throws SQLException {
                 Manager manager = new Manager();

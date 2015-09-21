@@ -164,7 +164,7 @@
 		<div class="error" style="text-align: center;" id="clazz_error">
 			&nbsp;
 		</div>
-		<div style="text-align: center;margin-top: 10px;">
+		<div style="text-align: center;">
 			<button onclick="addClazz();">添加</button>
 			<button onclick="save();">保存</button>
 		</div>

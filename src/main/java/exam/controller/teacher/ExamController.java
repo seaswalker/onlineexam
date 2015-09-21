@@ -69,12 +69,13 @@ public class ExamController {
 	public void add(String exam, HttpServletRequest request, HttpServletResponse response) {
 		Teacher teacher = (Teacher) request.getSession().getAttribute("teacher");
 		JSON json = new JSONObject();
-		if (teacher == null) {
-			json.addElement("result", "0").addElement("url", "teacher/index");
+		Exam result = DataUtil.parseExam(exam, teacher);
+		//总分为零，说明试卷为空，不允许
+		if (result.getPoints() == 0) {
+			json.addElement("result", "0").addElement("message", "请不要提交空试卷!");
 		} else {
-			Exam result = DataUtil.parseExam(exam, teacher);
 			examService.saveOrUpdate(result);
-			json.addElement("result", "1").addElement("url", "teacher/exam/list");
+			json.addElement("result", "1");
 		}
 		DataUtil.writeJSON(json, response);
 	}

@@ -3,13 +3,16 @@ package exam.model;
 import java.io.Serializable;
 
 import exam.model.role.Teacher;
+import exam.util.json.JSON;
+import exam.util.json.JSONAble;
+import exam.util.json.JSONObject;
 
 /**
  * 问题
  * @author skywalker
  *
  */
-public class Question implements Serializable {
+public class Question implements Serializable, JSONAble {
 
 	private static final long serialVersionUID = 3817117285809180416L;
 	private static String[] answerFacades = {"A", "B", "C", "D"};
@@ -33,6 +36,15 @@ public class Question implements Serializable {
 	 */
 	public String getAnswerFacade() {
 		return this.answerFacade;
+	}
+	
+	@Override
+	public JSON getJSON() {
+		JSONObject json = new JSONObject();
+		json.addElement("id", String.valueOf(id)).addElement("title", title).addElement("optionA", optionA)
+			.addElement("optionB", optionB).addElement("optionC", optionC).addElement("optionD", optionD)
+			.addElement("answer", answer).addElement("point", String.valueOf(point));
+		return json;
 	}
 	
 	@Override

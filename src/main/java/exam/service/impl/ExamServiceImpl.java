@@ -85,13 +85,13 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
         String sql = "insert into question values(null,?,?,?,?,?,?,?,?,?)";
         QuestionGenerateKeyCallback questionGenerateKeyCallback = new QuestionGenerateKeyCallback();
         for (final Question question : entity.getSingleQuestions()) {
-            questionIds.add(examDao.getKeyHelper(sql, questionGenerateKeyCallback, question));
+            questionIds.add(question.getId() > 0 ? question.getId() : examDao.getKeyHelper(sql, questionGenerateKeyCallback, question));
         }
         for (final Question question : entity.getMultiQuestions()) {
-            questionIds.add(examDao.getKeyHelper(sql, questionGenerateKeyCallback, question));
+        	questionIds.add(question.getId() > 0 ? question.getId() : examDao.getKeyHelper(sql, questionGenerateKeyCallback, question));
         }
         for (final Question question : entity.getJudgeQuestions()) {
-            questionIds.add(examDao.getKeyHelper(sql, questionGenerateKeyCallback, question));
+            questionIds.add(question.getId() > 0 ? question.getId() : examDao.getKeyHelper(sql, questionGenerateKeyCallback, question));
         }
         return questionIds;
     }
@@ -120,7 +120,7 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
         for (Integer qid : questionIds) {
             sb.append("(null,").append(examId).append(",").append(qid).append("),");
         }
-        sb.deleteCharAt(sb.length() - 1);
+        System.out.println(sb.deleteCharAt(sb.length() - 1));
         examDao.executeSql(sb.toString());
     }
 

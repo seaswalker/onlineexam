@@ -24,7 +24,7 @@ import exam.util.json.JSON;
  * @author skywalker
  *
  */
-public class DataUtil {
+public abstract class DataUtil {
 	
 	/**
 	 * 支持的图片扩展名
@@ -239,10 +239,14 @@ public class DataUtil {
 		JSONObject jsonQuestion = null;
 		//计算此组题目的分值
 		int points = 0, point = 0;
+		String idStr = null;
 		for (Object o : nodes) {
 			question = new Question();
 			jsonQuestion = JSONObject.fromObject(o);
 			question.setTitle(jsonQuestion.getString("title"));
+			if (isValid((idStr = jsonQuestion.getString("id")))) {
+				question.setId(Integer.parseInt(idStr));
+			}
 			if (type != QuestionType.JUDGE) {
 				question.setOptionA(jsonQuestion.getString("optionA"));
 				question.setOptionB(jsonQuestion.getString("optionB"));

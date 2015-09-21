@@ -1,4 +1,5 @@
 /**
+ * 此js是一个反面教材，大部分函数都在全局作用域
  * [ExamDesign 试卷设计全局变量]
  * @type {Object}
  */
@@ -19,6 +20,12 @@ var ExamDesign = {
 		numbers: null,
 		selects: null,
 		multiAnswers: null
+	},
+	//缓存题库中已经被添加的题目的id，防止重复添加同一道题目
+	questionCache: {
+		singles: [],
+		multis: [],
+		judges: []
 	}
 };
 
@@ -27,7 +34,63 @@ $(function() {
 	setListeners();
 	//设置输入校验
 	setValidators();
+	loadGrade();
 });
+
+/**
+ * 加载年级
+ */
+function loadGrade() {
+	$.post("grade/ajax", null, function(data) {
+		if (data.result === "1") {
+			var str = "", e;
+			for (var i = 0, l = data.data.length;i < l;i ++) {
+				e = data.data[i];
+				str += "<option value='" + e.id + "'>" + e.grade + "级</option>";
+			}
+			$(str).appendTo($("#grade_select"));
+		}
+	}, "json");
+}
+
+function loadMajor(gradeSelect) {
+	var $majorSelect = $("#major_select").empty();
+	var id = $(gradeSelect).val();
+	if (id === "0") {
+		$majorSelect.append("<option value='0'>专业...</option>");
+	} else {
+		$.post("major/ajax", "grade=" + id, function(data) {
+			if (data.result === "1") {
+				var str = "<option value='0'>专业...</option>", e;
+				for (var i = 0, l = data.data.length;i < l;i ++) {
+					e = data.data[i];
+					str += "<option value='" + e.id + "'>" + e.name + "</option>";
+				}
+				$(str).appendTo($majorSelect);
+			}
+		}, "json");
+	}
+}
+
+function loadClazz(majorSelect) {
+	var mid = $(majorSelect).val();
+	var $clazzSelect = $("#clazz_select").empty();
+	if (mid === "0") {
+		$clazzSelect.append("<option value='0'>班级...</option>");
+	} else {
+		var gid = $("#grade_select").val();
+		$.post("clazz/ajax", "grade=" + gid + "&major=" + mid, function(data) {
+			if (data.result === "1") {
+				var str = "<option value='0'>班级...</option>", e;
+				for (var i = 0, l = data.data.length;i < l;i ++) {
+					e = data.data[i];
+					str += "<option value='" + e.id + "'>" + e.cno + "班</option>";
+				}
+				$(str).appendTo($clazzSelect);
+			}
+		}, "json");
+	}
+}
 
 /**
  * [setValidators 设置输入校验]
@@ -70,13 +133,15 @@ function setValidators() {
     var $gradeSelect = $("#grade_select");
     $gradeSelect.blur(function(event) {
     	selectCheck.call(this, event.target, "请选择年级");
-    });
-    $gradeSelect.focus(clearErrorInfo);
+    }).change(function() {
+    	loadMajor(this);
+    }).focus(clearErrorInfo);
     var $majorSelect = $("#major_select");
     $majorSelect.blur(function(event) {
     	selectCheck.call(this, event.target, "请选择专业");
-    });
-    $majorSelect.focus(clearErrorInfo);
+    }).change(function() {
+    	loadClazz(this);
+    }).focus(clearErrorInfo);
     var $clazzSelect = $("#clazz_select");
     $clazzSelect.blur(function(event) {
     	selectCheck.call(this, event.target, "请选择班级");
@@ -156,6 +221,11 @@ function getErrorElement(element) {
  * @return [无返回值，验证通过后提交]
  */
 function checkAll() {
+	//检查是否有题
+	if (ExamDesign.singleQuestionIndex === 1 && ExamDesign.multiQuestionIndex === 1 && ExamDesign.judgeQuestionIndex === 1) {
+		alert("请不要提交空试卷!");
+		return;
+	}
 	//触发非空校验
 	var cb = ExamDesign.validators.requireds.callback,
 		es = ExamDesign.validators.requireds.elements,
@@ -201,12 +271,13 @@ function checkAll() {
  * var result = {
 		singles: [
 			{
-				title: "X",
-				optionA: "X",
-				optionB: "X",
-				optionC: "X",
-				optionD: "X",
-				answer: "X",
+				id: id是必要的，因为如果有id存在，那就意味着此题从题库添加而来，数据库存在此问题不需要再次保存，只需要建立关联关系
+				title: "something",
+				optionA: "something",
+				optionB: "something",
+				optionC: "something",
+				optionD: "something",
+				answer: "something",
 				point: 10
 			}
 		],
@@ -215,8 +286,8 @@ function checkAll() {
 		],
 		judges: [
 			{
-				title: "X",
-				answer: "X",
+				title: "something",
+				answer: "something",
 				point: 10
 			}
 		],
@@ -254,6 +325,7 @@ function submit() {
 			3: "judge"
 		};
 		var question = {}, typeStr = reflection[type];
+		question.id = $container.find("input[name=question-id]").val();
 		question.title = $container.find("input[name=" + typeStr + "_title]").val();
 		question.point = $container.find("input[name=" + typeStr + "_point]").val();
 		//判断题不需要选项
@@ -312,10 +384,10 @@ function submit() {
 		if (data.result === "1") {
 			Tips.showSuccess("添加成功");
 			setTimeout(function() {
-				window.location.href = data.url;
+				window.location.href = document.getElementById("base-path").value + "teacher/exam/list";
 			}, 3000);
 		} else {
-			window.location.href = data.url;
+			Tips.showError(data.message);
 		}
 	}, "json");
 }
@@ -419,7 +491,7 @@ function addSingleQuestion(handler) {
  */
 function removeSingleQuestion(event) {
 	var $btn = $(event.target);
-	var $currentQuestion = $btn.parent().parent().parent().parent().parent();
+	var $currentQuestion = $btn.parents("div[class=single_question]");
 	var $tdIndex, $this;
 	var index = 0;
 	//此题后面的序号减一
@@ -436,6 +508,12 @@ function removeSingleQuestion(event) {
 		required: 5,
 		number: 1
 	});
+	//如果此题记录了id(从题库加入的)，那么从ExamDesign.questionCache中移除缓存的id
+	var id = $currentQuestion.find("input[name=question-id]").val();
+	if (id !== "") {
+		var array = ExamDesign.questionCache.singles;
+		array.splice($.inArray(id, array), 1);
+	}
 	$currentQuestion.remove();
 	//单选序号减一
 	ExamDesign.singleQuestionIndex --;
@@ -478,6 +556,12 @@ function removeMultiQuestion(event) {
 		required: 5,
 		number: 1
 	});
+	//如果此题记录了id(从题库加入的)，那么从ExamDesign.questionCache中移除缓存的id
+	var id = $currentQuestion.find("input[name=question-id]").val();
+	if (id !== "") {
+		var array = ExamDesign.questionCache.multis;
+		array.splice($.inArray(id, array), 1);
+	}
 	$currentQuestion.remove();
 	//单选序号减一
 	ExamDesign.multiQuestionIndex --;
@@ -523,6 +607,12 @@ function removeJudgeQuestion(event) {
 		required: 1,
 		number: 1
 	});
+	//如果此题记录了id(从题库加入的)，那么从ExamDesign.questionCache中移除缓存的id
+	var id = $currentQuestion.find("input[name=question-id]").val();
+	if (id !== "") {
+		var array = ExamDesign.questionCache.judges;
+		array.splice($.inArray(id, array), 1);
+	}
 	$currentQuestion.remove();
 	//单选序号减一
 	ExamDesign.judgeQuestionIndex --;
@@ -575,10 +665,39 @@ function toggleRunTime(isShow) {
  * @param {[[Boolean]]} isShow [[显示]]
  */
 function toggleBank(type, isShow) {
+	var mapper = {
+		"1": "SINGLE",
+		"2": "MULTI",
+		"3": "JUDGE"
+	};
 	var $bank = $("#question_bank");
 	if (isShow) {
 		ExamDesign.questionBankType = type;
-		//TODO 使用ajax加载该老师的特定题型的所有题目
+		$.post("teacher/question/ajax", "type=" + mapper[type], function(data) {
+			var $container = $("#bank-container");
+			if (data.result === "0") {
+				$container.html("加载失败，请稍候再试");
+			} else if (data.result === "1") {
+				var str = "", e;
+				var array = ExamDesign.questionBankType === "1" ? ExamDesign.questionCache.singles :
+					(ExamDesign.questionBankType === "2" ? ExamDesign.questionCache.multis : ExamDesign.questionCache.judges);
+				for (var i = 0, l = data.data.length;i < l;i ++) {
+					e = data.data[i];
+					//如果此题已经被添加过，那么不再显示
+					if ($.inArray(e.id, array) === -1) {
+						//模板示例:
+						/*<li optiona="3" optionb="2" optionc="4" optiond="1" point="10" answer="1">
+	        				<input type="checkbox">
+	        				<span>阿森纳是第几?</span>
+	        			</li>*/
+						str += "<li  optiona='" + e.optionA + "' optionb='" + e.optionB + "' optionc='" + 
+							e.optionC + "' optiond='" + e.optionD + "' point='" + e.point + "' answer='" +
+							e.answer + "' id='" + e.id  + "'><input type='checkbox'><span>" + e.title + "</span>";
+					}
+				}
+				$(str).appendTo($container.empty());
+			}
+		}, "json");
 		$bank.css("display", "block");
 	} else {
 		$bank.css("display", "none");
@@ -595,11 +714,12 @@ function addQuestionFromBank() {
 	//$destination 题目应该加入到的区域，由题型决定
 	//$li checkbox所在的li元素
 	//answer 答案，如果是单选题，那么只是一个数字，多选题是多个数字，以逗号分割，判断题也是一个数字(0/1)
-	var $destination, $li, answer;
+	var $destination, $li, answer, id;
 	if (type === "1") {
         $destination = $("#single_questions");
         $.each($boxes, function (index, input) {
-            $li = $(input).parent();
+            $li = $(input).parent(), id = $li.attr("id");
+            ExamDesign.questionCache.singles.push(id);
             addSingleQuestion(function ($question) {
                 $question.find("input[name=single_title]").val($li.find("span").html());
                 $question.find("input[name=single_optionA]").val($li.attr("optionA"));
@@ -612,12 +732,16 @@ function addQuestionFromBank() {
                 $question.find("input[type=radio]")[answer].checked = "checked";
                 //设置分值
                 $question.find("input[name=single_point]").val($li.attr("point"));
+                //记录此题的id
+                $question.find("input[name=question-id]").val(id);
             });
         });
     } else if (type === "2") {
         $destination = $("#multi_questions");
         $.each($boxes, function (index, input) {
             $li = $(input).parent();
+            id = $li.attr("id");
+            ExamDesign.questionCache.multis.push(id);
             addMultiQuestion(function ($question) {
                 $question.find("input[name=multi_title]").val($li.find("span").html());
                 $question.find("input[name=multi_optionA]").val($li.attr("optionA"));
@@ -627,11 +751,13 @@ function addQuestionFromBank() {
                 $question.find("input[name=multi_optionD]").val($li.attr("optionD"));
                 //设置分值
                 $question.find("input[name=multi_point]").val($li.attr("point"));
+                //记录此题的id
+                $question.find("input[name=question-id]").val(id);
                 //设置答案，此时是一个由逗号分隔的字符串，比如1,2
                 answer = $li.attr("answer");
                 var array = answer.split(",");
                 $.each(array, function (index, a) {
-                    $question.find("input[type=radio]")[a].checked = "checked";
+                    $question.find("input[type=checkbox]")[a].checked = "checked";
                 });
             });
         });
@@ -639,6 +765,8 @@ function addQuestionFromBank() {
         $destination = $("#judge_questions");
         $.each($boxes, function (index, input) {
             $li = $(input).parent();
+            id = $li.attr("id")
+            ExamDesign.questionCache.judges.push(id);
             addJudgeQuestion(function ($question) {
                 $question.find("input[name=judge_title]").val($li.find("span").html());
                 //设置分值
@@ -646,6 +774,8 @@ function addQuestionFromBank() {
                 //设置答案，此时是一个由逗号分隔的字符串，比如1,2
                 answer = $li.attr("answer");
                 $question.find("input[type=radio]")[answer].checked = "checked";
+                //记录此题的id
+                $question.find("input[name=question-id]").val(id);
             });
         });
 	}
