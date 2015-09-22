@@ -31,4 +31,12 @@ public interface QuestionService extends BaseService<Question> {
 	 */
 	boolean isUsedByExam(int id);
 	
+	/**
+	 * 根据试题查找与之相关联的试题
+	 * 此方法不用find实现而单独做一个接口是因为试卷和题目的关联是通过一张表建立的，所以试题对象并不能获取试卷的信息
+	 * @param eid 试卷id
+	 * @return
+	 */
+	public List<Question> findByExam(int eid);
+	
 }

@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -13,9 +14,18 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import exam.model.*;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import exam.dto.ExaminationAnswer;
+import exam.dto.MarkedQuestion;
+import exam.model.Clazz;
+import exam.model.Exam;
+import exam.model.ExamStatus;
+import exam.model.ExaminationResult;
+import exam.model.Grade;
+import exam.model.Major;
+import exam.model.Question;
+import exam.model.QuestionType;
 import exam.model.role.Teacher;
 import exam.util.json.JSON;
 
@@ -268,6 +278,71 @@ public abstract class DataUtil {
 			}
 		}
 		return points;
+	}
+
+	/**
+	 * 把从客户端传来的json格式的考试结果封装为ExaminationResult对象
+	 * 格式示例:{eid:1,questions:[{id:1,answer:2,3}]}
+	 * @param result
+	 * @return ExaminationResult
+	 */
+	public static ExaminationAnswer parseAnswers(String result) {
+		JSONObject json = JSONObject.fromObject(result);
+		ExaminationAnswer er = new ExaminationAnswer();
+		er.setExamId(json.getInt("eid"));
+		JSONArray questions = json.getJSONArray("questions");
+		JSONObject question = null;
+		for (Object o : questions) {
+			question = JSONObject.fromObject(o);
+			er.addQuestion(question.getInt("id"), question.getString("answer"));
+		}
+		return er;
+	}
+
+	/**
+	 * 批卷
+	 * @param er 考生的答案
+	 * @param exam 所考的试卷，包含各个题目
+	 */
+	public static ExaminationResult markExam(ExaminationAnswer ea, Exam exam, String sid) {
+		ExaminationResult er = new ExaminationResult();
+		er.setExamId(exam.getId());
+		er.setStudentId(sid);
+		er.setExamTitle(exam.getTitle());
+		er.setTime(new Date());
+		//计算总分
+		int sum = 0;
+		Map<Integer, String> answers = ea.getAnswers();
+		sum += markHelper(exam.getSingleQuestions(), answers, er);
+		sum += markHelper(exam.getMultiQuestions(), answers, er);
+		sum += markHelper(exam.getJudgeQuestions(), answers, er);
+		er.setPoint(sum);
+		return er;
+	}
+	
+	/**
+	 * 辅助批卷-批阅一道题
+	 * @return questions的总分数
+	 */
+	private static int markHelper(List<Question> questions, Map<Integer, String> answers, ExaminationResult er) {
+		int point = 0;
+		MarkedQuestion mq = null;
+		String wa = null;
+		for (Question q : questions) {
+			mq = new MarkedQuestion();
+			mq.setQuestionId(q.getId());
+			wa = answers.get(q.getId());
+			if (q.getAnswer().equals(wa)) {
+				mq.setRight(true);
+				point += q.getPoint();
+			} else {
+				mq.setRight(false);
+			}
+ 			mq.setRight(q.getAnswer().equals(wa));
+			mq.setWrongAnswer(wa);
+		}
+		er.addMarkedQuestion(mq);
+		return point;
 	}
 	
 }

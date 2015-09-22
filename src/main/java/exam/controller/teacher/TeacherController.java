@@ -62,7 +62,7 @@ public class TeacherController {
     public String modifyPassword(String oldPassword, String newPassword, HttpServletRequest request, Model model) {
         Teacher teacher = (Teacher) request.getSession().getAttribute("teacher");
         if (!checkPassword(oldPassword, newPassword, teacher)) {
-            return "501";
+            return "error";
         }
         teacherService.modifyPassword(teacher.getId(), newPassword);
         teacher.setPassword(newPassword);

@@ -1,13 +1,20 @@
 package exam.dao.base;
 
 import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 
 import exam.model.page.PageBean;
 import exam.util.DataUtil;
@@ -54,6 +61,26 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 	
 	public Object queryForObject(String sql, Class<?> clazz) {
 		return jdbcTemplate.queryForObject(sql, clazz);
+	}
+	
+	/**
+	 * 执行插入操作，并且返回此条记录的id
+	 * @param sql 执行的sql语句
+	 * @param callback 为PreparedStatement设置参数的回调函数
+     * @param object 传递给回调函数的参数
+	 * @return 生成的自增id
+	 */
+	@Override
+	public int getKeyHelper(final String sql, final GenerateKeyCallback callback, final Object object) {
+		KeyHolder keyHolder = new GeneratedKeyHolder();
+		jdbcTemplate.update(new PreparedStatementCreator() {
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+                callback.setParameters(ps, object);
+                return ps;
+            }
+        }, keyHolder);
+		return keyHolder.getKey().intValue();
 	}
 	
 	public PageBean<T> pageSearch(int pageCode, int pageSize, int pageNumber,

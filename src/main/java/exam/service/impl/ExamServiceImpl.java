@@ -6,6 +6,7 @@ import exam.dao.ExamDao;
 import exam.dao.base.GenerateKeyCallback;
 import exam.model.Clazz;
 import exam.model.Question;
+import exam.model.QuestionType;
 import exam.util.DataUtil;
 
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import exam.dao.base.BaseDao;
 import exam.model.Exam;
 import exam.service.ExamService;
+import exam.service.QuestionService;
 import exam.service.base.BaseServiceImpl;
 
 import java.sql.PreparedStatement;
@@ -26,6 +28,8 @@ import java.util.List;
 public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamService {
 
     private ExamDao examDao;
+    @Resource
+    private QuestionService questionService;
 
 	@Resource(name = "examDao")
 	@Override
@@ -154,6 +158,32 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
         sql = "delete from exam where id = " + examId;
         examDao.executeSql(sql);
         //TODO 删除此试卷的成绩
+    }
+    
+    @Override
+    public Exam findWithQuestions(Exam exam) {
+    	//先查出试题
+    	Exam result = examDao.find(exam).get(0);
+    	List<Question> questions = questionService.findByExam(result.getId());
+    	return filterQuestions(result, questions);
+    }
+    
+    /**
+     * 从全部题目中筛选出单选题、多选题以及判断题并且设置到exam中去
+     * @param exam
+     * @param questions
+     */
+    private Exam filterQuestions(Exam exam, List<Question> questions) {
+    	questions.stream().forEach(question -> {
+    		if (question.getType() == QuestionType.SINGLE) {
+    			exam.addSingleQuestion(question);
+    		} else if (question.getType() == QuestionType.MULTI) {
+    			exam.addMultiQuestion(question);
+    		} else {
+    			exam.addJudgeQuestion(question);
+    		}
+    	});
+    	return exam;
     }
     
     private static class QuestionGenerateKeyCallback implements GenerateKeyCallback {

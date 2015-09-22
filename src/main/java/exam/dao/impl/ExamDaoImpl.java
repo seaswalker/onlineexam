@@ -1,21 +1,16 @@
 package exam.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
+import java.util.List;
 
 import exam.model.ExamStatus;
-import org.springframework.jdbc.core.PreparedStatementCreator;
+
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import exam.dao.ExamDao;
 import exam.dao.base.BaseDaoImpl;
-import exam.dao.base.GenerateKeyCallback;
 import exam.model.Exam;
 
 @Repository("examDao")
@@ -42,26 +37,20 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements ExamDao {
 			}
 		};
 	}
-
-	/**
-	 * 执行插入操作，并且返回此条记录的id
-	 * @param sql 执行的sql语句
-	 * @param callback 为PreparedStatement设置参数的回调函数
-     * @param object 传递给回调函数的参数
-	 * @return 生成的自增id
-	 */
-	public int getKeyHelper(final String sql, final GenerateKeyCallback callback, final Object object) {
-		KeyHolder keyHolder = new GeneratedKeyHolder();
-		jdbcTemplate.update(new PreparedStatementCreator() {
-            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-                callback.setParameters(ps, object);
-                return ps;
-            }
-        }, keyHolder);
-		return keyHolder.getKey().intValue();
+	
+	@Override
+	public List<Exam> find(Exam entity) {
+		String sql = ExamDaoImpl.sql;
+		if (entity != null) {
+			StringBuilder where = new StringBuilder(" where 1 = 1 ");
+			if (entity.getId() > 0) {
+				where.append(" and id = ").append(entity.getId());
+			}
+			sql += where.toString();
+		}
+		return jdbcTemplate.query(sql, rowMapper);
 	}
-
+	
 	public String getCountSql() {
 		return countSql;
 	}

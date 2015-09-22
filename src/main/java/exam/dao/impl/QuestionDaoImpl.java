@@ -33,7 +33,7 @@ public class QuestionDaoImpl extends BaseDaoImpl<Question> implements QuestionDa
 			return question;
 		}
 	};
-
+	
 	@Override
 	public String getCountSql() {
 		return countSql;
@@ -48,5 +48,6 @@ public class QuestionDaoImpl extends BaseDaoImpl<Question> implements QuestionDa
 	public RowMapper<Question> getRowMapper() {
 		return rowMapper;
 	}
+
 
 }

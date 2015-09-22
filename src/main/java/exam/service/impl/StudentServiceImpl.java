@@ -64,5 +64,12 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
 		List<Student> result = studentDao.queryBySQL(sql);
 		return DataUtil.isValid(result) ? result.get(0) : null;
 	}
+	
+	@Override
+	public void modifyPassword(String id, String newPassword) {
+		String sql = "update student set password = '" + StringUtil.md5(newPassword) + "' where id = '" +
+				id + "'";
+		studentDao.executeSql(sql);
+	}
 
 }

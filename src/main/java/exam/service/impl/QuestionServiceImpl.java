@@ -73,6 +73,12 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
 		// TODO 暂不实现，因为涉及到了答案表
 	}
 	
+	@Override
+	public List<Question> findByExam(int eid) {
+		String sql = "select * from question where id in (select qid from exam_question where eid = " + eid + ")";
+		return questionDao.queryBySQL(sql);
+	}
+	
 	/**
 	 * 内部使用，根据题目类型和教师获取所有题目
 	 * @param tid 教师id

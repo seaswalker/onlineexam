@@ -1,7 +1,9 @@
 package exam.intercepter;
 
 import exam.model.role.Manager;
+import exam.model.role.Student;
 import exam.model.role.Teacher;
+
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,8 +40,13 @@ public class LoginIntercepter extends HandlerInterceptorAdapter {
                 return false;
             }
             return true;
+        } else if (path.indexOf("student") != -1) {
+        	Student student = (Student) session.getAttribute("student");
+        	if (student == null) {
+        		 response.sendRedirect(contextPath + "/login");
+                 return false;
+        	}
         }
-        //TODO 暂时没有处理学生页面
         return true;
     }
 }

@@ -29,5 +29,12 @@ public interface StudentService extends BaseService<Student> {
 	 * @return 登录成功返回学生对象，否则null
 	 */
 	public Student login(String username, String password);
+
+	/**
+	 * 修改密码
+	 * @param id 学生id
+	 * @param newPassword 未经过MD5加密的密码
+	 */
+	public void modifyPassword(String id, String newPassword);
 	
 }

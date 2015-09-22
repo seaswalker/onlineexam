@@ -1,0 +1,44 @@
+/*参加考试*/
+.main {
+	width: 980px;
+	margin: 0px auto 0px;
+}
+/*题型标识*/
+.title {
+	font-size: 24px;
+	font-weight: bold;
+}
+/*一道题目*/
+.question {
+	margin-left: 50px;
+	margin-top: 20px;
+}
+/*题目标题*/
+.question-title {
+	font-size: 16px;
+}
+.question-option {
+	list-style: none;
+	margin-top: 10px;
+	margin-left: 20px;
+	padding: 0px;
+}
+.question-option li {
+	line-height: 25px;
+}
+.question-answer {
+	margin-left: 20px;
+}
+.question-answer input {
+	margin-left: 5px;
+}
+.container {
+	margin-bottom: 20px;
+}
+.time {
+	margin-bottom: 20px;
+	text-align: center;
+}
+.time-limit, #count-time {
+	color: red;
+}

@@ -35,6 +35,16 @@ public interface BaseDao<T> {
 	Object queryForObject(String sql, Class<?> clazz);
 	
 	/**
+     * 执行sql语句并且返回生成的主键id
+     * @param sql
+     * @param callback createPreparedStatement方法需要返回一个PreparedStatement，而PreparedStatement需要设置参数
+     * @param param sql的?由param内的属性替换
+     * @return 主键id
+     */
+    int getKeyHelper(final String sql, final GenerateKeyCallback callback, final Object param);
+    
+	
+	/**
 	 * 获取用于统计记录数量的sql语句
 	 */
 	String getCountSql();
