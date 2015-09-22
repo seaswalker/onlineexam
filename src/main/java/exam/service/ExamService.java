@@ -11,6 +11,6 @@ public interface ExamService extends BaseService<Exam> {
      * @param status
      * @param days
      */
-    void switchStatus(int examId, String status, Integer days);
-
+    public void switchStatus(int examId, String status, Integer days);
+    
 }

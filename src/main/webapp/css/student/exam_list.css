@@ -1,0 +1,15 @@
+.main {
+	width: 980px;
+	margin: 0px auto 0px;
+}
+.running {
+	color: green;
+}
+.runned {
+	color: red;
+}
+/*·ÖÒ³*/
+.page {
+	margin: 20px auto 0px;
+	text-align: center;
+}

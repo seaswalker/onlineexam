@@ -218,7 +218,7 @@ public abstract class DataUtil {
         //解析适用的班级
 		//TODO 暂且只实现添加一个班级，未来可能改进为添加整个年级、专业
 		Clazz clazz = new Clazz();
-		clazz.setCno(setting.getInt("clazz"));
+		clazz.setId(setting.getInt("clazz"));
 		clazz.setGrade(new Grade(setting.getInt("grade")));
 		clazz.setMajor(new Major(setting.getInt("major")));
 		exam.addClazz(clazz);

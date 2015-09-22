@@ -7,6 +7,7 @@ import exam.dao.base.GenerateKeyCallback;
 import exam.model.Clazz;
 import exam.model.Question;
 import exam.util.DataUtil;
+
 import org.springframework.stereotype.Service;
 
 import exam.dao.base.BaseDao;
@@ -154,7 +155,7 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
         examDao.executeSql(sql);
         //TODO 删除此试卷的成绩
     }
-
+    
     private static class QuestionGenerateKeyCallback implements GenerateKeyCallback {
 
         @Override

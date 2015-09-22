@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import exam.model.role.Manager;
+import exam.model.role.Student;
 import exam.model.role.Teacher;
 import exam.service.ManagerService;
+import exam.service.StudentService;
 import exam.service.TeacherService;
 import exam.util.DataUtil;
 import exam.util.StringUtil;
@@ -30,6 +32,8 @@ public class LoginController {
 	private ManagerService managerService;
 	@Resource
 	private TeacherService teacherService;
+	@Resource
+	private StudentService studentService;
 
 	/**
 	 * 转到登录页面
@@ -45,10 +49,10 @@ public class LoginController {
 	 */
 	@RequestMapping("/login/do")
 	public String doLogin(String username, String password, String verify, int role, Model model, HttpSession session) {
-		if(!DataUtil.isValid(username, password) || !DataUtil.checkVerify(verify, session)) {
+		if (!DataUtil.isValid(username, password) || !DataUtil.checkVerify(verify, session)) {
 			return "error";
 		}
-		if(role == 3) {
+		if (role == 3) {
 			Manager manager = managerService.login(username, StringUtil.md5(password));
 			if(manager == null) {
 				model.addAttribute("error", "用户名或密码错误");
@@ -57,15 +61,24 @@ public class LoginController {
 			manager.setPassword(password);
 			session.setAttribute("admin", manager);
 			return "redirect:/admin/index";
-		}else if(role == 2) {
+		} else if(role == 2) {
 			Teacher teacher = teacherService.login(username, password);
-			if(teacher == null) {
+			if (teacher == null) {
 				model.addAttribute("error", "用户名或密码错误");
 				return "login";
 			}
 			teacher.setPassword(password);
 			session.setAttribute("teacher", teacher);
 			return "redirect:/teacher/index";
+		} else if (role == 1) {
+			Student student = studentService.login(username, password);
+			if (student == null) {
+				model.addAttribute("error", "用户名或密码错误");
+				return "login";
+			}
+			student.setPassword(password);
+			session.setAttribute("student", student);
+			return "redirect:/student/index";
 		}
 		return "";
 	}

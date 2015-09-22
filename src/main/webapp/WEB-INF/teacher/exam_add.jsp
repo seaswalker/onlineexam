@@ -230,8 +230,8 @@
 							<td colspan="2"></td>
 							<td>答案:</td>
 							<td>
-								<input type="radio" value="1" name="judge-answer-1" checked="checked">对&nbsp;&nbsp;
-								<input type="radio" value="0" name="judge-answer-1">错
+								<input type="radio" value="0" name="judge-answer-1" checked="checked">对&nbsp;&nbsp;
+								<input type="radio" value="1" name="judge-answer-1">错
 							</td>
 						</tr>
 						<tr>
@@ -472,8 +472,8 @@
                         <td colspan="2"></td>
                         <td>答案:</td>
                         <td>
-                            <input type="radio" value="1" checked="checked">对&nbsp;&nbsp;
-                            <input type="radio" value="0">错
+                            <input type="radio" value="0" checked="checked">对&nbsp;&nbsp;
+                            <input type="radio" value="1">错
                         </td>
                     </tr>
                     <tr>

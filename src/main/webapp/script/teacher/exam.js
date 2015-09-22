@@ -133,14 +133,10 @@ function setValidators() {
     var $gradeSelect = $("#grade_select");
     $gradeSelect.blur(function(event) {
     	selectCheck.call(this, event.target, "请选择年级");
-    }).change(function() {
-    	loadMajor(this);
     }).focus(clearErrorInfo);
     var $majorSelect = $("#major_select");
     $majorSelect.blur(function(event) {
     	selectCheck.call(this, event.target, "请选择专业");
-    }).change(function() {
-    	loadClazz(this);
     }).focus(clearErrorInfo);
     var $clazzSelect = $("#clazz_select");
     $clazzSelect.blur(function(event) {
@@ -206,6 +202,13 @@ function setListeners() {
 	});
 	//保存按钮
 	$("#save-btn").click(checkAll);
+	//设置专业和班级加载器
+	$("#grade_select").change(function() {
+		loadMajor(this);
+	});
+	$("#major_select").change(function() {
+		loadClazz(this);
+	});
 }
 
 /**
@@ -326,14 +329,14 @@ function submit() {
 		};
 		var question = {}, typeStr = reflection[type];
 		question.id = $container.find("input[name=question-id]").val();
-		question.title = $container.find("input[name=" + typeStr + "_title]").val();
-		question.point = $container.find("input[name=" + typeStr + "_point]").val();
+		question.title = $container.find("input[name=" + typeStr + "_title]").val().replace(/"/g, "'");
+		question.point = $container.find("input[name=" + typeStr + "_point]").val().replace(/"/g, "'");
 		//判断题不需要选项
 		if (type < 3) {
-			question.optionA = $container.find("input[name=" + typeStr + "_optionA]").val();
-			question.optionB = $container.find("input[name=" + typeStr + "_optionB]").val();
-			question.optionC = $container.find("input[name=" + typeStr + "_optionC]").val();
-			question.optionD = $container.find("input[name=" + typeStr + "_optionD]").val();
+			question.optionA = $container.find("input[name=" + typeStr + "_optionA]").val().replace(/"/g, "'");
+			question.optionB = $container.find("input[name=" + typeStr + "_optionB]").val().replace(/"/g, "'");
+			question.optionC = $container.find("input[name=" + typeStr + "_optionC]").val().replace(/"/g, "'");
+			question.optionD = $container.find("input[name=" + typeStr + "_optionD]").val().replace(/"/g, "'");
 		}
 		//默认当作单选题
 		if (fn == null) {
@@ -373,7 +376,7 @@ function submit() {
 	result.setting.grade = $("#grade_select").val();
 	result.setting.major = $("#major_select").val();
 	result.setting.clazz = $("#clazz_select").val();
-	result.setting.title = $otherSetting.find("input[name=exam_title]").val();
+	result.setting.title = $otherSetting.find("input[name=exam_title]").val().replace(/"/g, "'");
 	if ($otherSetting.find("input:checked").val() === "1") {
 		result.setting.status = 1;
 		result.setting.runTime = $otherSetting.find("input[name=run_time]").val();

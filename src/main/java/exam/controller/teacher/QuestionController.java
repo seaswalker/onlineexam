@@ -190,6 +190,7 @@ public class QuestionController {
 			}
 			json.addElement("result", "1").addElement("data", array);
 		}
+System.out.println(json.toString());
 		DataUtil.writeJSON(json, response);
 	}
 	

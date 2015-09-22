@@ -22,4 +22,12 @@ public interface StudentService extends BaseService<Student> {
 	 */
 	public void update(String id, String name, int cid);
 	
+	/**
+	 * 学生登录
+	 * @param username 用户名
+	 * @param password 密码(未经过MD5加密)
+	 * @return 登录成功返回学生对象，否则null
+	 */
+	public Student login(String username, String password);
+	
 }
