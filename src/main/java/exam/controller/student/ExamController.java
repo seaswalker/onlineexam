@@ -60,13 +60,20 @@ public class ExamController {
 	}
 	
 	/**
-	 * 学生参见考试，返回指定的试题
+	 * 学生参加考试，返回指定的试题
 	 * @param eid 试题id
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping("/{eid}")
 	public String take(@PathVariable Integer eid, Model model, HttpServletRequest request) {
+		//检查该学生是否已经参加过此次考试
+		HttpSession session = request.getSession();
+		String sid = ((Student) session.getAttribute("student")).getId();
+		if (examService.hasJoined(eid, sid)) {
+			model.addAttribute("message", "您已参加过此次考试");
+			return "error";
+		}
 		Exam exam = new Exam();
 		exam.setId(eid);
 		Exam result = examService.findWithQuestions(exam);

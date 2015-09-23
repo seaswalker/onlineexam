@@ -17,6 +17,7 @@ import exam.service.ExamService;
 import exam.service.QuestionService;
 import exam.service.base.BaseServiceImpl;
 
+import java.math.BigInteger;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -186,6 +187,14 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
     	return exam;
     }
     
+    @Override
+    public boolean hasJoined(int eid, String sid) {
+    	String sql = "select count(id) from examinationresult where eid = " + eid + " and sid = '" + 
+    			sid + "'";
+    	BigInteger count = (BigInteger) examDao.queryForObject(sql, BigInteger.class);
+    	return count.intValue() > 0;
+    }
+    
     private static class QuestionGenerateKeyCallback implements GenerateKeyCallback {
 
         @Override
@@ -201,6 +210,5 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
             ps.setString(8, question.getAnswer());
             ps.setString(9, question.getTeacher().getId());
         }
-
     }
 }

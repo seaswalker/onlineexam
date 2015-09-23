@@ -28,5 +28,10 @@ public class ExamServiceTest extends Base {
     	Exam result = examService.findWithQuestions(exam);
     	System.out.println(result);
     }
+    
+    @Test
+    public void hasJoined() {
+    	System.out.println(examService.hasJoined(4, "201201050538"));
+    }
 
 }

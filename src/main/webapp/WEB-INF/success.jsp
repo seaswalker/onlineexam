@@ -15,8 +15,6 @@
 <base href="<%=basePath%>">
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/head.css">
-<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 <style type="text/css">
 	.main {
 		width: 980px;
@@ -40,20 +38,6 @@
 		font-weight: bold;
 	}
 </style>
-<script type="text/javascript">
-	$(function() {
-		var $second = $("#second"),
-			num = 0;
-		var id = setInterval(function() {
-			if ((num = parseInt($second.html())) > 0) {
-				$second.html(-- num);
-			} else {
-				clearInterval(id);
-				window.location.href = "${url}";
-			}
-		}, 1000);
-	});
-</script>
 </head>
 <body>
 	<!--头部-->
@@ -71,4 +55,20 @@
 		</div>
 	</div>
 </body>
+<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+	$(function() {
+		var $second = $("#second"),
+			num = 0;
+		var id = setInterval(function() {
+			if ((num = parseInt($second.html())) > 0) {
+				$second.html(-- num);
+			} else {
+				clearInterval(id);
+				window.location.href = "${url}";
+			}
+		}, 1000);
+	});
+</script>
 </html>

@@ -20,4 +20,12 @@ public interface ExamService extends BaseService<Exam> {
      */
     public Exam findWithQuestions(Exam exam);
     
+    /**
+     * 判断该学会是否已经参加过此考试
+     * @param eid 试卷id
+     * @param sid 学生id
+     * @return 参加过返回true
+     */
+    public boolean hasJoined(int eid, String sid);
+    
 }
