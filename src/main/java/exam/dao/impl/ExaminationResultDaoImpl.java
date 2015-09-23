@@ -2,12 +2,16 @@ package exam.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import exam.dao.ExaminationResultDao;
 import exam.dao.base.BaseDaoImpl;
+import exam.dto.ERView;
+import exam.dto.ERView.ERViewQuestion;
 import exam.model.ExaminationResult;
 
 @Repository("examinationResultDao")
@@ -27,9 +31,20 @@ public class ExaminationResultDaoImpl extends BaseDaoImpl<ExaminationResult> imp
 				er.setExamId(rs.getInt("eid"));
 				er.setExamTitle(rs.getString("examtitle"));
 				er.setStudentId(rs.getString("sid"));
+				er.setTime(rs.getTimestamp("time"));
 				return er;
 			}
 		};
+	}
+	
+	@Override
+	public ERView query(String sql, ResultSetExtractor<ERView> resultSetExtractor) {
+		return jdbcTemplate.query(sql, resultSetExtractor);
+	}
+	
+	@Override
+	public List<ERViewQuestion> query(String sql, RowMapper<ERViewQuestion> rowMapper) {
+		return jdbcTemplate.query(sql, rowMapper);
 	}
 	
 	@Override

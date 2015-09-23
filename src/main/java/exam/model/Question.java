@@ -94,24 +94,32 @@ public class Question implements Serializable, JSONAble {
 	public String getAnswer() {
 		return answer;
 	}
+	
+	protected String generateFacade(String answer) {
+		String facade = null;
+		//设置其门面
+		if (this.type == QuestionType.SINGLE) {
+			facade = answerFacades[Integer.parseInt(answer)];
+		} else if (this.type == QuestionType.MULTI) {
+			String[] answers = answer.split(",");
+			StringBuilder sb = new StringBuilder();
+			for (String a : answers) {
+				sb.append(answerFacades[Integer.parseInt(a)]).append(",");
+			}
+			facade = sb.deleteCharAt(sb.length() - 1).toString();
+		} else {
+			facade = judgeAnserFacades[Integer.parseInt(answer)];
+		}
+		return facade;
+	}
+	
 	/**
-	 * TODO 此方法需要先设置题型，这是一个隐藏的bug?
+	 * 此方法需要先设置题型，这是一个隐藏的bug?
 	 */
 	public void setAnswer(String answer) {
 		this.answer = answer;
-		//设置其门面
-		if (this.type == QuestionType.SINGLE) {
-			this.answerFacade = answerFacades[Integer.parseInt(answer)];
-		} else if (this.type == QuestionType.MULTI) {
-			String[] answers = this.answer.split(",");
-			StringBuilder facade = new StringBuilder();
-			for (String a : answers) {
-				facade.append(answerFacades[Integer.parseInt(a)]).append(",");
-			}
-			this.answerFacade = facade.deleteCharAt(facade.length() - 1).toString();
-		} else {
-			this.answerFacade = judgeAnserFacades[Integer.parseInt(answer)];
-		}
+		this.answerFacade = generateFacade(answer);
+		
 	}
 	public QuestionType getType() {
 		return type;

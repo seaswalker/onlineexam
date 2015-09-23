@@ -11,7 +11,7 @@
 %>
 <html>
 <head>
-<title>主页</title>
+<title>试卷</title>
 <meta charset="UTF-8">
 <base href="<%=basePath%>">
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">

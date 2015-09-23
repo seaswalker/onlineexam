@@ -16,6 +16,7 @@
 /*题目标题*/
 .question-title {
 	font-size: 16px;
+	background-color: #F8F8F8;
 }
 .question-option {
 	list-style: none;
@@ -41,4 +42,17 @@
 }
 .time-limit, #count-time {
 	color: red;
+}
+/*回答错误还是正确的提示信息*/
+.right {
+	color: green;
+	font-size: 16px;
+	display: inline-block;
+	margin-left: 20px;
+}
+.error {
+	color: red;
+	font-size: 16px;
+	display: inline-block;
+	margin-left: 20px;
 }
