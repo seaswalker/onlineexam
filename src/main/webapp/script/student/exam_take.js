@@ -56,11 +56,13 @@ $(function() {
 		result.eid = $("#exam-id").val();
 		result.questions = [];
 		//处理单选题
-		var $singles = $("#single-container").find("div.question"), id, answer, $question;
+		var $singles = $("#single-container").find("div.question"), id, answer, $question, $checkeds;
 		$.each($singles, function(index, question) {
 			$question = $(question);
 			id = $question.find("input[name=question-id]").val();
-			answer = $question.find("input:checked").val();
+			//如果没有选中，那么
+			$checkeds = $question.find("input:checked");
+			answer = $checkeds.length > 0 ? $checkeds.val() : "";
 			result.questions.push({
 				id: id,
 				answer: answer
@@ -84,7 +86,8 @@ $(function() {
 		$("#judge-container").find("div.question").each(function(index, question) {
 			$question = $(question);
 			id = $question.find("input[name=question-id]").val();
-			answer = $question.find("input:checked").val();
+			$checkeds = $question.find("input:checked");
+			answer = $checkeds.length > 0 ? $checkeds.val() : "";
 			result.questions.push({
 				id: id,
 				answer: answer

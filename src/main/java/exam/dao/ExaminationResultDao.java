@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 
 import exam.dao.base.BaseDao;
-import exam.dto.ERView;
 import exam.model.ExaminationResult;
 
 public interface ExaminationResultDao extends BaseDao<ExaminationResult> {
@@ -18,7 +17,7 @@ public interface ExaminationResultDao extends BaseDao<ExaminationResult> {
 	 * @param resultSetExtractor 用来设置返回值
 	 * @return
 	 */
-	public ERView query(String sql, ResultSetExtractor<ERView> resultSetExtractor);
+	public <T> T query(String sql, ResultSetExtractor<T> resultSetExtractor);
 	
 	/**
 	 * 查出所有的ERViewQuestion
@@ -26,6 +25,6 @@ public interface ExaminationResultDao extends BaseDao<ExaminationResult> {
 	 * @param rowMapper
 	 * @return
 	 */
-	public List<ERView.ERViewQuestion> query(String sql, RowMapper<ERView.ERViewQuestion> rowMapper);
+	public <T> List<T> query(String sql, RowMapper<T> rowMapper);
 	
 }

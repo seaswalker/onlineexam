@@ -140,7 +140,7 @@
 		</div>
 		<hr />
 		<div style="text-align: center;margin-bottom: 20px;">
-			<button onclick="javascript:window.history.go(-1);">返回</button>
+			<button class="btn btn-default" onclick="javascript:window.history.go(-1);">返回</button>
 		</div>
 	</div>
 </body>

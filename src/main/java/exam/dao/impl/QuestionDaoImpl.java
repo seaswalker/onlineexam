@@ -23,7 +23,7 @@ public class QuestionDaoImpl extends BaseDaoImpl<Question> implements QuestionDa
 			Question question = new Question();
 			question.setId(rs.getInt("id"));
 			question.setOptionA(rs.getString("optionA"));
-			question.setOptionB(rs.getString("optionD"));
+			question.setOptionB(rs.getString("optionB"));
 			question.setOptionC(rs.getString("optionC"));
 			question.setOptionD(rs.getString("optionD"));
 			question.setPoint(rs.getInt("point"));

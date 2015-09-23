@@ -3,6 +3,7 @@ package exam.model;
 import java.io.Serializable;
 
 import exam.model.role.Teacher;
+import exam.util.DataUtil;
 import exam.util.json.JSON;
 import exam.util.json.JSONAble;
 import exam.util.json.JSONObject;
@@ -96,19 +97,22 @@ public class Question implements Serializable, JSONAble {
 	}
 	
 	protected String generateFacade(String answer) {
-		String facade = null;
-		//设置其门面
-		if (this.type == QuestionType.SINGLE) {
-			facade = answerFacades[Integer.parseInt(answer)];
-		} else if (this.type == QuestionType.MULTI) {
-			String[] answers = answer.split(",");
-			StringBuilder sb = new StringBuilder();
-			for (String a : answers) {
-				sb.append(answerFacades[Integer.parseInt(a)]).append(",");
+		String facade = "";
+		//防止交白卷时报错
+		if (DataUtil.isValid(answer)) {
+			//设置其门面
+			if (this.type == QuestionType.SINGLE) {
+				facade = answerFacades[Integer.parseInt(answer)];
+			} else if (this.type == QuestionType.MULTI) {
+				String[] answers = answer.split(",");
+				StringBuilder sb = new StringBuilder();
+				for (String a : answers) {
+					sb.append(answerFacades[Integer.parseInt(a)]).append(",");
+				}
+				facade = sb.deleteCharAt(sb.length() - 1).toString();
+			} else {
+				facade = judgeAnserFacades[Integer.parseInt(answer)];
 			}
-			facade = sb.deleteCharAt(sb.length() - 1).toString();
-		} else {
-			facade = judgeAnserFacades[Integer.parseInt(answer)];
 		}
 		return facade;
 	}

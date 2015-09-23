@@ -10,8 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import exam.dao.ExaminationResultDao;
 import exam.dao.base.BaseDaoImpl;
-import exam.dto.ERView;
-import exam.dto.ERView.ERViewQuestion;
 import exam.model.ExaminationResult;
 
 @Repository("examinationResultDao")
@@ -38,12 +36,12 @@ public class ExaminationResultDaoImpl extends BaseDaoImpl<ExaminationResult> imp
 	}
 	
 	@Override
-	public ERView query(String sql, ResultSetExtractor<ERView> resultSetExtractor) {
+	public <T> T query(String sql, ResultSetExtractor<T> resultSetExtractor) {
 		return jdbcTemplate.query(sql, resultSetExtractor);
 	}
 	
 	@Override
-	public List<ERViewQuestion> query(String sql, RowMapper<ERViewQuestion> rowMapper) {
+	public <T> List<T> query(String sql, RowMapper<T> rowMapper) {
 		return jdbcTemplate.query(sql, rowMapper);
 	}
 	

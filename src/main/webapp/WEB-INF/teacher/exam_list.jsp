@@ -66,7 +66,7 @@
 								</c:when>
 								<c:otherwise>
 									<td>
-										运行结束(<a href="#">成绩统计</a>)
+										运行结束(<a href="teacher/exam/statistics">成绩统计</a>)
 									</td>
 									<td>
 										<button class="btn btn-success btn-xs" name="show-run-time-btn">重新运行</button>
@@ -132,7 +132,7 @@
 		</div>
 		<table>
 			<tr>
-				<td>运行天数::</td>
+				<td>运行天数:</td>
 				<td>
 					<input type="text" name="id">
 				</td>

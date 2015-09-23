@@ -7,13 +7,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import exam.dto.StatisticsData;
 import exam.model.Exam;
 import exam.model.page.PageBean;
 import exam.model.role.Teacher;
 import exam.service.ExamService;
+import exam.service.ExaminationResultService;
 import exam.util.DataUtil;
 import exam.util.json.JSON;
 import exam.util.json.JSONObject;
@@ -29,6 +32,8 @@ public class ExamController {
 	
 	@Resource
 	private ExamService examService;
+	@Resource
+	private ExaminationResultService examinationResultService;
 	@Value("#{properties['exam.pageSize']}")
 	private int pageSize;
 	@Value("#{properties['exam.pageNumber']}")
@@ -115,6 +120,33 @@ public class ExamController {
             json.addElement("result", "1");
         }
         DataUtil.writeJSON(json, response);
+    }
+    
+    /**
+     * 转向统计信息页面
+     * 这里不直接统计，转而先返回到一个页面，再用ajax请求的原因是防止长时间后才会给客户端相应
+     * @param eid 试卷id
+     */
+    @RequestMapping("/statistics/{eid}")
+    public String toStatistics(@PathVariable Integer eid, Model model) {
+    	model.addAttribute("eid", eid);
+    	return "teacher/statistics";
+    }
+    
+    /**
+     * 处理ajax请求，真正实现统计功能
+     * 客户端需要展现:
+     * 1.一个饼图，包含分数低于总分60%的百分比，60%-80%的百分比，80%-90%，90%-100%四个区间
+     * 2.一个柱状图，上述四个区间各自的人数
+     * 3.最高分、最低分及考生姓名
+     * 4.试卷题目、参加考试的总人数
+     * @param eid 试卷id
+     */
+    @RequestMapping("/statistics/do{eid}")
+    public void statistics(@PathVariable Integer eid) {
+    	//获得统计信息
+    	StatisticsData data = examinationResultService.getStatisticsData(eid);
+    	//生成统计图
     }
 
 }

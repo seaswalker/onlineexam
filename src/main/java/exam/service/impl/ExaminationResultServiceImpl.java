@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -18,6 +19,7 @@ import exam.dao.base.BaseDao;
 import exam.dao.base.GenerateKeyCallback;
 import exam.dto.ERView;
 import exam.dto.MarkedQuestion;
+import exam.dto.StatisticsData;
 import exam.dto.ERView.ERViewQuestion;
 import exam.model.ExaminationResult;
 import exam.model.QuestionType;
@@ -95,7 +97,7 @@ public class ExaminationResultServiceImpl extends BaseServiceImpl<ExaminationRes
 				question.setAnswer(rs.getString("answer"));
 				question.setId(rs.getInt("id"));
 				question.setOptionA(rs.getString("optionA"));
-				question.setOptionB(rs.getString("optionD"));
+				question.setOptionB(rs.getString("optionB"));
 				question.setOptionC(rs.getString("optionC"));
 				question.setOptionD(rs.getString("optionD"));
 				question.setPoint(rs.getInt("point"));
@@ -106,6 +108,76 @@ public class ExaminationResultServiceImpl extends BaseServiceImpl<ExaminationRes
 			}
 		});
 		return filterQuestions(questions, view);
+	}
+	
+	@Override
+	public StatisticsData getStatisticsData(int eid) {
+		String sql = "select er.sid, er.point, er.examtitle, s.name, e.points from examinationresult er join student s on s.id = er.sid join exam e on e.id = er.eid where er.eid = "
+				+ eid;
+		List<Helper> helpers = examinationResultDao.query(sql, new RowMapper<Helper>() {
+			@Override
+			public Helper mapRow(ResultSet rs, int rowNum) throws SQLException {
+				return ExaminationResultServiceImpl.Helper.Builder().name(rs.getString("name"))
+						.point(rs.getInt("point")).sid(rs.getString("sid")).title(rs.getString("examtitle")).total(rs.getInt("points"));
+			}
+		});
+		return prepareData(helpers);
+	}
+	
+	/**
+	 * 为StatisticsData设置数据
+	 * @param helpers
+	 * @return
+	 */
+	private StatisticsData prepareData(List<Helper> helpers) {
+		StatisticsData data = new StatisticsData();
+		Helper first = helpers.get(0);
+		int totalPoint = first.total;
+		int max = first.point, min = first.point, point = 0, sp = (int)(totalPoint * 0.6), ep = (int)(totalPoint * 0.8), np = (int)(totalPoint * 0.9);
+		List<String> maxNames  = new ArrayList<String>(), minNames = new ArrayList<>();
+		data.setPersonCount(helpers.size());
+		data.setTitle(first.examTitle);
+		data.setExamPoints(totalPoint);
+		//统计各分数段成绩
+		data.setSixtyPoint(sp);
+		data.setEighttyPoint(ep);
+		data.setNinetyPoint(np);
+		for (Helper helper : helpers) {
+			point = helper.point;
+			//寻找最高分和最低分
+			if (point > max) {
+				max = point;
+			} else if (point < min) {
+				min = point;
+			}
+			//设置分数区间
+			if (point < sp) {
+				data.addUnderSixty(point);
+			} else if (point < ep) {
+				data.addSixtyAndEighty(point);
+			} else if (point < np) {
+				data.addEightyAndNinety(point);
+			} else {
+				data.addAboveNinety(point);
+			}
+		}
+		//第二遍循环搜索最高分和最低分的名字
+		for (Helper helper : helpers) {
+			if (helper.point == max) {
+				maxNames.add(helper.name);
+			} else if (helper.point == min) {
+				minNames.add(helper.name);
+			}
+		}
+		//最高分和最低分相等的极端情况
+		if (max == min) {
+			minNames = maxNames;
+		}
+		data.setHighestPoint(max);
+		data.setLowestPoint(min);
+		data.addHightestName(maxNames);
+		data.addLowestNames(minNames);
+		return data;
 	}
 	
 	/**
@@ -124,6 +196,59 @@ public class ExaminationResultServiceImpl extends BaseServiceImpl<ExaminationRes
 			}
 		});
 		return view;
+	}
+	
+	/**
+	 * 内部类，封装用作考试成绩统计的一条记录，不用ExaminationResult的原因是
+	 * 需要查出考生的姓名以便统计最高分和最低分
+	 * @author skywalker
+	 *
+	 */
+	@SuppressWarnings("unused")
+	private static class Helper {
+		
+		String sid;
+		int point;
+		//改试卷的总分
+		int total;
+		String examTitle;
+		String name;
+		
+		private Helper() {}
+		
+		/**
+		 * 构造器模式
+		 * @return
+		 */
+		public static Helper Builder() {
+			return new Helper();
+		}
+		
+		public Helper sid(String sid) {
+			this.sid = sid;
+			return this;
+		}
+		
+		public Helper point(int point) {
+			this.point = point;
+			return this;
+		}
+		
+		public Helper name(String name) {
+			this.name = name;
+			return this;
+		}
+		
+		public Helper title(String title) {
+			this.examTitle = title;
+			return this;
+		}
+		
+		public Helper total(int total) {
+			this.total = total;
+			return this;
+		}
+		
 	}
 
 }
