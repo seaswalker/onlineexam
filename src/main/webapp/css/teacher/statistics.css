@@ -1,10 +1,38 @@
 /*成绩统计*/
-.wait {
+#wait {
 	width: 980px;
 	margin: 100px auto 0px;
 	text-align: center;
 }
-.wait img {
+#wait img {
 	width: 50px;
 	height: 50px;
+}
+/*饼图*/
+#pie img {
+	width: 500px;
+	height: 500px;
+	vertical-align: top;
+}
+#charts {
+	width: 980px;
+	margin: 0px auto 0px;
+}
+#exam-title {
+	text-align: center;
+	font-size: 20px;
+	font-weight: bold;
+}
+/*显示一个绿色方块*/
+.green-rect, .red-rect {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	vertical-align: middle;
+}
+.green-rect {
+	background-color: green;
+}
+.red-rect {
+	background-color: red;
 }

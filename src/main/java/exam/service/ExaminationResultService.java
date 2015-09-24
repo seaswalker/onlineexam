@@ -1,7 +1,10 @@
 package exam.service;
 
+import java.util.List;
+
 import exam.dto.ERView;
 import exam.dto.StatisticsData;
+import exam.dto.StudentReport;
 import exam.model.ExaminationResult;
 import exam.service.base.BaseService;
 
@@ -20,5 +23,12 @@ public interface ExaminationResultService extends BaseService<ExaminationResult>
 	 * @return
 	 */
 	public StatisticsData getStatisticsData(int eid);
+	
+	/**
+	 * 查询指定试卷的成绩报告数据
+	 * @param eid 试卷id
+	 * @return
+	 */
+	public List<StudentReport> getReportData(int eid);
 	
 }

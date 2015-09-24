@@ -1,5 +1,11 @@
 package exam.controller.teacher;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.List;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,13 +18,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import exam.dto.StatisticsData;
+import exam.dto.StudentReport;
 import exam.model.Exam;
 import exam.model.page.PageBean;
 import exam.model.role.Teacher;
 import exam.service.ExamService;
 import exam.service.ExaminationResultService;
 import exam.util.DataUtil;
+import exam.util.ExcelUtil;
+import exam.util.JFreechartUtil;
 import exam.util.json.JSON;
+import exam.util.json.JSONArray;
 import exam.util.json.JSONObject;
 
 /**
@@ -137,16 +147,74 @@ public class ExamController {
      * 处理ajax请求，真正实现统计功能
      * 客户端需要展现:
      * 1.一个饼图，包含分数低于总分60%的百分比，60%-80%的百分比，80%-90%，90%-100%四个区间
-     * 2.一个柱状图，上述四个区间各自的人数
-     * 3.最高分、最低分及考生姓名
-     * 4.试卷题目、参加考试的总人数
+     * 2.最高分、最低分及考生姓名
+     * 3.试卷题目、参加考试的总人数
      * @param eid 试卷id
+     * @throws IOException 
      */
-    @RequestMapping("/statistics/do{eid}")
-    public void statistics(@PathVariable Integer eid) {
+    @RequestMapping("/statistics/do/{eid}")
+    @ResponseBody
+    public void statistics(@PathVariable Integer eid, HttpServletRequest request, HttpServletResponse response) throws IOException {
     	//获得统计信息
     	StatisticsData data = examinationResultService.getStatisticsData(eid);
     	//生成统计图
+    	String realPath = request.getServletContext().getRealPath("/") + "/";
+    	String imagePath = "charts/pie_" + eid + ".png";
+ 		JFreechartUtil.generateChart(data, realPath + imagePath);
+ 		JSONObject json = new JSONObject();
+ 		json.addElement("result", "1").addElement("url", imagePath).addElement("highestPoint", String.valueOf(data.getHighestPoint()))
+ 			.addElement("lowestPoint", String.valueOf(data.getLowestPoint())).addElement("title", data.getTitle()).addElement("count", String.valueOf(data.getPersonCount()));
+ 		//最高分学生名单
+ 		JSONArray highestNames = new JSONArray();
+ 		for (String name : data.getHighestNames()) {
+ 			highestNames.addElement("name", name);
+ 		}
+ 		json.addElement("highestNames", highestNames);
+ 		JSONArray lowestNames = new JSONArray();
+ 		for (String name : data.getLowestNames()) {
+ 			lowestNames.addElement("name", name);
+ 		}
+ 		json.addElement("lowestNames", lowestNames);
+ 		DataUtil.writeJSON(json, response);
+    }
+    
+    /**
+     * 转向文件下载页面，这么做(而不是直接下载)的原因是生成xls文件可能给客户端造成明显的卡顿感
+     * @param eid 试卷id
+     * @return
+     */
+    @RequestMapping("/download/{eid}")
+    public String download(@PathVariable Integer eid, Model model) {
+    	model.addAttribute("eid", eid);
+    	return "teacher/download";
+    }
+    
+    /**
+     * 生成excel成绩报告单
+     * @param eid 试卷id
+     * @return
+     * @throws IOException 
+     */
+    @RequestMapping("/report/{eid}")
+    @ResponseBody
+    public void report(@PathVariable("eid") Integer eid, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	List<StudentReport> reportData = examinationResultService.getReportData(eid);
+    	String path = request.getServletContext().getRealPath("/") + "/reports/report_" + eid + ".xls";
+    	InputStream is = ExcelUtil.generateExcel(reportData, path); 
+    	//设置文件下载响应头
+    	response.setContentType("application/zip");
+    	//生成下载的文件名,解决中文文件名不显示的问题
+    	String fileName = URLEncoder.encode(reportData.get(0).getTitle() + "成绩单.xls", "UTF-8");
+    	response.addHeader("Content-Disposition", "attachment;filename=" + fileName);
+    	OutputStream os = response.getOutputStream();
+    	byte[] b = new byte[1024];
+    	int i = 0;
+    	while ((i = is.read(b)) > 0) {
+    		os.write(b, 0, i);
+    	}
+    	os.flush();
+    	is.close();
+    	os.close();
     }
 
 }

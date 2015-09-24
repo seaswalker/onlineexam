@@ -20,6 +20,7 @@ import exam.dao.base.GenerateKeyCallback;
 import exam.dto.ERView;
 import exam.dto.MarkedQuestion;
 import exam.dto.StatisticsData;
+import exam.dto.StudentReport;
 import exam.dto.ERView.ERViewQuestion;
 import exam.model.ExaminationResult;
 import exam.model.QuestionType;
@@ -248,7 +249,23 @@ public class ExaminationResultServiceImpl extends BaseServiceImpl<ExaminationRes
 			this.total = total;
 			return this;
 		}
-		
+	}
+	
+	@Override
+	public List<StudentReport> getReportData(int eid) {
+		String sql = "select er.examtitle, er.sid, er.point, s.name from examinationresult er join student s on s.id = er.sid where er.eid = "
+				+ eid;
+		return examinationResultDao.query(sql, new RowMapper<StudentReport>() {
+			@Override
+			public StudentReport mapRow(ResultSet rs, int rowNum) throws SQLException {
+				StudentReport sr = new StudentReport();
+				sr.setName(rs.getString("name"));
+				sr.setPoint(rs.getInt("point"));
+				sr.setSid(rs.getString("sid"));
+				sr.setTitle(rs.getString("examtitle"));
+				return sr;
+			}
+		});
 	}
 
 }
