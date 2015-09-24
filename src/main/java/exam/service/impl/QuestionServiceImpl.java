@@ -70,7 +70,9 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
 	
 	@Override
 	public void delete(Object id) {
-		// TODO 暂不实现，因为涉及到了答案表
+		//在controller里面已经对有试卷引用做了检查，所以到达这里的问题一定没有被做过的，所以可以直接删除
+		String sql = "delete from question where id = " + (Integer) id;
+		questionDao.executeSql(sql);
 	}
 	
 	@Override
@@ -87,6 +89,15 @@ public class QuestionServiceImpl extends BaseServiceImpl<Question> implements Qu
 	private List<Question> getQuestionsByType(String tid, QuestionType type) {
 		String sql = questionDao.getSql() + " where tid = '" + tid + "' and type = '" + type.name() + "'";
 		return questionDao.queryBySQL(sql);
+	}
+	
+	@Override
+	public Double articulationScore(int qid) {
+		//又遇到了一个坑，一开始数据库字段名是right，怎么搞都报错，原来right又是保留字，不特么说一声，日了狗了...
+		String sql = "select sum(case when isright = 1 then 1 else 0 end) / count(id) from examinationresult_question where qid = "
+				+ qid;
+		Double result = (Double) questionDao.queryForObject(sql, Double.class);
+		return result;
 	}
 
 }

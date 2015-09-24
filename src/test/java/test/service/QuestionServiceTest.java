@@ -26,4 +26,9 @@ public class QuestionServiceTest extends Base {
 		System.out.println(questionService.isUsedByExam(6));
 	}
 	
+	@Test
+	public void articulationScore() {
+		System.out.println(questionService.articulationScore(14));
+	}
+	
 }

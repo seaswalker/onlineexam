@@ -87,7 +87,7 @@ public class ExaminationResultServiceImpl extends BaseServiceImpl<ExaminationRes
 			}
 		});
 		//查出所有的ERViewQuestion
-		sql = "select q.*, erq.right, erq.wronganswer from examinationresult_question erq join question q on q.id = erq.qid where erq.erid = "
+		sql = "select q.*, erq.isright, erq.wronganswer from examinationresult_question erq join question q on q.id = erq.qid where erq.erid = "
 				+ id;
 		List<ERViewQuestion> questions = examinationResultDao.query(sql, new RowMapper<ERView.ERViewQuestion>() {
 			@Override
@@ -103,7 +103,7 @@ public class ExaminationResultServiceImpl extends BaseServiceImpl<ExaminationRes
 				question.setOptionD(rs.getString("optionD"));
 				question.setPoint(rs.getInt("point"));
 				question.setTitle(rs.getString("title"));
-				question.setRight(rs.getBoolean("right"));
+				question.setRight(rs.getBoolean("isright"));
 				question.setWrongAnswer(rs.getString("wronganswer"));
 				return question;
 			}

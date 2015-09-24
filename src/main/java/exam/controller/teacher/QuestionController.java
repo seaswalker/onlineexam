@@ -168,7 +168,8 @@ public class QuestionController {
 	}
 	
 	/**
-	 * 反应当前教师的指定题型的所有题目
+	 * 反回当前教师的指定题型的所有题目
+	 * 此方法没有放在ajax包下的原因是此方法需要从session中获取教师id，而最初设计是ajax包不需要拦截的
 	 * @param type 题型: SINGLE/MULTI/JUDGE
 	 * @param request
 	 * @param response
@@ -212,6 +213,24 @@ public class QuestionController {
 		model.addAttribute("search", search);
 		model.addAttribute("type", type.name());
 		return "teacher/question_list";
+	}
+	
+	/**
+	 * 返回题目的正答率
+	 * @param qid 题目id
+	 * @param response
+	 */
+	@RequestMapping("/rate/{qid}")
+	@ResponseBody
+	public void rate(@PathVariable Integer qid, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		if (!DataUtil.isValid(qid)) {
+			json.addElement("result", "0").addElement("messgae", "参数非法");
+		} else {
+			Double rate = questionService.articulationScore(qid);
+			json.addElement("result", "1").addElement("rate", rate == null ? "无考试记录!" : (rate * 100) + "%");
+		}
+		DataUtil.writeJSON(json, response);
 	}
 	
 }

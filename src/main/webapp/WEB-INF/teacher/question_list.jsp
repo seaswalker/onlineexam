@@ -52,10 +52,10 @@
 						<thead>
 							<tr>
 								<th width="10%">id</th>
-								<th width="60%">标题</th>
+								<th width="50%">标题</th>
 								<th width="10%">答案</th>
 								<th width="10%">分值</th>
-								<th width="10%">操作</th>
+								<th width="20%">操作</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -67,6 +67,7 @@
 									<td>${question.point}</td>
 									<td>
 										<button name="show-edit-btn" class="btn btn-default btn-xs">编辑</button>
+										<button name="show-rate-btn" class="btn btn-info btn-xs">正答率</button>
 										<button name="delete-btn" class="btn btn-danger btn-xs">删除</button>
 									</td>
 								</tr>
@@ -78,13 +79,13 @@
 							<tr>
 								<th width="5%">id</th>
 								<th width="25%">标题</th>
-								<th width="15%">选项A</th>
+								<th width="10%">选项A</th>
 								<th width="10%">选项B</th>
-								<th width="15%">选项C</th>
+								<th width="10%">选项C</th>
 								<th width="10%">选项D</th>
 								<th width="5%">答案</th>
 								<th width="5%">分值</th>
-								<th width="10%">操作</th>
+								<th width="20%">操作</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -100,6 +101,7 @@
 									<td>${question.point}</td>
 									<td>
 										<button name="show-edit-btn" class="btn btn-default btn-xs">编辑</button>
+										<button name="show-rate-btn" class="btn btn-info btn-xs">正答率</button>
 										<button name="delete-btn" class="btn btn-danger btn-xs">删除</button>
 									</td>
 								</tr>
@@ -217,6 +219,14 @@
 		<div class="error" style="text-align: center;" id="question-error">&nbsp;</div>
 		<div style="text-align: center;">
 			<button id="question-save-btn">保存</button>
+		</div>
+	</div>
+	<!-- 正答率 -->
+	<div class="modal_window" id="rate-window" style="width: 200px;height: 100px;">
+		<div class="modal_window_title" style="margin-bottom: 5px;">正答率:</div>
+		<div id="rate" style="text-align: center;font-size: 18px;"></div>
+		<div style="text-align: center;margin-top: 10px;">
+			<button id="close-rate-btn" class="btn btn-default btn-xs">确定</button>
 		</div>
 	</div>
 </body>

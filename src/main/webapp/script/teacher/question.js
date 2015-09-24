@@ -77,6 +77,12 @@ var QuestionHelper = {
 		});
 		//添加题目
 		$("#add-question-btn").click(QuestionHelper.showAdd);
+		//显示正答率
+		$("#question-list button[name=show-rate-btn]").click(function() {
+			QuestionHelper.showRate(this);
+		});
+		//关闭正答率
+		$("#close-rate-btn").click(QuestionHelper.closeRate);
 	},
 	//加载校验器
 	initValidators: function() {
@@ -162,7 +168,7 @@ var QuestionHelper = {
 	//button 触发事件的按钮
 	showEdit: function(button) {
 		var $questionEdit = $("#question-edit");
-		var $tr = $(button).parent().parent();
+		var $tr = $(button).parents("tr");
 		//设置面板里面各个input的值
 		var question = QuestionHelper.current = this.Question.create($tr);
 		var $inputs = $questionEdit.find("input[type=text]");
@@ -274,7 +280,7 @@ var QuestionHelper = {
 		}
 	},
 	deleteQuestion: function(button) {
-		var id = $(button).parent().parent().children("td")[0].innerHTML;
+		var id = $(button).parents("tr").find("td:first").html();
 		if (confirm("您确认删除此题?")) {
 			$.ajax({
 				url: "teacher/question/delete/" + id,
@@ -298,5 +304,24 @@ var QuestionHelper = {
 	showAdd: function() {
 		$("#question-edit").show();
 		QuestionHelper.isEdit = false;
+	},
+	//显示正答率
+	showRate: function(button) {
+		var $rateWindow = $("#rate-window"), $div = $("#rate");
+		$div.html("正在加载...");
+		$rateWindow.show();
+		var id = $(button).parents("tr").find("td:first").html();
+		//发送ajax请求
+		$.post("teacher/question/rate/" + id, null, function(data) {
+			if (data.result === "0") {
+				Tips.showError(data.message);
+			} else if (data.result === "1") {
+				$div.html(data.rate);
+			}
+		}, "json");
+	},
+	//关闭正答率窗体
+	closeRate: function() {
+		$("#rate-window").hide();
 	}
 };

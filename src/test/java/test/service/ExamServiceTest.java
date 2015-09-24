@@ -33,5 +33,18 @@ public class ExamServiceTest extends Base {
     public void hasJoined() {
     	System.out.println(examService.hasJoined(4, "201201050538"));
     }
+    
+    /**
+     * 预计产生的效果:
+     * exam_class 8, 9, 10
+     * exam_question 1,2,3
+     * examinationresult_question 7-12
+     * examinationresult 3, 4
+     * exam 4
+     */
+    @Test
+    public void delete() {
+    	examService.delete(4);
+    }
 
 }

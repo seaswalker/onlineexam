@@ -13,13 +13,13 @@ var ExamList = {
 	numberCheckPattern: /^[1-9][0-9]*$/,
 	//辅助函数，获取当前行的试卷的id
 	_getId: function(element) {
-		return $(element).parent().parent().children("td:first")[0].innerHTML;
+		return $(element).parents("tr").children("td:first")[0].innerHTML;
 	},
 	//绑定exam_list.jsp中的事件监听函数
 	initListeners: function() {
 		var that = this;
 		//显示所选班级
-		$("#clazz-list button[name=show-clazz-btn]").click(function() {
+		$("#exam-list button[name=show-clazz-btn]").click(function() {
 			that.showClass(this);
 		});
 		//移除所选班级
@@ -27,7 +27,7 @@ var ExamList = {
 		//关闭适用班级窗体
 		$("#close-clazz-btn").click(that.closeClass);
 		//删除试卷监听器
-		$("#clazz-list button[name=delete-exam-btn]").click(function(event) {
+		$("#exam-list button[name=delete-exam-btn]").click(function(event) {
 			that.removeExam(event.currentTarget);
 		});
 		//监听年级和专业的改变事件
@@ -42,7 +42,7 @@ var ExamList = {
 		//班级保存
 		$("#clazz-save-btn").click(that.saveClass);
 		//开始运行按钮
-		$("#clazz-list button[name=show-run-time-btn]").click(function() {
+		$("#exam-list button[name=show-run-time-btn]").click(function() {
 			that.showRunTime(this);
 		});
 		//关闭运行时间设置按钮
@@ -50,9 +50,17 @@ var ExamList = {
 		//保存运行时间
 		$("#run-time-save-btn").click(that.saveRunTime);
 		//立即停止
-		$("#clazz-list button[name=stop-run-btn]").click(function() {
+		$("#exam-list button[name=stop-run-btn]").click(function() {
 			that.stopRun(this);
 		});
+		//显示试卷编辑界面
+		$("#exam-list button[name=show-edit-btn]").click(function() {
+			ExamList.showExamEdit(this);
+		});
+		//关闭试卷编辑界面
+		$("#close-edit-btn").click(ExamList.closeExamEdit);
+		//试卷保存
+		$("#exam-save-btn").click(ExamList.saveExam);
 	},
 	//显示适用的班级
 	//button 触发事件的dom对象
@@ -73,7 +81,7 @@ var ExamList = {
 					classesStr += "<li><input type='checkbox' /><span value='" + element.id + "'>" + element.grade.grade + "级" +
 							element.major.name + element.cno + "班</span></li>";
 				});
-				$(classesStr).appendTo($("#clazz-list-container").empty());
+				$(classesStr).appendTo($("#exam-list-container").empty());
 			}
 		}, "json");
 		$.post("grade/ajax", null, function(data) {
@@ -180,7 +188,7 @@ var ExamList = {
 			ExamList.selectedClazzs.push(selectedClazzId);
 			var optionStr = "<li><input type='checkbox'><span value='" + selectedClazzId + "'>" + selectedGradeGrade + selectedMajorName + selectedClazzCno +
 				"</span></li>";
-			$("#clazz-list-container").append(optionStr);
+			$("#exam-list-container").append(optionStr);
 			ExamList.resetSelect($gradeSelect, $majorSelect, $clazzSelect);
 		}
 
@@ -216,7 +224,7 @@ var ExamList = {
 	},
 	//移除所选班级
 	removeClass: function() {
-		var $checkeds = $("#clazz-list-container input:checked");
+		var $checkeds = $("#exam-list-container input:checked");
 		if ($checkeds.length === 0) {
 			$("#clazz_error").html("请选择要删除的班级");
 		} else {
@@ -297,5 +305,58 @@ var ExamList = {
 		var id = ExamList._getId(button);
 		//同步提交
 		ExamList._sendStatusRequest(id, "RUNNED");
+	},
+	//显示试卷编辑界面
+	//button 触发此事件的按钮
+	showExamEdit: function(button) {
+		var $examEdit = $("#exam-edit"), $inputs = $examEdit.find("input");
+		var $tr = $(button).parents("tr"), $tds = $tr.children("td:lt(2)");
+		ExamList.examId = $tds[0].innerHTML;
+		//设置试卷题目
+		$inputs[0].value = $tds[1].innerHTML;
+		//设置时间限制
+		$inputs[1].value = $tr.find("input[name=limit]").val();
+		$examEdit.show();
+	},
+	//关闭试卷编辑界面
+	closeExamEdit: function() {
+		$("#exam-edit").hide();
+	},
+	//保存试卷
+	saveExam: function() {
+		//直接在这里校验
+		var $title = $("#title-value");
+		var title = $.trim($title.val());
+		if (title === "") {
+			getErrorSpan($title).html("请输入内容");
+			$title.focus();
+			return;
+		}
+		var $limit = $("#limit-value");
+		var limit = $.trim($limit.val());
+		if (limit === "") {
+			getErrorSpan($limit).html("请输入内容");
+			$limit.focus();
+			return;
+		}
+		if (!limit.match(ExamList.numberCheckPattern)) {
+			getErrorSpan($limit).html("格式非法");
+			$limit.focus();
+			return;
+		}
+		//提交请求
+		$.post("teacher/exam/update/" + ExamList.examId, "title=" + title + "&limit=" + limit, function(data) {
+			if (data.result === "0") {
+				Tips.showError("更新失败，请稍候再试");
+			} else if (data.result === "1") {
+				Tips.showSuccess("更新成功");
+				setTimeout(function() {
+					window.location.reload();
+				}, 2000);
+			}
+		}, "json");
+		function getErrorSpan($ele) {
+			return $ele.parent().next().children("span");
+		}
 	}
 };

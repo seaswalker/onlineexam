@@ -216,5 +216,29 @@ public class ExamController {
     	is.close();
     	os.close();
     }
+    
+    /**
+     * 修改试卷的标题和时间限制
+     * @param eid 试卷id
+     * @param title 标题
+     * @param limit 时间限制
+     * @param request
+     */
+    @RequestMapping("/update/{eid}")
+    @ResponseBody
+    public void update(@PathVariable Integer eid, String title, Integer limit, HttpServletResponse response) {
+    	JSONObject json = new JSONObject();
+    	if (!DataUtil.isValid(eid, limit) || !DataUtil.isValid(title)) {
+    		json.addElement("result", "0");
+    	} else  {
+    		Exam exam = new Exam();
+    		exam.setId(eid);
+    		exam.setLimit(limit);
+    		exam.setTitle(title);
+    		examService.saveOrUpdate(exam);
+    		json.addElement("result", "1");
+    	}
+    	DataUtil.writeJSON(json, response);
+    }
 
 }

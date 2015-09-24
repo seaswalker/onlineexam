@@ -95,7 +95,10 @@ $(function() {
 		});
 		$.post("student/exam/submit", "result=" + JSON.stringify(result), function(data) {
 			if (data.result === "0") {
-				Tips.showError("提交失败，请稍候再试");
+				Tips.showError(data.message);
+				setTimeout(function() {
+					window.location.href = $("#context-path").val() + "student/index";
+				}, 2000);
 			} else if (data.result === "1") {
 				Tips.showSuccess("交卷成功，您得了" + data.point + "分!");
 				setTimeout(function() {

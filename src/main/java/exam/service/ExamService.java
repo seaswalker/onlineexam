@@ -28,4 +28,11 @@ public interface ExamService extends BaseService<Exam> {
      */
     public boolean hasJoined(int eid, String sid);
     
+    /**
+     * 检查给定的试卷是否任然可用(没有被删除或停止运行)
+     * @param eid 试卷id
+     * @return 可用返回true
+     */
+    public boolean isUseful(int eid);
+    
 }

@@ -29,7 +29,7 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements ExamDao {
 				exam.setStatus(ExamStatus.valueOf(rs.getString("status")));
 				exam.setEndTime(rs.getTimestamp("endtime"));
 				exam.setJudgePoints(rs.getInt("judgepoints"));
-				exam.setLimit(rs.getInt("limit"));
+				exam.setLimit(rs.getInt("timelimit"));
 				exam.setMultiPoints(rs.getInt("multipoints"));
 				exam.setPoints(rs.getInt("points"));
 				exam.setSinglePoints(rs.getInt("singlepoints"));
@@ -49,6 +49,11 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements ExamDao {
 			sql += where.toString();
 		}
 		return jdbcTemplate.query(sql, rowMapper);
+	}
+	
+	@Override
+	public int[] batchUpdate(String... sqls) {
+		return jdbcTemplate.batchUpdate(sqls);
 	}
 	
 	public String getCountSql() {

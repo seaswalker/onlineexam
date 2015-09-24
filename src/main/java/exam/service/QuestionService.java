@@ -39,4 +39,11 @@ public interface QuestionService extends BaseService<Question> {
 	 */
 	public List<Question> findByExam(int eid);
 	
+	/**
+	 * 查询指定题目的正答率
+	 * @param qid 题目id
+	 * @return 如果此题目没有人做过，那么返回null
+	 */
+	public Double articulationScore(int qid);
+	
 }

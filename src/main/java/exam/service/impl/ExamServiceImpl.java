@@ -55,6 +55,9 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
 	        saveExamClassRelationships(entity.getClazzs(), examId);
 	        //设置题目和试卷的关联关系
 	        saveExamQuestionRelationships(questionIds, examId);
+    	} else {
+    		String sql = "update exam set title = ?, timelimit = ? where id = ?";
+    		examDao.executeSql(sql, new Object[] {entity.getTitle(), entity.getLimit(), entity.getId()});
     	}
     }
 
@@ -149,16 +152,20 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
     @Override
     public void delete(Object id) {
         int examId = (Integer) id;
-        //删除试卷和班级的关联关系
-        String sql = "delete from exam_class where eid = " + examId;
-        examDao.executeSql(sql);
-        //删除试卷和题目的关联关系
-        sql = "delete from exam_question where eid = " + examId;
-        examDao.executeSql(sql);
-        //删除试卷
-        sql = "delete from exam where id = " + examId;
-        examDao.executeSql(sql);
-        //TODO 删除此试卷的成绩
+        //注意一个问题:delete语句里面不能用别名
+        String[] sqls = {
+        		//删除试卷和班级的关联关系
+        		"delete from exam_class where eid = " + examId,
+        		//删除试卷和题目的关联关系
+        		"delete from exam_question where eid = " + examId,
+        		//删除examinationresult_question表的内容
+        		"delete from examinationresult_question where erid in (select er.id from examinationresult er where er.eid = " + examId + ")",
+        		//删除examinationresult表的记录
+        		"delete from examinationresult where eid = " + examId,
+        		//删除试卷
+        		"delete from exam where id = " + examId
+        };
+        examDao.batchUpdate(sqls);
     }
     
     @Override
@@ -193,6 +200,13 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
     			sid + "'";
     	BigInteger count = (BigInteger) examDao.queryForObject(sql, BigInteger.class);
     	return count.intValue() > 0;
+    }
+    
+    @Override
+    public boolean isUseful(int eid) {
+    	String sql = "select count(id) from exam where id = " + eid +" and status = 'RUNNING'";
+    	BigInteger result = (BigInteger) examDao.queryForObject(sql, BigInteger.class);
+    	return result.intValue() > 0;
     }
     
     private static class QuestionGenerateKeyCallback implements GenerateKeyCallback {
