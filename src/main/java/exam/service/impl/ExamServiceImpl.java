@@ -5,20 +5,28 @@ import javax.annotation.Resource;
 import exam.dao.ExamDao;
 import exam.dao.base.GenerateKeyCallback;
 import exam.model.Clazz;
+import exam.model.ExamStatus;
 import exam.model.Question;
 import exam.model.QuestionType;
 import exam.util.DataUtil;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.stereotype.Service;
 
 import exam.dao.base.BaseDao;
 import exam.model.Exam;
+import exam.model.page.PageBean;
 import exam.service.ExamService;
 import exam.service.QuestionService;
 import exam.service.base.BaseServiceImpl;
 
 import java.math.BigInteger;
+import java.sql.CallableStatement;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -209,6 +217,45 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
     	return result.intValue() > 0;
     }
     
+    @Override
+	public Exam getById(int eid) {
+		List<Exam> list = examDao.execute(new CallableStatementCreator() {
+			@Override
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				String sql = "{call getExam(?, ?, ?, ?)}";
+				CallableStatement cs = con.prepareCall(sql);
+				//设置存储过程的参数
+				cs.setInt(1, eid);
+				cs.setInt(2, -1);
+				cs.setInt(3, -1);
+				cs.setString(4, "");
+				return cs;
+			}
+		}, ExamCallableStatementCallback.instance);
+		return list.get(0);
+	}
+
+	@Override
+	public PageBean<Exam> pageSearch(int pageCode, int pageSize, int pageNumber, String tid) {
+		//查询出所有的试卷
+		List<Exam> list = examDao.execute(new CallableStatementCreator() {
+			@Override
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				String sql = "{call getExam(?, ?, ?, ?)}";
+				CallableStatement cs = con.prepareCall(sql);
+				cs.setInt(1, -1);
+				cs.setInt(2, pageCode);
+				cs.setInt(3, pageSize);
+				cs.setString(4, tid);
+				return cs;
+			}
+		}, ExamCallableStatementCallback.instance);
+		//查出所有的记录数
+		String sql = "select count(id) from exam where tid = '" + tid + "'";
+		BigInteger count = (BigInteger) examDao.queryForObject(sql, BigInteger.class);
+		return new PageBean<>(list, pageSize, pageCode, count.intValue(), pageNumber);
+	}
+    
     private static class QuestionGenerateKeyCallback implements GenerateKeyCallback {
 
         @Override
@@ -225,4 +272,39 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
             ps.setString(9, question.getTeacher().getId());
         }
     }
+    
+    /**
+     * 回调函数封装试卷对象，共getById()和pageSearch()使用
+     * @author skywalker
+     *
+     */
+    private static class ExamCallableStatementCallback implements CallableStatementCallback<List<Exam>> {
+    	
+    	static ExamCallableStatementCallback instance = new ExamCallableStatementCallback();
+    	
+    	private ExamCallableStatementCallback() {}
+
+		@Override
+		public List<Exam> doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {
+			List<Exam> list = new ArrayList<>();
+			ResultSet rs = cs.executeQuery();
+			Exam exam = null;
+			while (rs.next()) {
+				exam = new Exam();
+				exam.setId(rs.getInt("id"));
+				exam.setTitle(rs.getString("title"));
+				exam.setStatus(ExamStatus.valueOf(rs.getString("status")));
+				exam.setEndTime(rs.getTimestamp("endtime"));
+				exam.setJudgePoints(rs.getInt("judgepoints"));
+				exam.setLimit(rs.getInt("timelimit"));
+				exam.setMultiPoints(rs.getInt("multipoints"));
+				exam.setPoints(rs.getInt("points"));
+				exam.setSinglePoints(rs.getInt("singlepoints"));
+				list.add(exam);
+			}
+			return list;
+		}
+    	
+    }
+
 }

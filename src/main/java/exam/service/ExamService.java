@@ -1,6 +1,7 @@
 package exam.service;
 
 import exam.model.Exam;
+import exam.model.page.PageBean;
 import exam.service.base.BaseService;
 
 public interface ExamService extends BaseService<Exam> {
@@ -34,5 +35,22 @@ public interface ExamService extends BaseService<Exam> {
      * @return 可用返回true
      */
     public boolean isUseful(int eid);
+    
+    /**
+	 * 你懂的
+	 * @param eid 试卷id
+	 * @return
+	 */
+	public Exam getById(int eid);
+	
+	/**
+	 * 分页查询某个教师的所有试卷
+	 * @param pageCode 页码
+	 * @param pageSize 每页的数量
+	 * @param pageNumber 共显示多少个页码
+	 * @param tid 教师id
+	 * @return
+	 */
+	public PageBean<Exam> pageSearch(int pageCode, int pageSize, int pageNumber, String tid);
     
 }

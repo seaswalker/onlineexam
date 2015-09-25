@@ -52,18 +52,13 @@ public class ExamController {
 	/**
 	 * 返回试卷列表
 	 * @param pn 页码，输入输入非法，那么为1
-	 * @param search 搜索内容，按照标题搜索
 	 */
 	@RequestMapping("/list")
-	public String list(String pn, String search, Model model) {
+	public String list(String pn, Model model, HttpServletRequest request) {
 		int pageCode = DataUtil.getPageCode(pn);
-		String where = "where 1 = 1 ";
-		if (DataUtil.isValid(search)) {
-			where += " and title like '%" + search + "%'"; 
-		}
-		PageBean<Exam> pageBean = examService.pageSearch(pageCode, pageSize, pageNumber, where, null, null);
+		String tid = ((Teacher) request.getSession().getAttribute("teacher")).getId();
+		PageBean<Exam> pageBean = examService.pageSearch(pageCode, pageSize, pageNumber, tid);
 		model.addAttribute("pageBean", pageBean);
-		model.addAttribute("search", search);
 		return "teacher/exam_list";
 	}
 	

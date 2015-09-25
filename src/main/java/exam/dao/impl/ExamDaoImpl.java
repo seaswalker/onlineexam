@@ -6,6 +6,8 @@ import java.util.List;
 
 import exam.model.ExamStatus;
 
+import org.springframework.jdbc.core.CallableStatementCallback;
+import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
@@ -39,16 +41,8 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements ExamDao {
 	}
 	
 	@Override
-	public List<Exam> find(Exam entity) {
-		String sql = ExamDaoImpl.sql;
-		if (entity != null) {
-			StringBuilder where = new StringBuilder(" where 1 = 1 ");
-			if (entity.getId() > 0) {
-				where.append(" and id = ").append(entity.getId());
-			}
-			sql += where.toString();
-		}
-		return jdbcTemplate.query(sql, rowMapper);
+	public List<Exam> execute(CallableStatementCreator creator, CallableStatementCallback<List<Exam>> callback) {
+		return jdbcTemplate.execute(creator, callback);
 	}
 	
 	@Override
