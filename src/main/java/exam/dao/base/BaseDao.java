@@ -35,6 +35,14 @@ public interface BaseDao<T> {
 	Object queryForObject(String sql, Class<?> clazz);
 	
 	/**
+	 * 批量更新，其实直使用存储过程貌似是一个better的方式...
+	 * @param sqls sql数组
+	 * @return 我也不知道是什么，看文档去...
+	 */
+	public int[] batchUpdate(String...sqls);
+	
+	
+	/**
      * 执行sql语句并且返回生成的主键id
      * @param sql
      * @param callback createPreparedStatement方法需要返回一个PreparedStatement，而PreparedStatement需要设置参数

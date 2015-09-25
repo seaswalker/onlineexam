@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -77,12 +78,7 @@ public class AdminTeacherController {
 		}else if(teacherService.isExist(id)) {
 			json.addElement("result", "0").addElement("message", "此教师已存在");
 		}else {
-			Teacher teacher = new Teacher();
-			teacher.setId(id);
-			teacher.setName(name);
-			//TODO 硬编码?
-			teacher.setPassword(StringUtil.md5("1234"));
-			teacherService.saveOrUpdate(teacher);
+			teacherService.saveTeacher(id, name, StringUtil.md5("1234"));
 			json.addElement("result", "1").addElement("message", "保存成功");
 		}
 		DataUtil.writeJSON(json, response);
@@ -139,6 +135,19 @@ public class AdminTeacherController {
 			teacherService.updateTeachClazzs(ids, tid);
 			json.addElement("result", "1").addElement("message", "修改成功");
 		}
+		DataUtil.writeJSON(json, response);
+	}
+	
+	/**
+	 * 删除教师
+	 * @param tid 教师id
+	 * @param response
+	 */
+	@RequestMapping("/delete/{tid}")
+	public void delete(@PathVariable String tid, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		teacherService.delete(tid);
+		json.addElement("result", "1").addElement("message", "删除成功");
 		DataUtil.writeJSON(json, response);
 	}
 	

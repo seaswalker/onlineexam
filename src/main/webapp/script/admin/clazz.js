@@ -1,44 +1,11 @@
 /**
- * [全选]
- * @param  {[DOM]} checkbox [全选按钮]
- */
-function chooseAll(checkbox) {
-	var checkboxes = $("input:checkbox[name=cb]");
-	var isCheck = checkbox.checked;
-	if (isCheck) {
-		checkboxes.prop("checked", true);
-	} else {
-		checkboxes.removeAttr('checked');
-	}
-}
-
-/**
- * 批量删除元素
- */
-function deleteClazzes() {
-	var checkboxes = $("input:checkbox[name=cb]:checked");
-	if (checkboxes.length == 0) {
-		alert("请选择您要删除的记录");
-		return false;
-	}
-	if (confirm("这会导致相应的班级及学生被删除,您确定?")) {
-		//拼接参数数组，结果如下1,2,3
-		var ids = new Array();
-		for (var i = 0; i < checkboxes.length; i++) {
-			//TODO
-		}
-		sendDeleteRequest(ids.join());
-	}
-}
-
-/**
  * [[删除单个元素]]
  * @param {[[DOM]]} btn [[触发此函数的按钮]]
  */
 function deleteClazz(btn) {
-	var id = $(btn).parent().prev().prev().html();
+	var id = $(btn).parents("tr").find("td:first").html();
 	if(confirm("这会导致相应的班级及学生被删除,您确定?")) {
-		sendDeleteRequest("ids=" + id);
+		sendDeleteRequest(id);
 	}
 }
 
@@ -46,10 +13,9 @@ function deleteClazz(btn) {
  * [[发送删除请求]]
  * @param {[[String]]} [[请求参数]]
  */
-function sendDeleteRequest(params) {
+function sendDeleteRequest(id) {
 	$.ajax({
-		"url" : "admin/clazz/delete",
-		"data" : "ids=" + ids.join(),
+		"url" : "admin/clazz/delete/" + id,
 		"dataType" : "json",
 		"async" : false,
 		"success" : function(json) {
@@ -177,7 +143,7 @@ function _resetClazz(clazz, error) {
  * @param {DOM} form 搜索表单
  */
 function search(form) {
-	if($(form.grade_select).val() == "0" && $(form.major_select).val() == "0") {
+	if ($(form.grade).val() == "0" && $(form.major).val() == "0") {
 		return false;
 	}
 	return true;

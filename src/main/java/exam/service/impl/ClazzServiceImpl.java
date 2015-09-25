@@ -29,9 +29,25 @@ public class ClazzServiceImpl extends BaseServiceImpl<Clazz> implements ClazzSer
 	
 	@Override
 	public void delete(Object id) {
-		clazzDao.executeSql("delete from class where id = " + id);
+		//需要删除: 班级、教师和班级的关联 -> 学生 -> 学生的考试记录(examinationresult) -> 做题记录(examinationresult_question)
+		String[] sqls = {
+			//删除做题记录
+			"delete from examinationresult_question where erid in (select id from examinationresult where eid in (select eid from exam_class where cid = " + id + "))",
+			//删除考试记录
+			"delete from examinationresult where eid in (select eid from exam_class where cid = " + id + ")",
+			//删除学生
+			"delete from student where cid = " + id,
+			//删除和教师的关联
+			"delete from teacher_class where cid = " + id,
+			//删除班级
+			"delete from class where id = " + id
+		};
+		clazzDao.batchUpdate(sqls);
 	}
 	
+	/**
+	 * 班级没有修改功能，直接删了重新添加就好
+	 */
 	@Override
 	public void saveOrUpdate(Clazz entity) {
 		if (entity.getId() <= 0) {

@@ -17,11 +17,6 @@
 <link rel="stylesheet" type="text/css" href="css/head.css">
 <link rel="stylesheet" type="text/css" href="css/list_main.css">
 <link rel="stylesheet" type="text/css" href="css/modal.css">
-<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-<script src="script/admin/major.js"></script>
-<script src="script/time.js"></script>
-<script src="script/tips.js"></script>
 </head>
 <body>
 	<!--头部-->
@@ -41,31 +36,24 @@
 			</div>
 			<!--操作按钮-->
 			<div class="operation_btn">
-				<button class="btn btn-danger btn-sm" onclick="deleteMajors();">删除</button>
-				<button class="btn btn-success btn-sm"
-					onclick="toggleMajorAdd(true);">添加专业</button>
+				<button class="btn btn-success btn-xs" onclick="toggleMajorAdd(true);">添加专业</button>
 			</div>
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th width="10%"><input type="checkbox"
-							onchange="chooseAll(this);" id="checkAll"> <label
-							for="checkAll">全选</label></th>
 						<th width="15%">id</th>
-						<th width="50%">专业名称</th>
-						<th width="25%">操作</th>
+						<th width="60%">专业名称</th>
+						<th width="20%">操作</th>
 					</tr>
 				</thead>
 				<tbody>
 					<c:forEach items="${pageBean.records}" var="major">
 						<tr>
-							<td><input type="checkbox" name="cb"></td>
 							<td>${major.id}</td>
 							<td>${major.name}</td>
 							<td>
-								<button class="btn btn-default"
-									onclick="toggleMajorEdit(true, this);">编辑</button>
-								<button class="btn btn-danger" onclick="deleteMajor(this);">删除</button>
+								<button class="btn btn-default btn-xs" onclick="toggleMajorEdit(true, this);">编辑</button>
+								<button class="btn btn-danger btn-xs" onclick="deleteMajor(this);">删除</button>
 							</td>
 						</tr>
 					</c:forEach>
@@ -134,4 +122,9 @@
 		</form>
 	</div>
 </body>
+<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+<script src="script/admin/major.js"></script>
+<script src="script/time.js"></script>
+<script src="script/tips.js"></script>
 </html>

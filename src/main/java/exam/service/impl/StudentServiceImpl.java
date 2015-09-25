@@ -34,28 +34,35 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
 	}
 	
 	@Override
-	public void update(String id, String name, int cid) {
-		String sql = "update student set name = ?, cid = ? where id = ?";
-		studentDao.executeSql(sql, new Object[]{name, cid, id});
-	}
-	
-	@Override
 	public void updatePassword(String id, String password) {
 		String sql = "update student set password = ? where id = ?";
 		studentDao.executeSql(sql, new Object[]{StringUtil.md5(password), id});
 	}
 	
 	@Override
-	public void saveOrUpdate(Student entity) {
-		if (DataUtil.isValid(entity.getId())) {
-			studentDao.executeSql("insert into student values(?, ?, ?, ?)",
-					new Object[] {entity.getId(), entity.getName(), entity.getPassword(), entity.getClazz().getId()});
-		}
+	public void saveStudent(String id, String name, String password, int cid) {
+		studentDao.executeSql("insert into student values(?, ?, ?, ?)",
+				new Object[] {id, name, password, cid});
 	}
-
+	
+	@Override
+	public void updateStudent(int cid, String name, String id) {
+		String sql = "update student set name = ?, cid = ? where id = ?";
+		studentDao.executeSql(sql, new Object[]{name, cid, id});
+	}
+	
 	@Override
 	public void delete(Object id) {
-		studentDao.executeSql("delete from student where id = " + id);
+		//删除学生需要删除: 学生 -> 学生的考试记录(examinationresult) -> 做题记录(examinationresult_question)
+		String[] sqls = {
+			//删除做题记录
+			"delete from examinationresult_question where erid in (select id from examinationresult where sid = '" + id +  "')",
+			//删除考试记录
+			"delete from examinationresult where sid = '" + id + "'",
+			//删除学生
+			"delete from student where id = '" + id + "'"
+		};
+		studentDao.batchUpdate(sqls);
 	}
 	
 	@Override

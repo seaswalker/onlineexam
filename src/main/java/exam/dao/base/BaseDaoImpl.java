@@ -63,6 +63,11 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 		return jdbcTemplate.queryForObject(sql, clazz);
 	}
 	
+	@Override
+	public int[] batchUpdate(String... sqls) {
+		return jdbcTemplate.batchUpdate(sqls);
+	}
+	
 	/**
 	 * 执行插入操作，并且返回此条记录的id
 	 * @param sql 执行的sql语句

@@ -39,12 +39,6 @@ public class MajorServiceImpl extends BaseServiceImpl<Major> implements MajorSer
 	}
 	
 	@Override
-	public void batchDelete(String ids) {
-		String sql = "delete from major where id in (" + ids + ")";
-		majorDao.executeSql(sql);
-	}
-	
-	@Override
 	public List<Major> findByGrade(int grade) {
 		String sql = "select * from major where id in "
 				+ "(select mid from class where gid = " + grade + ")";
@@ -52,20 +46,32 @@ public class MajorServiceImpl extends BaseServiceImpl<Major> implements MajorSer
 	}
 	
 	@Override
-	public void update(int id, String name) {
-		String sql = "executeSql major set name = ? where id = ?";
-		majorDao.executeSql(sql, new Object[]{name, id});
-	}
-	
-	@Override
 	public void saveOrUpdate(Major entity) {
 		if (entity.getId() <= 0) {
 			majorDao.executeSql("insert into major values(null, ?)", new Object[] {entity.getName()});
+		} else {
+			majorDao.executeSql("update major set name = ? where id = ?", new Object[] {entity.getName(), entity.getId()});
 		}
 	}
 
 	@Override
 	public void delete(Object id) {
-		majorDao.executeSql("delete from major where id = " + id);
+		//删除专业需要: 删除专业 -> 班级、教师和班级的关联 -> 学生 -> 考试记录(examinationresult) -> 做的题目(examinationresult_question)
+		String[] sqls = {
+			//首先删除做过的题
+			"delete from examinationresult_question where erid in (select id from examinationresult where eid in (select eid from exam_class where cid in (select id from class where mid = " + id + ")))",
+			//删除考试记录
+			"delete from examinationresult where eid in (select eid from exam_class where cid in (select cid from class where mid = " + id + "))",
+			//删除学生
+			"delete from student where cid in (select id from class where mid = " + id + ")",
+			//删除班级和教师的关联关系
+			"delete from teacher_class where cid in (select id from class where mid = " + id + ")",
+			//删除班级
+			"delete from class where mid = " + id,
+			//删除专业
+			"delete from major where id = " + id
+		};
+		majorDao.batchUpdate(sqls);
 	}
+	
 }

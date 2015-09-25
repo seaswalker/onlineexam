@@ -1,44 +1,11 @@
 /**
- * [全选]
- * @param  {[DOM]} checkbox [全选按钮]
- */
-function chooseAll(checkbox) {
-	var checkboxes = $("input:checkbox[name=cb]");
-	var isCheck = checkbox.checked;
-	if (isCheck) {
-		checkboxes.prop("checked", true);
-	} else {
-		checkboxes.removeAttr('checked');
-	}
-}
-
-/**
- * 批量删除元素
- */
-function deleteStudents() {
-	var checkboxes = $("input:checkbox[name=cb]:checked");
-	if (checkboxes.length == 0) {
-		alert("请选择您要删除的记录");
-		return false;
-	}
-	if (confirm("这会导致相应的班级及学生被删除,您确定?")) {
-		//拼接参数数组，结果如下1,2,3
-		var ids = new Array();
-		for (var i = 0; i < checkboxes.length; i++) {
-			ids.push($(checkboxes[i]).parent().next().html());
-		}
-		sendDeleteRequest(ids.join());
-	}
-}
-
-/**
  * [[删除单个元素]]
  * @param {[[DOM]]} btn [[触发此函数的按钮]]
  */
 function deleteStudent(btn) {
-	var id = $(btn).parent().prev().prev().html();
+	var id = $(btn).parents("tr").find("td:first").html();
 	if(confirm("这会导致相应的班级及学生被删除,您确定?")) {
-		sendDeleteRequest("ids=" + id);
+		sendDeleteRequest(id);
 	}
 }
 
@@ -46,10 +13,9 @@ function deleteStudent(btn) {
  * [[发送删除请求]]
  * @param {[[String]]} [[请求参数]]
  */
-function sendDeleteRequest(params) {
+function sendDeleteRequest(id) {
 	$.ajax({
-		"url" : "student/delete",
-		"data" : "ids=" + ids.join(),
+		"url" : "admin/student/delete/" + id,
 		"dataType" : "json",
 		"async" : false,
 		"success" : function(json) {
@@ -99,7 +65,7 @@ function _checkStudent(form, error, isAdd) {
 		return false;
 	}
 	//检测班级
-	var clazzSelectValue = isAdd ? $("#clazz_select_edit").val() : $("#grade_select_edit").val();
+	var clazzSelectValue = isAdd ? $("#clazz_select_add").val() : $("#grade_select_edit").val();
 	if(clazzSelectValue == undefined || clazzSelectValue == "0") {
 		error.innerHTML = "请选择班级";
 		return false;
@@ -151,7 +117,7 @@ function addStudent(form) {
                     error.innerHTML = json.message;
                 }else {
                     toggleStudentAdd(false);
-                    _resetStudent(student, error);
+                    _resetStudent(form.student, error);
                     Tips.showSuccess(json.message);
                 }
             }
@@ -399,9 +365,9 @@ function toggleStudentEdit(isShow, btn) {
  * 搜索
  * @param {DOM} 搜搜表单
  */
-function search(form) {
+function searchStudent(form) {
 	var input = form.search.value;
-	if(input.trim() == "") {
+	if ($.trim(input) === "") {
 		return false;
 	}
 	return true;

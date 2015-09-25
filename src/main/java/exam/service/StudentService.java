@@ -17,12 +17,6 @@ public interface StudentService extends BaseService<Student> {
 	public void updatePassword(String id, String password);
 	
 	/**
-	 * 管理员更新学生
-	 * @param cid 班级id
-	 */
-	public void update(String id, String name, int cid);
-	
-	/**
 	 * 学生登录
 	 * @param username 用户名
 	 * @param password 密码(未经过MD5加密)
@@ -36,5 +30,22 @@ public interface StudentService extends BaseService<Student> {
 	 * @param newPassword 未经过MD5加密的密码
 	 */
 	public void modifyPassword(String id, String newPassword);
+	
+	/**
+	 * 更新学生，这个不能使用saveOrUpdate，因为这个的id是自己输入的
+	 * @param cid 班号
+	 * @param name 姓名
+	 * @param id id
+	 */
+	public void updateStudent(int cid, String name, String id);
+	
+	/**
+	 * 添加学生
+	 * @param id
+	 * @param name
+	 * @param password
+	 * @param cid
+	 */
+	public void saveStudent(String id, String name, String password, int cid);
 	
 }

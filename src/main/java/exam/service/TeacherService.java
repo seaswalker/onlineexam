@@ -40,4 +40,12 @@ public interface TeacherService extends BaseService<Teacher> {
      * @param newPassword 新密码
      */
     void modifyPassword(String id, String newPassword);
+    
+    /**
+     * 不能用saveOrUpdate()!!!!!
+     * @param id
+     * @param name
+     * @param password
+     */
+    void saveTeacher(String id, String name, String password);
 }

@@ -45,11 +45,6 @@ public class ExamDaoImpl extends BaseDaoImpl<Exam> implements ExamDao {
 		return jdbcTemplate.execute(creator, callback);
 	}
 	
-	@Override
-	public int[] batchUpdate(String... sqls) {
-		return jdbcTemplate.batchUpdate(sqls);
-	}
-	
 	public String getCountSql() {
 		return countSql;
 	}

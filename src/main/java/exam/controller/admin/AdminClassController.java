@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -105,12 +106,15 @@ public class AdminClassController {
 	
 	/**
 	 * 班级删除
-	 * @param ids 班级id，格式1,2,3
+	 * @param cid 班级id
 	 */
-	@RequestMapping("/delete")
+	@RequestMapping("/delete/{cid}")
 	@ResponseBody
-	public void delete(String ids, HttpServletResponse response) {
-		//TODO 班级删除了，学生怎么办?考试记录怎么办?
+	public void delete(@PathVariable Integer cid, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		clazzService.delete(cid);
+		json.addElement("result", "1").addElement("message", "删除成功");
+		DataUtil.writeJSON(json, response);
 	}
 	
 }

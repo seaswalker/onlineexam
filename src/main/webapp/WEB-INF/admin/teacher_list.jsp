@@ -17,11 +17,6 @@
 <link rel="stylesheet" type="text/css" href="css/head.css">
 <link rel="stylesheet" type="text/css" href="css/list_main.css">
 <link rel="stylesheet" type="text/css" href="css/modal.css">
-<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-<script src="script/admin/teacher.js"></script>
-<script src="script/time.js"></script>
-<script src="script/tips.js"></script>
 </head>
 <body>
 	<!--头部-->
@@ -36,36 +31,30 @@
 				<form action="admin/teacher/list" method="post" onsubmit="return search(this);">
 					教职工号:<input type="text" name="id">
 					姓名:<input type="text" name="name">
-					<input type="submit" value="搜索">
+					<input type="submit" class="btn btn-default btn-sm" value="搜索">
 				</form>
 			</div>
 			<!--操作按钮-->
 			<div class="operation_btn">
-				<button class="btn btn-danger btn-sm" onclick="deleteTeacheres();">删除</button>
-				<button class="btn btn-success btn-sm"
-					onclick="toggleTeacherAdd(true);">添加教师</button>
+				<button class="btn btn-success btn-xs" onclick="toggleTeacherAdd(true);">添加教师</button>
 			</div>
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th width="10%">
-							<input type="checkbox" onchange="chooseAll(this);" id="checkAll">
-							<label for="checkAll">全选</label></th>
-						<th width="35%">教职工号</th>
-						<th width="20%">姓名</th>
-						<th width="35%">操作</th>
+						<th width="30%">教职工号</th>
+						<th width="40%">姓名</th>
+						<th width="30%">操作</th>
 					</tr>
 				</thead>
 				<tbody>
 					<c:forEach items="${pageBean.records}" var="teacher">
 						<tr>
-							<td><input type="checkbox" name="cb"></td>
 							<td>${teacher.id}</td>
 							<td>${teacher.name}</td>
 							<td>
-								<button class="btn btn-default" onclick="toggleTeacherEdit(true,this);">编辑</button>
-								<button class="btn btn-default" onclick="toggleClazzEdit(true,this);">设置所教班级</button>
-								<button class="btn btn-danger" onclick="deleteTeacher(this);">删除</button>
+								<button class="btn btn-default btn-xs" onclick="toggleTeacherEdit(true,this);">编辑</button>
+								<button class="btn btn-default btn-xs" onclick="toggleClazzEdit(true,this);">设置所教班级</button>
+								<button class="btn btn-danger btn-xs" onclick="deleteTeacher(this);">删除</button>
 							</td>
 						</tr>
 					</c:forEach>
@@ -170,4 +159,9 @@
 		</div>
 	</div>
 </body>
+<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+<script src="script/admin/teacher.js"></script>
+<script src="script/time.js"></script>
+<script src="script/tips.js"></script>
 </html>

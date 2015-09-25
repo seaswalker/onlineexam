@@ -17,11 +17,6 @@
 <link rel="stylesheet" type="text/css" href="css/head.css">
 <link rel="stylesheet" type="text/css" href="css/list_main.css">
 <link rel="stylesheet" type="text/css" href="css/modal.css">
-<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-<script src="script/admin/student.js"></script>
-<script src="script/time.js"></script>
-<script src="script/tips.js"></script>
 </head>
 <body>
 	<!--头部-->
@@ -33,7 +28,7 @@
 		<div class="list" id="student_list">
 			<!--搜索框-->
 			<div class="search form-inline">
-				<form action="admin/student/list" method="post" onsubmit="return search(this);">
+				<form action="admin/student/list" method="post" onsubmit="return searchStudent(this);">
 					<input type="text" class="form-control" name="search" style="width: 300px;">
 					&nbsp;&nbsp;
 					<button class="btn btn-default" type="submit">搜索</button>
@@ -41,18 +36,13 @@
 			</div>
 			<!--操作按钮-->
 			<div class="operation_btn">
-				<button class="btn btn-danger btn-sm" onclick="deleteStudents();">删除</button>
-				<button class="btn btn-success btn-sm"
-					onclick="toggleStudentAdd(true);">添加学生</button>
+				<button class="btn btn-success btn-xs" onclick="toggleStudentAdd(true);">添加学生</button>
 			</div>
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th width="10%"><input type="checkbox"
-							onchange="chooseAll(this);" id="checkAll"> <label
-							for="checkAll">全选</label></th>
 						<th width="15%">学号</th>
-						<th width="20">学生姓名</th>
+						<th width="30">学生姓名</th>
 						<th width="40%">班级</th>
 						<th width="15%">操作</th>
 					</tr>
@@ -60,14 +50,12 @@
 				<tbody>
 					<c:forEach items="${pageBean.records}" var="student">
 						<tr>
-							<td><input type="checkbox" name="cb"></td>
 							<td>${student.id}</td>
 							<td>${student.name}</td>
 							<td>${student.clazz.grade.grade}级${student.clazz.major.name}${student.clazz.cno}班</td>
 							<td>
-								<button class="btn btn-default"
-									onclick="toggleStudentEdit(true, this);">编辑</button>
-								<button class="btn btn-danger" onclick="deleteStudent(this);">删除</button>
+								<button class="btn btn-default btn-xs" onclick="toggleStudentEdit(true, this);">编辑</button>
+								<button class="btn btn-danger btn-xs" onclick="deleteStudent(this);">删除</button>
 							</td>
 						</tr>
 					</c:forEach>
@@ -201,4 +189,9 @@
 		</form>
 	</div>
 </body>
+<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+<script src="script/admin/student.js"></script>
+<script src="script/time.js"></script>
+<script src="script/tips.js"></script>
 </html>

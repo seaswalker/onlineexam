@@ -17,11 +17,6 @@
 <link rel="stylesheet" type="text/css" href="css/head.css">
 <link rel="stylesheet" type="text/css" href="css/list_main.css">
 <link rel="stylesheet" type="text/css" href="css/modal.css">
-<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-<script src="script/admin/clazz.js"></script>
-<script src="script/time.js"></script>
-<script src="script/tips.js"></script>
 </head>
 <body>
 	<!--头部-->
@@ -46,38 +41,32 @@
 							<option value="${major.id}">${major.name}</option>
 						</c:forEach>
 					</select>
-					<input type="submit" value="搜索">
+					<input type="submit" class="btn btn-default btn-xs" value="搜索">
 				</form>
 			</div>
 			<!--操作按钮-->
 			<div class="operation_btn">
-				<button class="btn btn-danger btn-sm" onclick="deleteClazzes();">删除</button>
-				<button class="btn btn-success btn-sm"
-					onclick="toggleClazzAdd(true);">添加班级</button>
+				<button class="btn btn-success btn-xs" onclick="toggleClazzAdd(true);">添加班级</button>
 			</div>
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th width="10%"><input type="checkbox"
-							onchange="chooseAll(this);" id="checkAll"> <label
-							for="checkAll">全选</label></th>
 						<th width="15%">id</th>
-						<th width="15%">年级</th>
+						<th width="20%">年级</th>
 						<th width="30%">专业</th>
-						<th width="15%">班级</th>
+						<th width="20%">班级</th>
 						<th width="25%">操作</th>
 					</tr>
 				</thead>
 				<tbody>
 					<c:forEach items="${pageBean.records}" var="clazz">
 						<tr>
-							<td><input type="checkbox" name="cb"></td>
 							<td>${clazz.id}</td>
 							<td>${clazz.grade.grade}</td>
 							<td>${clazz.major.name}</td>
 							<td>${clazz.cno}</td>
 							<td>
-								<button class="btn btn-danger" onclick="deleteClazz(this);">删除</button>
+								<button class="btn btn-danger btn-xs" onclick="deleteClazz(this);">删除</button>
 							</td>
 						</tr>
 					</c:forEach>
@@ -143,4 +132,9 @@
 		</form>
 	</div>
 </body>
+<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+<script src="script/admin/clazz.js"></script>
+<script src="script/time.js"></script>
+<script src="script/tips.js"></script>
 </html>

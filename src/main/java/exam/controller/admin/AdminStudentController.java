@@ -6,10 +6,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import exam.model.Clazz;
 import exam.model.page.PageBean;
 import exam.model.role.Student;
 import exam.service.StudentService;
@@ -62,13 +62,7 @@ public class AdminStudentController {
 		}else if(!DataUtil.isValid(name)) {
 			json.addElement("result", "0").addElement("message", "请输入学生姓名");
 		}else {
-			Student student = new Student();
-			student.setId(id);
-			student.setName(name);
-			//默认密码1234
-			student.setPassword(StringUtil.md5("1234"));
-			student.setClazz(new Clazz(Integer.parseInt(clazz)));
-			studentService.saveOrUpdate(student);
+			studentService.saveStudent(id, name, StringUtil.md5("1234"), Integer.parseInt(clazz));
 			json.addElement("result", "1").addElement("message", "学生添加成功");
 		}
 		DataUtil.writeJSON(json, response);
@@ -88,20 +82,23 @@ public class AdminStudentController {
 		if(!DataUtil.isNumber(clazz) || !DataUtil.isValid(id, name)) {
 			json.addElement("result", "0").addElement("message", "格式非法");
 		}else {
-			studentService.update(id, name, Integer.parseInt(clazz));
+			studentService.updateStudent(Integer.parseInt(clazz), name, id);
 			json.addElement("result", "1").addElement("message", "修改成功");
 		}
 		DataUtil.writeJSON(json, response);
 	}
 	
 	/**
-	 * 
+	 * 删除学生
 	 * @param id 学生id
 	 */
-	@RequestMapping("/delete")
+	@RequestMapping("/delete/{sid}")
 	@ResponseBody
-	public void delete(String id, HttpServletResponse response) {
-		//TODO 学生的删除未实现
+	public void delete(@PathVariable String sid, HttpServletResponse response) {
+		JSONObject json = new JSONObject();
+		studentService.delete(sid);
+		json.addElement("result", "1").addElement("message", "删除成功");
+		DataUtil.writeJSON(json, response);
 	}
 	
 	/**

@@ -29,13 +29,13 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 	
 	@Override
 	public void updateName(String id, String name) {
-		String sql = "executeSql teacher set name = ? where id = ?";
+		String sql = "update teacher set name = ? where id = ?";
 		teacherDao.executeSql(sql, new Object[]{name, id});
 	}
 
 	@Override
 	public void updatePassword(String id, String password) {
-		String sql = "executeSql teacher set password = ? where id = ?";
+		String sql = "update teacher set password = ? where id = ?";
 		teacherDao.executeSql(sql, new Object[]{StringUtil.md5(password), id});
 	}
 	
@@ -76,14 +76,27 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
     }
     
     @Override
-	public void saveOrUpdate(Teacher entity) {
-    	if (DataUtil.isValid(entity.getId())) {
-    		teacherDao.executeSql("insert into teacher values(?, ?, ?)", new Object[] {entity.getId(), entity.getName(), entity.getPassword()});
-    	}
-	}
+    public void saveTeacher(String id, String name, String password) {
+    	teacherDao.executeSql("insert into teacher values(?, ?, ?)", new Object[] {id, name, password});
+    }
 	
 	@Override
 	public void delete(Object id) {
-		teacherDao.executeSql("delete from teacher where id = " + id);
+		//删除教师需要删除: 教师 -> 教师和班级的关联  -> 出的试卷 -> 出的题 -> 此教师试卷的考试记录 -> 此教师的题的做题记录
+		String[] sqls = {
+			//删除做题记录
+			"delete from examinationresult_question where qid in (select id from question where tid = '" + id + "')",
+			//考试记录
+			"delete from examinationresult where eid in (select id from exam where tid = '" + id + "')",
+			//删除出的试卷
+			"delete from exam where tid = '" + id + "'",
+			//删除出的题
+			"delete from question where tid = '" + id + "'",
+			//和班级的关联
+			"delete from teacher_class where tid = '" + id + "'",
+			//删除教师
+			"delete from teacher where id = '" + id + "'"
+		};
+		teacherDao.batchUpdate(sqls);
 	}
 }

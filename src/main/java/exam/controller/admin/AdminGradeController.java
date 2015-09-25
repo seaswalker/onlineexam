@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -68,19 +69,15 @@ public class AdminGradeController {
 	}
 	
 	/**
-	 * 批量删除年级
-	 * @param ids 格式为1,2,3
+	 * 删除年级
+	 * @param gid 年级id
 	 */
-	@RequestMapping("/delete")
+	@RequestMapping("/delete/{gid}")
 	@ResponseBody
-	public void delete(String ids, HttpServletResponse response) {
+	public void delete(@PathVariable Integer gid, HttpServletResponse response) {
 		JSON json = new JSONObject();
-		if(!DataUtil.isValid(ids)) {
-			json.addElement("result", "0").addElement("message", "请选择要删除的记录");
-		}else {
-			gradeService.batchDelete(ids);
-			json.addElement("result", "1").addElement("message", "删除成功");
-		}
+		gradeService.delete(gid);
+		json.addElement("result", "1").addElement("message", "删除成功");
 		DataUtil.writeJSON(json, response);
 	}
 	

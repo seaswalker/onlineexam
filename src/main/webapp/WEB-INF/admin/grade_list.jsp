@@ -17,11 +17,6 @@
 <link rel="stylesheet" type="text/css" href="css/head.css">
 <link rel="stylesheet" type="text/css" href="css/list_main.css">
 <link rel="stylesheet" type="text/css" href="css/modal.css">
-<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
-<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-<script src="script/admin/grade.js"></script>
-<script src="script/time.js"></script>
-<script src="script/tips.js"></script>
 </head>
 <body>
 	<!--头部-->
@@ -41,29 +36,23 @@
 			</div>
 			<!--操作按钮-->
 			<div class="operation_btn">
-				<button class="btn btn-danger btn-sm" onclick="deleteGrades();">删除</button>
-				<button class="btn btn-success btn-sm"
-					onclick="toggleGradeAdd(true);">添加年级</button>
+				<button class="btn btn-success btn-xs" onclick="toggleGradeAdd(true);">添加年级</button>
 			</div>
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th width="10%"><input type="checkbox"
-							onchange="chooseAll(this);" id="checkAll"> <label
-							for="checkAll">全选</label></th>
-						<th width="15%">id</th>
-						<th width="50%">年级</th>
+						<th width="20%">id</th>
+						<th width="55%">年级</th>
 						<th width="25%">操作</th>
 					</tr>
 				</thead>
 				<tbody>
 					<c:forEach items="${pageBean.records}" var="grade">
 						<tr>
-							<td><input type="checkbox" name="cb"></td>
 							<td>${grade.id}</td>
 							<td>${grade.grade}</td>
 							<td>
-								<button class="btn btn-danger" onclick="deleteGrade(this);">删除</button>
+								<button class="btn btn-danger btn-xs" onclick="deleteGrade(this);">删除</button>
 							</td>
 						</tr>
 					</c:forEach>
@@ -107,4 +96,9 @@
 		</form>
 	</div>
 </body>
+<script type="text/javascript" src="script/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+<script src="script/admin/grade.js"></script>
+<script src="script/time.js"></script>
+<script src="script/tips.js"></script>
 </html>

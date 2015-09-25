@@ -16,12 +16,6 @@ public interface BaseService<T> {
 	public List<T> find(T entity);
 	
 	/**
-	 * 批量删除
-	 * @param ids
-	 */
-	public void batchDelete(String ids);
-	
-	/**
 	 * 分页查询
 	 * @param pageCode 需要查询的页码
 	 * @param pageSize 每页的大小

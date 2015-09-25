@@ -47,12 +47,24 @@ public class GradeServiceImpl extends BaseServiceImpl<Grade> implements GradeSer
 	
 	@Override
 	public void delete(Object id) {
-		gradeDao.executeSql("delete from grade where id = " + id);
+		//需要删除的有年级 -> 班级 -> 学生 -> 学生的考试记录(examinationresult) -> 做过的试题记录(examinationresult_question)
+		String[] sqls = {
+			//删除做过的试题记录
+			"delete from examinationresult_question where erid in (select er.id from examinationresult er where er.eid in (select ec.eid from exam_class ec where ec.cid in(select c.id from class c where c.gid = " + id + ")))",
+			//删除所有的考试记录(examinationresult)
+			"delete from examinationresult where eid in (select ec.eid from exam_class ec where ec.cid in(select c.id from class c where c.gid = " + id + "))",
+			//删除学生
+			"delete from student where cid in (select id from class where gid = " + id + ")",
+			//删除班级和试卷的关联关系
+			"delete from exam_class where cid in (select id from class where gid = " + id + ")",
+			//删除教师和班级的关联关系
+			"delete from teacher_class where cid in (select id from class where gid = " + id + ")",
+			//删除班级
+			"delete from class where gid = " + id,
+			//删除年级
+			"delete from grade where id = " + id
+		};
+		gradeDao.batchUpdate(sqls);
 	}
 	
-	@Override
-	public void batchDelete(String ids) {
-		//TODO 年级批量删除未实现
-	}
-
 }
