@@ -51,6 +51,13 @@ public interface ExamService extends BaseService<Exam> {
 	 * @param tid 教师id
 	 * @return
 	 */
-	public PageBean<Exam> pageSearch(int pageCode, int pageSize, int pageNumber, String tid);
+	public PageBean<Exam> pageSearchByTeacher(int pageCode, int pageSize, int pageNumber, String tid);
+	
+	/**
+	 * 分页查询一个学生可以参加的所有考试
+	 * @param sid 学生id
+	 * @return
+	 */
+	public PageBean<Exam> pageSearchByStudent(int pageCode, int pageSize, int pageNumber, String sid);
     
 }

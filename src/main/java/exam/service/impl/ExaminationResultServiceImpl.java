@@ -26,6 +26,7 @@ import exam.model.ExaminationResult;
 import exam.model.QuestionType;
 import exam.service.ExaminationResultService;
 import exam.service.base.BaseServiceImpl;
+import exam.util.DataUtil;
 
 @Service("examinationResultService")
 public class ExaminationResultServiceImpl extends BaseServiceImpl<ExaminationResult> implements ExaminationResultService {
@@ -122,7 +123,7 @@ public class ExaminationResultServiceImpl extends BaseServiceImpl<ExaminationRes
 						.point(rs.getInt("point")).sid(rs.getString("sid")).title(rs.getString("examtitle")).total(rs.getInt("points"));
 			}
 		});
-		return prepareData(helpers);
+		return DataUtil.isValid(helpers) ? prepareData(helpers) : null;
 	}
 	
 	/**

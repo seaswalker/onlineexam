@@ -13,18 +13,16 @@
 <title>试卷</title>
 <meta charset="UTF-8">
 <base href="<%=basePath%>">
-<link rel="stylesheet" type="text/css"
-	href="bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/head.css">
 <link rel="stylesheet" type="text/css" href="css/list_main.css">
-<link rel="stylesheet" type="text/css" href="css/modal.css">
 <style type="text/css">
-/*覆盖掉modal里面的样式*/
-.modal_window table {
-	width: 100%;
-	height: 50%;
-}
+	.exam-table {
+		width: 100%;
+		height: 50% !important;
+	}
 </style>
+<link rel="stylesheet" type="text/css" href="css/modal.css">
 </head>
 <body>
 	<!--头部-->
@@ -39,10 +37,10 @@
 			<table class="table table-hover">
 				<thead>
 					<tr>
-						<th width="15%">id</th>
+						<th width="10%">id</th>
 						<th width="25%">标题</th>
 						<th width="20%">适用班级</th>
-						<th width="15%">状态</th>
+						<th width="20%">状态</th>
 						<th width="15%">切换状态</th>
 						<th width="20%">操作</th>
 					</tr>
@@ -106,7 +104,7 @@
 	</div>
 
 	<!-- 适用班级的显示&编辑 -->
-	<div class="modal_window form-control" id="clazz-show">
+	<div class="modal_window teacher_clazz_window form-control" id="clazz-show">
 		<div class="modal_window_title">
 			适用班级: <img src="images/error.png" id="close-clazz-btn">
 		</div>
@@ -158,7 +156,7 @@
 		</div>
 		<hr style="margin-top: 5px;margin-bottom: 5px;" />
 		<div>
-			<table>
+			<table class="exam-table">
 				<tr>
 					<td width="20%">试卷题目:</td>
 					<td width="60%">

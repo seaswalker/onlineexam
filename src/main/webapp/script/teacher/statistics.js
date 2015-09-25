@@ -1,7 +1,13 @@
 //获取考试统计
 $(function() {
 	$.post("teacher/exam/statistics/do/" + $("#eid").val(), null, function(data) {
-		if (data.result === "1") {
+		if (data.result === "0") {
+			//没有人参加此考试
+			$("#exam-title").html("没有考试记录!");
+			$("#wait").hide();
+			$("#pie").hide();
+			$("#charts").show();
+		} else if (data.result === "1") {
 			//设置各部分值
 			$("#pie").find("img").attr("src", data.url);
 			$("#highest-point").html(data.highestPoint);

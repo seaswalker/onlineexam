@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import test.base.Base;
 import exam.model.Exam;
-import exam.model.page.PageBean;
 import exam.service.ExamService;
 
 /**
@@ -54,10 +53,4 @@ public class ExamServiceTest extends Base {
     	System.out.println(exam);
     }
     
-    @Test
-    public void pageSearch() {
-    	PageBean<Exam> pageBean = examService.pageSearch(1, 8, 10, "1000");
-    	System.out.println(pageBean);
-    }
-
 }

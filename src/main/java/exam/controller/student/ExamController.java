@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import exam.dto.ExaminationAnswer;
 import exam.model.Exam;
+import exam.model.ExamStatus;
 import exam.model.ExaminationResult;
 import exam.model.page.PageBean;
 import exam.model.role.Student;
@@ -54,9 +55,7 @@ public class ExamController {
 	public String list(@PathVariable String pn, Model model, HttpServletRequest request) {
 		Student student = (Student) request.getSession().getAttribute("student");
 		int pageCode = DataUtil.getPageCode(pn);
-		String where = "where id in (select eid from exam_class where cid = (select cid from student where id = '"
-    			+ student.getId() + "'))";
-		PageBean<Exam> pageBean = examService.pageSearch(pageCode, pageSize, pageNumber, where, null, null);
+		PageBean<Exam> pageBean = examService.pageSearchByStudent(pageCode, pageSize, pageNumber, student.getId());
 		model.addAttribute("pageBean", pageBean);
 		return "student/exam_list";
 	}
@@ -80,6 +79,11 @@ public class ExamController {
 		exam.setId(eid);
 		Exam result = examService.findWithQuestions(exam);
 		if (result == null) {
+			return "error";
+		}
+		//检查是否此试卷已经被关闭(虽然几率很小)
+		if (result.getStatus() == ExamStatus.RUNNED) {
+			model.addAttribute("message", "很抱歉，此考试已关闭");
 			return "error";
 		}
 		model.addAttribute("exam", result);

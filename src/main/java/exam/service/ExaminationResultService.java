@@ -20,7 +20,7 @@ public interface ExaminationResultService extends BaseService<ExaminationResult>
 	/**
 	 * 获取给定试卷的统计数据
 	 * @param eid 试卷id
-	 * @return
+	 * @return 如果返回null，那么说明没有人参加此次考试，也就不需要统计了
 	 */
 	public StatisticsData getStatisticsData(int eid);
 	

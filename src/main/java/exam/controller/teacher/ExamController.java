@@ -57,7 +57,7 @@ public class ExamController {
 	public String list(String pn, Model model, HttpServletRequest request) {
 		int pageCode = DataUtil.getPageCode(pn);
 		String tid = ((Teacher) request.getSession().getAttribute("teacher")).getId();
-		PageBean<Exam> pageBean = examService.pageSearch(pageCode, pageSize, pageNumber, tid);
+		PageBean<Exam> pageBean = examService.pageSearchByTeacher(pageCode, pageSize, pageNumber, tid);
 		model.addAttribute("pageBean", pageBean);
 		return "teacher/exam_list";
 	}
@@ -151,25 +151,30 @@ public class ExamController {
     @ResponseBody
     public void statistics(@PathVariable Integer eid, HttpServletRequest request, HttpServletResponse response) throws IOException {
     	//获得统计信息
+    	JSONObject json = new JSONObject();
     	StatisticsData data = examinationResultService.getStatisticsData(eid);
-    	//生成统计图
-    	String realPath = request.getServletContext().getRealPath("/") + "/";
-    	String imagePath = "charts/pie_" + eid + ".png";
- 		JFreechartUtil.generateChart(data, realPath + imagePath);
- 		JSONObject json = new JSONObject();
- 		json.addElement("result", "1").addElement("url", imagePath).addElement("highestPoint", String.valueOf(data.getHighestPoint()))
- 			.addElement("lowestPoint", String.valueOf(data.getLowestPoint())).addElement("title", data.getTitle()).addElement("count", String.valueOf(data.getPersonCount()));
- 		//最高分学生名单
- 		JSONArray highestNames = new JSONArray();
- 		for (String name : data.getHighestNames()) {
- 			highestNames.addElement("name", name);
- 		}
- 		json.addElement("highestNames", highestNames);
- 		JSONArray lowestNames = new JSONArray();
- 		for (String name : data.getLowestNames()) {
- 			lowestNames.addElement("name", name);
- 		}
- 		json.addElement("lowestNames", lowestNames);
+    	//如果没有统计数据，说明没有人参加此次考试因此无法继续统计
+    	if (data == null) {
+    		json.addElement("result", "0");
+    	} else {
+	    	//生成统计图
+	    	String realPath = request.getServletContext().getRealPath("/") + "/";
+	    	String imagePath = "charts/pie_" + eid + ".png";
+	 		JFreechartUtil.generateChart(data, realPath + imagePath);
+	 		json.addElement("result", "1").addElement("url", imagePath).addElement("highestPoint", String.valueOf(data.getHighestPoint()))
+	 			.addElement("lowestPoint", String.valueOf(data.getLowestPoint())).addElement("title", data.getTitle()).addElement("count", String.valueOf(data.getPersonCount()));
+	 		//最高分学生名单
+	 		JSONArray highestNames = new JSONArray();
+	 		for (String name : data.getHighestNames()) {
+	 			highestNames.addElement("name", name);
+	 		}
+	 		json.addElement("highestNames", highestNames);
+	 		JSONArray lowestNames = new JSONArray();
+	 		for (String name : data.getLowestNames()) {
+	 			lowestNames.addElement("name", name);
+	 		}
+	 		json.addElement("lowestNames", lowestNames);
+    	}
  		DataUtil.writeJSON(json, response);
     }
     

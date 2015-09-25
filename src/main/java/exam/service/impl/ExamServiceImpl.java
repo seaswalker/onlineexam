@@ -179,7 +179,7 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
     @Override
     public Exam findWithQuestions(Exam exam) {
     	//先查出试题
-    	Exam result = examDao.find(exam).get(0);
+    	Exam result = getById(exam.getId());
     	List<Question> questions = questionService.findByExam(result.getId());
     	return filterQuestions(result, questions);
     }
@@ -222,13 +222,10 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
 		List<Exam> list = examDao.execute(new CallableStatementCreator() {
 			@Override
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				String sql = "{call getExam(?, ?, ?, ?)}";
+				String sql = "{call getExamById(?)}";
 				CallableStatement cs = con.prepareCall(sql);
 				//设置存储过程的参数
 				cs.setInt(1, eid);
-				cs.setInt(2, -1);
-				cs.setInt(3, -1);
-				cs.setString(4, "");
 				return cs;
 			}
 		}, ExamCallableStatementCallback.instance);
@@ -236,22 +233,42 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
 	}
 
 	@Override
-	public PageBean<Exam> pageSearch(int pageCode, int pageSize, int pageNumber, String tid) {
+	public PageBean<Exam> pageSearchByStudent(int pageCode, int pageSize, int pageNumber, String sid) {
 		//查询出所有的试卷
 		List<Exam> list = examDao.execute(new CallableStatementCreator() {
 			@Override
 			public CallableStatement createCallableStatement(Connection con) throws SQLException {
-				String sql = "{call getExam(?, ?, ?, ?)}";
+				String sql = "{call getExamByStudent(?, ?, ?)}";
 				CallableStatement cs = con.prepareCall(sql);
-				cs.setInt(1, -1);
+				cs.setString(1, sid);
 				cs.setInt(2, pageCode);
 				cs.setInt(3, pageSize);
-				cs.setString(4, tid);
 				return cs;
 			}
 		}, ExamCallableStatementCallback.instance);
 		//查出所有的记录数
-		String sql = "select count(id) from exam where tid = '" + tid + "'";
+		String sql = "select count(e.id) from exam e where e.id in (select eid from exam_class where cid = (select cid from student where id = '" +
+		 sid + "'))";
+		BigInteger count = (BigInteger) examDao.queryForObject(sql, BigInteger.class);
+		return new PageBean<>(list, pageSize, pageCode, count.intValue(), pageNumber);
+	}
+	
+	@Override
+	public PageBean<Exam> pageSearchByTeacher(int pageCode, int pageSize, int pageNumber, String tid) {
+		//查询出所有的试卷
+		List<Exam> list = examDao.execute(new CallableStatementCreator() {
+			@Override
+			public CallableStatement createCallableStatement(Connection con) throws SQLException {
+				String sql = "{call getExamByTeacher(?, ?, ?)}";
+				CallableStatement cs = con.prepareCall(sql);
+				cs.setInt(1, pageCode);
+				cs.setInt(2, pageSize);
+				cs.setString(3, tid);
+				return cs;
+			}
+		}, ExamCallableStatementCallback.instance);
+		//查出所有的记录数
+		String sql = "select count(e.id) from exam e where e.tid = '" + tid + "'";
 		BigInteger count = (BigInteger) examDao.queryForObject(sql, BigInteger.class);
 		return new PageBean<>(list, pageSize, pageCode, count.intValue(), pageNumber);
 	}
