@@ -1,6 +1,7 @@
 package exam.controller;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -15,6 +16,7 @@ import exam.model.role.Teacher;
 import exam.service.ManagerService;
 import exam.service.StudentService;
 import exam.service.TeacherService;
+import exam.session.SessionContainer;
 import exam.util.DataUtil;
 import exam.util.StringUtil;
 import exam.util.json.JSON;
@@ -48,26 +50,37 @@ public class LoginController {
 	 * @param role 1-->> 学生 2-->> 教师 3--> 管理员
 	 */
 	@RequestMapping("/login/do")
-	public String doLogin(String username, String password, String verify, int role, Model model, HttpSession session) {
+	public String doLogin(String username, String password, String verify, int role, Model model, HttpServletRequest request) {
+		HttpSession session = request.getSession();
 		if (!DataUtil.isValid(username, password) || !DataUtil.checkVerify(verify, session)) {
 			return "error";
 		}
 		if (role == 3) {
 			Manager manager = managerService.login(username, StringUtil.md5(password));
-			if(manager == null) {
+			if (manager == null) {
 				model.addAttribute("error", "用户名或密码错误");
 				return "login";
 			}
 			manager.setPassword(password);
+			//管理员账户已在别处登录，强迫之前登录的立即下线
+			if (SessionContainer.adminSession != null) {
+				SessionContainer.adminSession.setAttribute("force", Boolean.TRUE);
+			}
+			SessionContainer.adminSession = session;
 			session.setAttribute("admin", manager);
 			return "redirect:/admin/index";
-		} else if(role == 2) {
+		} else if (role == 2) {
 			Teacher teacher = teacherService.login(username, password);
 			if (teacher == null) {
 				model.addAttribute("error", "用户名或密码错误");
 				return "login";
 			}
 			teacher.setPassword(password);
+			//如果此账户已在别处登录
+			if (SessionContainer.loginTeachers.containsKey(teacher.getId())) {
+				SessionContainer.loginTeachers.get(teacher.getId()).setAttribute("force", Boolean.TRUE);
+			}
+			SessionContainer.loginTeachers.put(teacher.getId(), session);
 			session.setAttribute("teacher", teacher);
 			return "redirect:/teacher/index";
 		} else if (role == 1) {
@@ -77,6 +90,11 @@ public class LoginController {
 				return "login";
 			}
 			student.setPassword(password);
+			//检测是否在别处登录
+			if (SessionContainer.loginStudents.containsKey(student.getId())) {
+				SessionContainer.loginStudents.get(student.getId()).setAttribute("force", Boolean.TRUE);
+			}
+			SessionContainer.loginStudents.put(student.getId(), session);
 			session.setAttribute("student", student);
 			return "redirect:/student/index";
 		}

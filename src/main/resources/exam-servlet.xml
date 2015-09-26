@@ -19,6 +19,8 @@
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/login/**"/>
+            <mvc:exclude-mapping path="/valid/**"/>
             <bean class="exam.intercepter.LoginIntercepter"></bean>
         </mvc:interceptor>
     </mvc:interceptors>

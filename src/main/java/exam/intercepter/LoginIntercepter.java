@@ -20,16 +20,17 @@ public class LoginIntercepter extends HandlerInterceptorAdapter {
         String path = request.getServletPath();
         String contextPath = request.getContextPath();
         HttpSession session = request.getSession();
-        //如果是登录页面，直接放行
-        if (path.indexOf("login") != -1) {
-            return true;
-        }
         //如果是去向管理员页面
         if (path.indexOf("admin") != -1) {
             Manager manager = (Manager) session.getAttribute("admin");
             if (manager == null) {
                 response.sendRedirect(contextPath + "/login");
                 return false;
+            } else if (session.getAttribute("force") != null) {
+            	//此账号已在其它地方登录
+            	response.sendRedirect(contextPath + "/valid");
+            	session.invalidate();
+            	return false;
             }
             return true;
         } else if (path.indexOf("teacher") != -1) {
@@ -38,6 +39,11 @@ public class LoginIntercepter extends HandlerInterceptorAdapter {
             if (teacher == null) {
                 response.sendRedirect(contextPath + "/login");
                 return false;
+            } else if (session.getAttribute("force") != null) {
+            	//此账号已在其它地方登录
+            	response.sendRedirect(contextPath + "/valid");
+            	session.invalidate();
+            	return false;
             }
             return true;
         } else if (path.indexOf("student") != -1) {
@@ -45,7 +51,12 @@ public class LoginIntercepter extends HandlerInterceptorAdapter {
         	if (student == null) {
         		 response.sendRedirect(contextPath + "/login");
                  return false;
-        	}
+        	} else if (session.getAttribute("force") != null) {
+            	//此账号已在其它地方登录
+            	response.sendRedirect(contextPath + "/valid");
+            	session.invalidate();
+            	return false;
+            }
         }
         return true;
     }
