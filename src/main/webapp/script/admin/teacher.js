@@ -8,7 +8,9 @@ var variables = {
 	//已教班级记录
 	clazzNotes: null,
 	//当前活动的老师
-	currentTeacher: 0
+	currentTeacher: 0,
+	//缓存查询出的年级json
+	grades: null
 };
 
 /**
@@ -294,6 +296,7 @@ function _loadGrade() {
 		"async": false,
 		"dataType": "json",
 		"success": function(json) {
+			variables.grades = json;
 			_handleJSON(json, $("#grade_select"), function(grade) {
 				return "<option value='" + grade.id + "'>" + grade.grade + "</option>";
 			}, "<option value='0'>年级...</option>");
@@ -347,14 +350,11 @@ function removeClazz() {
 			$this = $(this);
 			//将此条记录从已教班级索引删除，并且加入班级下拉列表
 			var removed = ClazzNote.deleteByClazzId($this.val());
-			//加入班级下拉列表
-			if($("#grade_select").val() != "0" && $("#grade_select").val() != "0" && removed != null) {
-				$clazzSelect.append($("<option value='" + $this.val() + "'>" + removed.cno + "班</option>"));
-			}
 			$this.next().remove();
 			$this.remove();
 		});
 	}
+	resetSelectes($("grade_select"), $("#major_select"), $clazzSelect)
 }
 
 /**
@@ -363,17 +363,22 @@ function removeClazz() {
  * @param  {[int]} gradeId      [年级id]
  */
 function _loadMajor($majorSelect, gradeId) {
-	$.ajax({
-		"url": "major/ajax",
-		"data": "grade=" + gradeId,
-		"async": false,
-		"dataType": "json",
-		"success": function(json) {
-			_handleJSON(json, $majorSelect, function(element) {
-				return "<option value='" + element.id + "'>" + element.name + "</option>";
-			}, "<option value='0'>专业...</option>");
-		}
-	});
+	//如果年级选择的是空选项，那么清空专业
+	if (gradeId === "0") {
+		$majorSelect.empty().append("<option value='0'>专业...</option>");
+	} else {
+		$.ajax({
+			"url": "major/ajax",
+			"data": "grade=" + gradeId,
+			"async": false,
+			"dataType": "json",
+			"success": function(json) {
+				_handleJSON(json, $majorSelect, function(element) {
+					return "<option value='" + element.id + "'>" + element.name + "</option>";
+				}, "<option value='0'>专业...</option>");
+			}
+		});
+	}
 }
 
 /**
@@ -390,23 +395,26 @@ function changeMajor(gradeSelect) {
  * @param  {[jquery]} $clazzSelect [班级列表]
  */
 function _loadClazz(gradeId, majorId, $clazzSelect) {
-	$.ajax({
-		"url": "clazz/ajax",
-		"data": "grade=" + gradeId + "&major=" + majorId,
-		"async": false,
-		"dataType": "json",
-		"success": function(json) {
-			_handleJSON(json, $clazzSelect, function(element) {
-				//在已教列表中不存在才会添加进入列表
-				if(ClazzNote.contains(element.id)) {
-					return "";
-				}else {
-					variables.clazzNotes.push(new ClazzNote(element.id, element.cno));
-					return "<option value='" + element.id + "'>" + element.cno + "班</option>";
-				}
-			}, "<option value='0'>班级...</option>");
-		}
-	});
+	if (majorId === "0") {
+		$clazzSelect.empty().append("<option value='0'>班级...</option>");
+	} else {
+		$.ajax({
+			"url": "clazz/ajax",
+			"data": "grade=" + gradeId + "&major=" + majorId,
+			"async": false,
+			"dataType": "json",
+			"success": function(json) {
+				_handleJSON(json, $clazzSelect, function(element) {
+					//在已教列表中不存在才会添加进入列表
+					if(ClazzNote.contains(element.id)) {
+						return "";
+					}else {
+						return "<option value='" + element.id + "'>" + element.cno + "班</option>";
+					}
+				}, "<option value='0'>班级...</option>");
+			}
+		});
+	}
 }
 
 /**
@@ -448,7 +456,7 @@ function addClazz() {
 		var result = new Array();
 		var $element = null;
 		var temp = "";
-		if(clazzId == "0") {
+		if(clazzId === "0") {
 			if(confirm("您没有选择班级,这会导致所有班级会被加入,您确定?")) {
 				var $clazzs = $("#clazz_select option:gt(0)");
 				$clazzs.each(function() {
@@ -465,10 +473,27 @@ function addClazz() {
 			result.push(temp);
 			//添加到已教班级列表后，应该从班级下拉列表删除
 			$selectedClazz.remove();
+			variables.clazzNotes.push(new ClazzNote($selectedClazz.val(), ""));
 		}
 		variables.hasClazzChanged = true;
 		$("#clazz_list").append($(result.join("")));
+		//添加完成后，复位所有选择器
+		resetSelectes($gradeSelect, $majorSelect, $clazzSelect);
 	}
+}
+
+/**
+ * 复位各个下拉列表
+ * @param $gradeSelect
+ * @param $majorSelect
+ * @param $clazzSelect
+ */
+function resetSelectes($gradeSelect, $majorSelect, $clazzSelect) {
+	$majorSelect.empty().append("<option value='0'>专业...</option>");
+	$clazzSelect.empty().append("<option value='0'>班级...</option>");
+	_handleJSON(variables.grades, $gradeSelect, function(grade) {
+			return "<option value='" + grade.id + "'>" + grade.grade + "</option>";
+		}, "<option value='0' selected>年级...</option>");
 }
 
 /**

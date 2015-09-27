@@ -223,15 +223,21 @@ public abstract class DataUtil {
 			Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.DATE, setting.getInt("runTime"));
             exam.setEndTime(calendar.getTime());
+            exam.setStatus(ExamStatus.RUNNING);
+        } else {
+        	exam.setStatus(ExamStatus.NOTRUN);
         }
-        exam.setStatus(ExamStatus.NOTRUN);
-        //解析适用的班级
-		//TODO 暂且只实现添加一个班级，未来可能改进为添加整个年级、专业
-		Clazz clazz = new Clazz();
-		clazz.setId(setting.getInt("clazz"));
-		clazz.setGrade(new Grade(setting.getInt("grade")));
-		clazz.setMajor(new Major(setting.getInt("major")));
-		exam.addClazz(clazz);
+        //解析适用的班级,如果有多个适用的班级，那么cid的格式为1,2,3
+        String cids = setting.getString("cid");
+        Grade grade = new Grade(setting.getInt("gid"));
+        Major major = new Major(setting.getInt("mid"));
+        for (String cid : cids.split(",")) {
+        	Clazz clazz = new Clazz();
+        	clazz.setGrade(grade);
+        	clazz.setMajor(major);
+        	clazz.setId(Integer.parseInt(cid));
+        	exam.addClazz(clazz);
+        }
 		exam.setTitle(setting.getString("title"));
         exam.setTeacher(teacher);
 		return exam;

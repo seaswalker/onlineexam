@@ -3,7 +3,7 @@ begin
 	declare examid int;
 	declare expire datetime;
 	declare loopFlag boolean default false;
-	declare idCursor cursor for select e.id, e.endtime from exam e where e.id = id;
+	declare idCursor cursor for select e.id, e.endtime from exam e where e.id = id and status = 'RUNNING';
 	declare continue handler for NOT FOUND set loopFlag = true;
 	open idCursor;
 	idCursorLoop:loop
@@ -24,7 +24,7 @@ begin
 	declare examid int;
 	declare expire datetime;
 	declare loopFlag boolean default false;
-	declare pageCursor cursor for select e.id, e.endtime from exam e where e.tid = tid limit start, ps;
+	declare pageCursor cursor for select e.id, e.endtime from exam e where e.tid = tid and status = 'RUNNING' limit start, ps;
 	declare continue handler for NOT FOUND set loopFlag = true;
 	set start = (pn - 1) * ps;
 	open pageCursor;
@@ -47,7 +47,7 @@ begin
 	declare examid int;
 	declare expire datetime;
 	declare loopFlag boolean default false;
-	declare pageCursor cursor for select e.id, e.endtime from exam e where e.id in (select eid from exam_class where cid = (select cid from student where id = sid)) limit start, ps;
+	declare pageCursor cursor for select e.id, e.endtime from exam e where e.id in (select eid from exam_class where cid = (select cid from student where id = sid)) and status = 'RUNNING' limit start, ps;
 	declare continue handler for NOT FOUND set loopFlag = true;
 	set start = (pn - 1) * ps;
 	open pageCursor;

@@ -149,11 +149,6 @@ function setValidators() {
     $majorSelect.blur(function(event) {
     	selectCheck.call(this, event.target, "请选择专业");
     }).focus(clearErrorInfo);
-    var $clazzSelect = $("#clazz_select");
-    $clazzSelect.blur(function(event) {
-    	selectCheck.call(this, event.target, "请选择班级");
-    });
-    $clazzSelect.focus(clearErrorInfo);
     //设置下拉列表校验器缓存
     ExamDesign.validators.selects = {
     	elements: [
@@ -164,10 +159,6 @@ function setValidators() {
     		{
     			element: $majorSelect[0],
     			message: "请选择专业"
-    		},
-    		{
-    			element: $clazzSelect[0],
-    			message: "请选择班级"
     		}
     	],
     	callback: selectCheck
@@ -307,9 +298,12 @@ function checkAll() {
 		],
 		setting: {
 			timeLimit: 10,
-			grade: 2012,
-			major: "土木",
-			clazz: 2,
+			//年级id
+			gid: 1,
+			//专业id
+			mid: ,
+			//专业id，如果为空，那么说明添加一个gid年级mid专业下的所有班级
+			cid: 2,
 			//是否保存后立即运行
 			status: 1,
 			runTime: 10
@@ -382,11 +376,22 @@ function submit() {
 		}));	
 	});
 	//设置
-	var $otherSetting = $("#other-setting");
+	var $otherSetting = $("#other-setting"), gid, mid;
 	result.setting.timeLimit = $otherSetting.find("input[name=time_limit]").val();
-	result.setting.grade = $("#grade_select").val();
-	result.setting.major = $("#major_select").val();
-	result.setting.clazz = $("#clazz_select").val();
+	gid = result.setting.gid = $("#grade_select").val();
+	mid = result.setting.mid = $("#major_select").val();
+	result.setting.cid = $("#clazz_select").val();
+	//如果班级id为0(没有选中班级)，那么说明是添加专业下的所有班级，此时cid的格式应为1, 2, 3
+	if (result.setting.cid === "0") {
+		var str = "", e;
+		for (var i = 0, l = ExamDesign.classes.length;i < l;i ++) {
+			e = ExamDesign.classes[i];
+			if (e.gid === gid && e.mid === mid) {
+				str += (e.cid + ",");
+			}
+		}
+		result.setting.cid = str.substring(0, str.length - 1);
+	}
 	result.setting.title = $otherSetting.find("input[name=exam_title]").val().replace(/"/g, "'");
 	if ($otherSetting.find("input:checked").val() === "1") {
 		result.setting.status = 1;

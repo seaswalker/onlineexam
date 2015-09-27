@@ -137,7 +137,6 @@ public class ExamServiceImpl extends BaseServiceImpl<Exam> implements ExamServic
         for (Integer qid : questionIds) {
             sb.append("(null,").append(examId).append(",").append(qid).append("),");
         }
-        System.out.println(sb.deleteCharAt(sb.length() - 1));
         examDao.executeSql(sb.toString());
     }
 
