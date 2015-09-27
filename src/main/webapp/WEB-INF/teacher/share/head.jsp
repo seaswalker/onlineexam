@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <div class="head">
 	<div class="head_logo">
 		<img src="images/logo.png"> <span class="logo_content">欢迎使用考试系统</span>
@@ -7,8 +8,14 @@
 	<!--显示登录的用户-->
 	<div class="head_info">
 		<div style="height: 80px;"></div>
-		<span>欢迎:</span> <span style="color: red;">${sessionScope.teacher.name}</span>
-		&nbsp;&nbsp; <span id="cur_time"></span>
+		<div style="float: right;margin-right: 20px;">
+			<span>欢迎:</span> <span style="color: red;">${sessionScope.teacher.name}</span>
+			&nbsp;&nbsp; <span id="cur_time"></span>
+			<c:if test="${!sessionScope.teacher.modified}">
+				<!-- 如果是初始密码，提示修改密码 -->
+				<span style="color: red;">您当前的密码是初始密码，请尽快修改</span>
+			</c:if>
+		</div>
 	</div>
 	<!--bootstrap导航条-->
 	<nav class="navbar navbar-default">

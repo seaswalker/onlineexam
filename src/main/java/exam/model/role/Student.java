@@ -17,6 +17,8 @@ public class Student implements Serializable {
 	private String name;
 	private String password;
 	private Clazz clazz;
+	//是否已经修改过密码
+	private boolean modified;
 	
 	public String getId() {
 		return id;
@@ -45,6 +47,12 @@ public class Student implements Serializable {
 	public Student setClazz(Clazz clazz) {
 		this.clazz = clazz;
 		return this;
+	}
+	public boolean isModified() {
+		return modified;
+	}
+	public void setModified(boolean modified) {
+		this.modified = modified;
 	}
 	
 }

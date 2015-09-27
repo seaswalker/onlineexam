@@ -25,6 +25,7 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements TeacherDao {
 				teacher.setId(rs.getString("id"));
 				teacher.setName(rs.getString("name"));
 				teacher.setPassword(rs.getString("password"));
+				teacher.setModified(rs.getBoolean("modified"));
 				return teacher;
 			}
 		};
@@ -45,6 +46,11 @@ public class TeacherDaoImpl extends BaseDaoImpl<Teacher> implements TeacherDao {
 			}
 		}
 		return jdbcTemplate.query(sqlBuilder.toString(), rowMapper);
+	}
+	
+	@Override
+	public <T> List<T> query(String sql, RowMapper<T> rowMapper) {
+		return jdbcTemplate.query(sql, rowMapper);
 	}
 	
 	public RowMapper<Teacher> getRowMapper() {

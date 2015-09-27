@@ -1,14 +1,18 @@
 package exam.service.impl;
 
 import java.math.BigInteger;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 
 import exam.dao.TeacherDao;
 import exam.dao.base.BaseDao;
+import exam.dto.ClassDTO;
 import exam.model.role.Teacher;
 import exam.service.TeacherService;
 import exam.service.base.BaseServiceImpl;
@@ -35,7 +39,7 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 
 	@Override
 	public void updatePassword(String id, String password) {
-		String sql = "update teacher set password = ? where id = ?";
+		String sql = "update teacher set password = ?, modified = 1 where id = ?";
 		teacherDao.executeSql(sql, new Object[]{StringUtil.md5(password), id});
 	}
 	
@@ -69,13 +73,6 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 	}
 
     @Override
-    public void modifyPassword(String id, String newPassword) {
-        String sql = "update teacher set password = '" + StringUtil.md5(newPassword) + "' where id = '"
-                + id + "'";
-        teacherDao.executeSql(sql);
-    }
-    
-    @Override
     public void saveTeacher(String id, String name, String password) {
     	teacherDao.executeSql("insert into teacher values(?, ?, ?)", new Object[] {id, name, password});
     }
@@ -98,5 +95,24 @@ public class TeacherServiceImpl extends BaseServiceImpl<Teacher> implements Teac
 			"delete from teacher where id = '" + id + "'"
 		};
 		teacherDao.batchUpdate(sqls);
+	}
+	
+	@Override
+	public List<ClassDTO> getClassesWithMajorAndGrade(String tid) {
+		String sql = "select g.id as gid, g.grade, m.id as mid, m.name as major, c.id as cid, c.cno from class c join grade g on c.gid = g.id join major m on c.mid = m.id where c.id in (select cid from teacher_class where tid = '" +
+				tid + "')";
+		return teacherDao.query(sql, new RowMapper<ClassDTO>() {
+			@Override
+			public ClassDTO mapRow(ResultSet rs, int rowNum) throws SQLException {
+				ClassDTO dto = new ClassDTO();
+				dto.setCid(rs.getInt("cid"));
+				dto.setCno(rs.getInt("cno"));
+				dto.setGid(rs.getInt("gid"));
+				dto.setGrade(rs.getInt("grade"));
+				dto.setMajor(rs.getString("major"));
+				dto.setMid(rs.getInt("mid"));
+				return dto;
+			}
+		});
 	}
 }

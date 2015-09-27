@@ -3,13 +3,13 @@
 	margin: 0px auto 0px;
 }
 .head_logo {
-	height: 100px;
+	height: 80px;
 	float: left;
 	width: 700px;
 }
 .head_logo img {
-	width: 96px;
-	height: 96px;
+	width: 80px;
+	height: 80px;
 	vertical-align: middle;
 }
 .logo_content {
@@ -17,7 +17,6 @@
 	font-weight: bold;
 }
 .head_info {
-	float: loeft;
 	height: 100px;
 	font-family: "微软雅黑";
 }

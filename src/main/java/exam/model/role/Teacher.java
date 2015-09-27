@@ -15,6 +15,8 @@ public class Teacher implements Serializable {
 	private String id;
 	private String name;
 	private String password;
+	//是否已经修改了初始密码
+	private boolean modified;
 	
 	public String getId() {
 		return id;
@@ -33,6 +35,12 @@ public class Teacher implements Serializable {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public boolean isModified() {
+		return modified;
+	}
+	public void setModified(boolean modified) {
+		this.modified = modified;
 	}
 	
 }

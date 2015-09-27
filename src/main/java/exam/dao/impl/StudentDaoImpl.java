@@ -19,7 +19,7 @@ import exam.util.DataUtil;
 public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 	
 	private static RowMapper<Student> rowMapper;
-	private static String sql = "select s.id as s_id, s.name as s_name, s.password as s_password, "
+	private static String sql = "select s.id as s_id, s.name as s_name, s.password as s_password, s.modified as s_modified,"
 			+ "c.id as c_id, c.cno as c_cno, g.id as g_id, g.grade as g_grade, m.id as m_id, m.name as m_name from student s join class c on c.id = s.cid"
 			+ " join grade g on g.id = c.gid join major m on m.id = c.mid";
 	
@@ -30,6 +30,7 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 				student.setId(rs.getString("s_id"));
 				student.setName(rs.getString("s_name"));
 				student.setPassword(rs.getString("s_password"));
+				student.setModified(rs.getBoolean("s_modified"));
 				Clazz clazz = new Clazz();
 				clazz.setId(rs.getInt("c_id"));
 				clazz.setCno(rs.getInt("c_cno"));

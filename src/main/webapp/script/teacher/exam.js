@@ -26,7 +26,9 @@ var ExamDesign = {
 		singles: [],
 		multis: [],
 		judges: []
-	}
+	},
+	//缓存此教师所教的班级数组
+	classes: null
 };
 
 $(function() {
@@ -34,19 +36,24 @@ $(function() {
 	setListeners();
 	//设置输入校验
 	setValidators();
-	loadGrade();
+	loadClasses();
 });
 
 /**
- * 加载年级
+ * 加载此教师所教的所有班级,返回的json格式示例:
+ * {"result":"1","data":[{"gid":"1","grade":"2012","mid":"62","major":"电子信息科学与技术","cid":"1","cno":"2"}]}
  */
-function loadGrade() {
-	$.post("grade/ajax", null, function(data) {
+function loadClasses() {
+	$.post("teacher/classes", null, function(data) {
 		if (data.result === "1") {
-			var str = "", e;
+			ExamDesign.classes = data.data;
+			var str = "", e, loadedGrades = [];
 			for (var i = 0, l = data.data.length;i < l;i ++) {
 				e = data.data[i];
-				str += "<option value='" + e.id + "'>" + e.grade + "级</option>";
+				if ($.inArray(e.gid, loadedGrades) === -1) {
+					str += "<option value='" + e.gid + "'>" + e.grade + "级</option>";
+					loadedGrades.push(e.gid);
+				}
 			}
 			$(str).appendTo($("#grade_select"));
 		}
@@ -59,16 +66,19 @@ function loadMajor(gradeSelect) {
 	if (id === "0") {
 		$majorSelect.append("<option value='0'>专业...</option>");
 	} else {
-		$.post("major/ajax", "grade=" + id, function(data) {
-			if (data.result === "1") {
-				var str = "<option value='0'>专业...</option>", e;
-				for (var i = 0, l = data.data.length;i < l;i ++) {
-					e = data.data[i];
-					str += "<option value='" + e.id + "'>" + e.name + "</option>";
+		var str = "<option value='0'>专业...</option>", e;
+		//因为缓存是以班级组织的，所以可能加载重复的专业，所以记录下已经加载的专业
+		var loadedMajors = [];
+		for (var i = 0, l = ExamDesign.classes.length;i < l;i ++) {
+			e = ExamDesign.classes[i];
+			if (e.gid === id) {
+				if ($.inArray(e.mid, loadedMajors) === -1) {
+					str += "<option value='" + e.mid + "'>" + e.major + "</option>";
+					loadedMajors.push(e.mid);
 				}
-				$(str).appendTo($majorSelect);
 			}
-		}, "json");
+		}
+		$(str).appendTo($majorSelect);
 	}
 }
 
@@ -78,17 +88,18 @@ function loadClazz(majorSelect) {
 	if (mid === "0") {
 		$clazzSelect.append("<option value='0'>班级...</option>");
 	} else {
-		var gid = $("#grade_select").val();
-		$.post("clazz/ajax", "grade=" + gid + "&major=" + mid, function(data) {
-			if (data.result === "1") {
-				var str = "<option value='0'>班级...</option>", e;
-				for (var i = 0, l = data.data.length;i < l;i ++) {
-					e = data.data[i];
-					str += "<option value='" + e.id + "'>" + e.cno + "班</option>";
+		var str = "<option value='0'>班级...</option>", e;
+		var loadedClasses = [];
+		for (var i = 0, l = ExamDesign.classes.length;i < l;i ++) {
+			e = ExamDesign.classes[i];
+			if (e.mid === mid) {
+				if ($.inArray(e.cid, loadedClasses) === -1) {
+					str += "<option value='" + e.cid + "'>" + e.cno + "班</option>";
+					loadedClasses.push(e.cid);	
 				}
-				$(str).appendTo($clazzSelect);
 			}
-		}, "json");
+		}
+		$(str).appendTo($clazzSelect);
 	}
 }
 

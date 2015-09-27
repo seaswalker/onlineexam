@@ -65,8 +65,9 @@ public class StudentController {
         if (!checkPassword(oldPassword, newPassword, student)) {
             return "error";
         }
-        studentService.modifyPassword(student.getId(), newPassword);
+        studentService.updatePassword(student.getId(), newPassword);
         student.setPassword(newPassword);
+        student.setModified(true);
         model.addAttribute("message", "密码修改成功");
         model.addAttribute("url", request.getContextPath() + "/student/index");
         return "success";

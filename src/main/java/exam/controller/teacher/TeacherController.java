@@ -1,9 +1,14 @@
 package exam.controller.teacher;
 
+import java.util.List;
+
+import exam.dto.ClassDTO;
 import exam.model.role.Teacher;
 import exam.service.TeacherService;
 import exam.util.DataUtil;
+import exam.util.json.JSONArray;
 import exam.util.json.JSONObject;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * 教师部分
@@ -57,6 +63,25 @@ public class TeacherController {
         }
         DataUtil.writeJSON(json, response);
     }
+    
+    /**
+     * 获得此教师所教的班级(含专业、年级信息)
+     * @param session
+     * @param response
+     */
+    @RequestMapping("/classes")
+    @ResponseBody
+    public void classes(HttpSession session, HttpServletResponse response) {
+    	JSONObject json = new JSONObject();
+    	Teacher teacher = (Teacher) session.getAttribute("teacher");
+    	List<ClassDTO> dtoes = teacherService.getClassesWithMajorAndGrade(teacher.getId());
+    	JSONArray array = new JSONArray();
+    	for (ClassDTO dto : dtoes) {
+    		array.addObject(dto.getJSON());
+    	}
+    	json.addElement("result", "1").addElement("data", array);
+    	DataUtil.writeJSON(json, response);
+    }
 
     @RequestMapping("/password/modify")
     public String modifyPassword(String oldPassword, String newPassword, HttpServletRequest request, Model model) {
@@ -64,8 +89,9 @@ public class TeacherController {
         if (!checkPassword(oldPassword, newPassword, teacher)) {
             return "error";
         }
-        teacherService.modifyPassword(teacher.getId(), newPassword);
+        teacherService.updatePassword(teacher.getId(), newPassword);
         teacher.setPassword(newPassword);
+        teacher.setModified(true);
         model.addAttribute("message", "密码修改成功");
         model.addAttribute("url", request.getContextPath() + "/teacher/index");
         return "success";

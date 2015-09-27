@@ -12,6 +12,7 @@ public interface StudentService extends BaseService<Student> {
 	
 	/**
 	 * 修改密码
+	 * 此方法会修改modified标志位为true
 	 * @param password 没有经过MD5加密的密码
 	 */
 	public void updatePassword(String id, String password);
@@ -24,13 +25,6 @@ public interface StudentService extends BaseService<Student> {
 	 */
 	public Student login(String username, String password);
 
-	/**
-	 * 修改密码
-	 * @param id 学生id
-	 * @param newPassword 未经过MD5加密的密码
-	 */
-	public void modifyPassword(String id, String newPassword);
-	
 	/**
 	 * 更新学生，这个不能使用saveOrUpdate，因为这个的id是自己输入的
 	 * @param cid 班号

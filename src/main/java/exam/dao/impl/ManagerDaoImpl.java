@@ -22,6 +22,7 @@ public class ManagerDaoImpl extends BaseDaoImpl<Manager> implements ManagerDao {
                 manager.setId(rs.getInt("id"));
                 manager.setName(rs.getString("name"));
                 manager.setPassword(rs.getString("password"));
+                manager.setModified(rs.getBoolean("modified"));
                 return manager;
             }
         };

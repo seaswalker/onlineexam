@@ -35,7 +35,7 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
 	
 	@Override
 	public void updatePassword(String id, String password) {
-		String sql = "update student set password = ? where id = ?";
+		String sql = "update student set password = ?, modified = 1 where id = ?";
 		studentDao.executeSql(sql, new Object[]{StringUtil.md5(password), id});
 	}
 	
@@ -72,11 +72,4 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
 		return DataUtil.isValid(result) ? result.get(0) : null;
 	}
 	
-	@Override
-	public void modifyPassword(String id, String newPassword) {
-		String sql = "update student set password = '" + StringUtil.md5(newPassword) + "' where id = '" +
-				id + "'";
-		studentDao.executeSql(sql);
-	}
-
 }

@@ -14,6 +14,8 @@ public class Manager implements Serializable {
 	private int id;
 	private String name;
 	private String password;
+	//是否已经修改密码
+	private boolean modified;
 	
 	public int getId() {
 		return id;
@@ -32,6 +34,12 @@ public class Manager implements Serializable {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public boolean isModified() {
+		return modified;
+	}
+	public void setModified(boolean modified) {
+		this.modified = modified;
 	}
 	
 }
