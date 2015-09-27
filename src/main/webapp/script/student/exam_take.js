@@ -1,9 +1,17 @@
 //学生参加考试
 $(function() {
 	
+	//是否结束
+	var flag = false;
 	countTime();
 	//绑定提交按钮
 	$("#submit-btn").click(submit);
+	//监听窗口关闭或刷新事件，如果还没有做完，给用户一个提示
+	window.onbeforeunload = function() {
+		if (!flag) {
+			window.event.returnValue = "考试尚未结束，您确定离开?";
+		}
+	};
 	
 	/**
 	 * 计时函数
@@ -29,6 +37,7 @@ $(function() {
 				--minutes;
 				_setTime();
 			} else {
+				flag = true;
 				//计时结束
 				clearInterval(id);
 				Tips.showMessage("时间已到，系统正在交卷...");

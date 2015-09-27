@@ -1,7 +1,5 @@
 package exam.controller.student;
 
-import java.util.Calendar;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -90,11 +88,6 @@ public class ExamController {
 		model.addAttribute("eid", eid);
 		//把题目缓存进入session，这样可以避免批卷时再次访问数据库
 		session.setAttribute("exam", result);
-		//设置到时时间，防止用户修改客户端JavaScript从而导致事实上的超时
-		//但是此处如果严格按照时间限制计算，那么肯定会超时，因为代码的运行占用的时间就会造成超时，所以多加了3分钟
-		Calendar calendar = Calendar.getInstance();
-		calendar.add(Calendar.MINUTE, exam.getLimit() + 3);
-		session.setAttribute("expires", calendar);
 		return "student/exam_take";
 	}
 	
@@ -111,28 +104,20 @@ public class ExamController {
 		if (!DataUtil.isValid(result)) {
 			json.addElement("result", "0").addElement("message", "交卷失败，参数非法");
 		} else {
-			//检查是否过期
 			HttpSession session = request.getSession();
-			Calendar expire = (Calendar) session.getAttribute("expires");
-			session.removeAttribute("expires");
-			Calendar now = Calendar.getInstance();
-			if (now.after(expire)) {
-				json.addElement("result", "0").addElement("message", "考试超时，请重试");
+			//解析为ExaminationResult
+			ExaminationAnswer ea = DataUtil.parseAnswers(result);
+			//检查此套试题是否已经被关闭或者删除了
+			if (!examService.isUseful(ea.getExamId())) {
+				json.addElement("result", "0").addElement("message", "抱歉，此试题已停止运行或被删除");
 			} else {
-				//解析为ExaminationResult
-				ExaminationAnswer ea = DataUtil.parseAnswers(result);
-				//检查此套试题是否已经被关闭或者删除了
-				if (!examService.isUseful(ea.getExamId())) {
-					json.addElement("result", "0").addElement("message", "抱歉，此试题已停止运行或被删除");
-				} else {
-					//批卷
-					Exam exam = (Exam) session.getAttribute("exam");
-					String studentId = ((Student) session.getAttribute("student")).getId();
-					ExaminationResult er = DataUtil.markExam(ea, exam, studentId);
-					examinationResultService.saveOrUpdate(er);
-					session.removeAttribute("exam");
-					json.addElement("result", "1").addElement("point", String.valueOf(er.getPoint()));
-				}
+				//批卷
+				Exam exam = (Exam) session.getAttribute("exam");
+				String studentId = ((Student) session.getAttribute("student")).getId();
+				ExaminationResult er = DataUtil.markExam(ea, exam, studentId);
+				examinationResultService.saveOrUpdate(er);
+				session.removeAttribute("exam");
+				json.addElement("result", "1").addElement("point", String.valueOf(er.getPoint()));
 			}
 		}
 		DataUtil.writeJSON(json, response);
