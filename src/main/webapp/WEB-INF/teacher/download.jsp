@@ -13,6 +13,8 @@
 <title>文件下载</title>
 <meta charset="UTF-8">
 <base href="<%=basePath%>">
+<link rel="SHORTCUT ICON" href="images/icon.ico">
+<link rel="BOOKMARK" href="images/icon.ico">
 <link rel="stylesheet" type="text/css" href="css/head.css">
 <style type="text/css">
 	.main {

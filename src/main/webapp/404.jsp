@@ -10,7 +10,7 @@
 %>
 <html>
 <head>
-<title>出错啦</title>
+<title>页面未找到</title>
 <meta charset="UTF-8">
 <base href="<%=basePath%>">
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
@@ -43,13 +43,13 @@
 </head>
 <body>
 	<!--头部-->
-	<jsp:include page="share/head.jsp"></jsp:include>
+	<jsp:include page="WEB-INF/share/head.jsp"></jsp:include>
 
 	<div class="main">
 		<div>&nbsp;</div>
 		<div class="tips">
 			<img src="images/warn.png">
-			<span class="warn">${message == null ? '很抱歉，出了点问题...' : message}</span>
+			<span class="warn">很抱歉，您要访问的页面不存在...</span>
 		</div>
 		<div class="link">
 			<span id="second">3</span>

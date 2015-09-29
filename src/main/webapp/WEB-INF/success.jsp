@@ -15,6 +15,8 @@
 <base href="<%=basePath%>">
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/head.css">
+<link rel="SHORTCUT ICON" href="images/icon.ico">
+<link rel="BOOKMARK" href="images/icon.ico">
 <style type="text/css">
 	.main {
 		width: 980px;

@@ -12,6 +12,8 @@
 <title>修改密码</title>
 <meta charset="UTF-8">
 <base href="<%=basePath%>">
+<link rel="SHORTCUT ICON" href="images/icon.ico">
+<link rel="BOOKMARK" href="images/icon.ico">
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/head.css">
 <link rel="stylesheet" type="text/css" href="css/list_main.css">

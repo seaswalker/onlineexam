@@ -11,6 +11,8 @@
 <title>用户登录</title>
 <meta charset="utf-8">
 <link rel="stylesheet" type="text/css" href="css/login.css">
+<link rel="SHORTCUT ICON" href="images/icon.ico">
+<link rel="BOOKMARK" href="images/icon.ico">
 <script src="script/jquery-1.11.1.min.js"></script>
 <script src="script/login.js"></script>
 </head>

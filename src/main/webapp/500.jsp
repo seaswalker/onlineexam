@@ -43,13 +43,13 @@
 </head>
 <body>
 	<!--头部-->
-	<jsp:include page="share/head.jsp"></jsp:include>
+	<jsp:include page="WEB-INF/share/head.jsp"></jsp:include>
 
 	<div class="main">
 		<div>&nbsp;</div>
 		<div class="tips">
 			<img src="images/warn.png">
-			<span class="warn">${message == null ? '很抱歉，出了点问题...' : message}</span>
+			<span class="warn">很抱歉，出了点问题...</span>
 		</div>
 		<div class="link">
 			<span id="second">3</span>
