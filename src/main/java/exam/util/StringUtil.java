@@ -35,4 +35,40 @@ public abstract class StringUtil {
 		return result.toString();
 	}
 	
+	/**
+	 * 转义htnl字符，防止XSS攻击
+	 * @param html 从客户端输入的内容
+	 * @return
+	 */
+	public static String htmlEncode(String html) {
+		if (DataUtil.isValid(html)) {
+			char c;
+			StringBuilder result = new StringBuilder();
+			for (int i = 0, l = html.length();i < l;i ++) {
+				c = html.charAt(i);
+				switch (c) {
+				case '&':
+					result.append("&amp;");
+					break;
+				case '<':
+					result.append("&lt;");
+			        break;
+		        case '>':
+		        	result.append("&gt;");
+		        	break;
+		        case '"':
+		        	result.append("&quot;");
+		        	break;
+		        case ' ':
+		        	result.append("&nbsp;");
+		        	break;
+		        default:
+		        	result.append(c);
+				}
+			}
+			return result.toString();
+		}
+		return "";
+	}
+	
 }

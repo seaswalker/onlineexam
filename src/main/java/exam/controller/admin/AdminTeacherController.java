@@ -73,6 +73,7 @@ public class AdminTeacherController {
 	@ResponseBody
 	public void add(String id, String name, HttpServletResponse response) {
 		JSONObject json = new JSONObject();
+		name = StringUtil.htmlEncode(name);
 		if(!DataUtil.isValid(id, name)) {
 			json.addElement("result", "0").addElement("message", "格式非法");
 		}else if(teacherService.isExist(id)) {
@@ -91,6 +92,7 @@ public class AdminTeacherController {
 	@ResponseBody
 	public void edit(String id, String name, HttpServletResponse response) {
 		JSONObject json = new JSONObject();
+		name = StringUtil.htmlEncode(name);
 		if(!DataUtil.isValid(id, name)) {
 			json.addElement("result", "0").addElement("message", "格式非法");
 		}else {

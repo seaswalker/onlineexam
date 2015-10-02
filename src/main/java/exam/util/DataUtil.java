@@ -238,7 +238,7 @@ public abstract class DataUtil {
         	clazz.setId(Integer.parseInt(cid));
         	exam.addClazz(clazz);
         }
-		exam.setTitle(setting.getString("title"));
+		exam.setTitle(StringUtil.htmlEncode(setting.getString("title")));
         exam.setTeacher(teacher);
 		return exam;
 	}

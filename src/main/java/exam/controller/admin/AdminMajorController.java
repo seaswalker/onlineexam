@@ -14,6 +14,7 @@ import exam.model.Major;
 import exam.model.page.PageBean;
 import exam.service.MajorService;
 import exam.util.DataUtil;
+import exam.util.StringUtil;
 import exam.util.json.JSON;
 import exam.util.json.JSONObject;
 
@@ -58,6 +59,7 @@ public class AdminMajorController {
 	@ResponseBody
 	public void add(String major, HttpServletResponse response) {
 		JSON json = new JSONObject();
+		major = StringUtil.htmlEncode(major);
 		if(!DataUtil.isValid(major)) {
 			json.addElement("result", "0").addElement("message", "请输入专业名称");
 		}else if(majorService.findByName(major) != null) {
@@ -78,6 +80,7 @@ public class AdminMajorController {
 	@ResponseBody
 	public void edit(String id, String major, HttpServletResponse response) {
 		JSON json = new JSONObject();
+		major = StringUtil.htmlEncode(major);
 		if(!DataUtil.isNumber(id)) {
 			json.addElement("result", "0").addElement("message", "非法数据");
 		}else if(!DataUtil.isValid(major)) {

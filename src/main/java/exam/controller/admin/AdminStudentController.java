@@ -57,6 +57,7 @@ public class AdminStudentController {
 	@ResponseBody
 	public void add(String id, String clazz, String name, HttpServletResponse response) {
 		JSON json = new JSONObject();
+		name = StringUtil.htmlEncode(name);
 		if(!DataUtil.isNumber(id, clazz)) {
 			json.addElement("result", "0").addElement("message", "数据格式非法");
 		}else if(!DataUtil.isValid(name)) {
@@ -79,6 +80,7 @@ public class AdminStudentController {
 	@ResponseBody
 	public void edit(String id, String name, String clazz, HttpServletResponse response) {
 		JSONObject json = new JSONObject();
+		name = StringUtil.htmlEncode(name);
 		if(!DataUtil.isNumber(clazz) || !DataUtil.isValid(id, name)) {
 			json.addElement("result", "0").addElement("message", "格式非法");
 		}else {

@@ -27,6 +27,7 @@ import exam.service.ExaminationResultService;
 import exam.util.DataUtil;
 import exam.util.ExcelUtil;
 import exam.util.JFreechartUtil;
+import exam.util.StringUtil;
 import exam.util.json.JSON;
 import exam.util.json.JSONArray;
 import exam.util.json.JSONObject;
@@ -228,6 +229,7 @@ public class ExamController {
     @ResponseBody
     public void update(@PathVariable Integer eid, String title, Integer limit, HttpServletResponse response) {
     	JSONObject json = new JSONObject();
+    	title = StringUtil.htmlEncode(title);
     	if (!DataUtil.isValid(eid, limit) || !DataUtil.isValid(title)) {
     		json.addElement("result", "0");
     	} else  {
