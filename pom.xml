@@ -6,6 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>OnlineExam Maven Webapp</name>
 	<url>http://maven.apache.org</url>
+	<packaging>war</packaging>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -75,8 +76,36 @@
 			<artifactId>poi</artifactId>
 			<version>3.12</version>
 		</dependency>
+		<!--打包时使用-->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>javax.servlet-api</artifactId>
+		    <version>3.1.0</version>
+		    <scope>provided</scope> 
+		</dependency>
 	</dependencies>
 	<build>
 		<finalName>OnlineExam</finalName>
+		<plugins>
+			<!--解决编码问题-->
+			<plugin>  
+			    <groupId>org.apache.maven.plugins</groupId>  
+			    <artifactId>maven-compiler-plugin</artifactId>  
+			    <version>3.1</version>  
+			    <configuration>  
+			        <source>1.8</source>  
+			        <target>1.8</target>  
+			        <encoding>utf8</encoding>    
+			    </configuration>  
+			</plugin>
+			<!--跳过测试-->
+			<plugin>
+			    <artifactId>maven-surefire-plugin</artifactId>
+			    <version>2.12.4</version>
+			    <configuration>
+			        <skip>true</skip>
+			    </configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>
