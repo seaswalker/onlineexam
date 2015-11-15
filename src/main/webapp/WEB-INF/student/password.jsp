@@ -119,7 +119,7 @@
 			//发送ajax请求校验
 			var flag = true;
 			$.ajax({
-				url: "teacher/password/check",
+				url:  "student/password/check",
 				dataType: "json",
 				data: "password=" + value,
 				async: false,
