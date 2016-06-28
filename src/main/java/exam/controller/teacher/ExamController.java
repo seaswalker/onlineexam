@@ -1,5 +1,6 @@
 package exam.controller.teacher;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,7 +41,7 @@ import exam.util.json.JSONObject;
 @Controller("exam.controller.teacher.ExamController")
 @RequestMapping("/teacher/exam")
 public class ExamController {
-	
+
 	@Resource
 	private ExamService examService;
 	@Resource
@@ -62,7 +63,7 @@ public class ExamController {
 		model.addAttribute("pageBean", pageBean);
 		return "teacher/exam_list";
 	}
-	
+
 	/**
 	 * 转向试卷添加页面
 	 */
@@ -70,7 +71,7 @@ public class ExamController {
 	public String addUI() {
 		return "teacher/exam_add";
 	}
-	
+
 	/**
 	 * 添加一套试卷
 	 * @param exam 包含所有题目以及设置信息的json字符串
@@ -127,7 +128,7 @@ public class ExamController {
         }
         DataUtil.writeJSON(json, response);
     }
-    
+
     /**
      * 转向统计信息页面
      * 这里不直接统计，转而先返回到一个页面，再用ajax请求的原因是防止长时间后才会给客户端相应
@@ -138,7 +139,7 @@ public class ExamController {
     	model.addAttribute("eid", eid);
     	return "teacher/statistics";
     }
-    
+
     /**
      * 处理ajax请求，真正实现统计功能
      * 客户端需要展现:
@@ -146,7 +147,7 @@ public class ExamController {
      * 2.最高分、最低分及考生姓名
      * 3.试卷题目、参加考试的总人数
      * @param eid 试卷id
-     * @throws IOException 
+     * @throws IOException
      */
     @RequestMapping("/statistics/do/{eid}")
     @ResponseBody
@@ -160,6 +161,7 @@ public class ExamController {
     	} else {
 	    	//生成统计图
 	    	String realPath = request.getServletContext().getRealPath("/") + "/";
+	    	checkPath(realPath + "charts");
 	    	String imagePath = "charts/pie_" + eid + ".png";
 	 		JFreechartUtil.generateChart(data, realPath + imagePath);
 	 		json.addElement("result", "1").addElement("url", imagePath).addElement("highestPoint", String.valueOf(data.getHighestPoint()))
@@ -178,7 +180,7 @@ public class ExamController {
     	}
  		DataUtil.writeJSON(json, response);
     }
-    
+
     /**
      * 转向文件下载页面，这么做(而不是直接下载)的原因是生成xls文件可能给客户端造成明显的卡顿感
      * @param eid 试卷id
@@ -189,19 +191,20 @@ public class ExamController {
     	model.addAttribute("eid", eid);
     	return "teacher/download";
     }
-    
+
     /**
      * 生成excel成绩报告单
      * @param eid 试卷id
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     @RequestMapping("/report/{eid}")
     @ResponseBody
     public void report(@PathVariable("eid") Integer eid, HttpServletRequest request, HttpServletResponse response) throws IOException {
     	List<StudentReport> reportData = examinationResultService.getReportData(eid);
-    	String path = request.getServletContext().getRealPath("/") + "/reports/report_" + eid + ".xls";
-    	InputStream is = ExcelUtil.generateExcel(reportData, path); 
+    	String realPath = request.getServletContext().getRealPath("/") + "/reports";
+    	checkPath(realPath);
+    	InputStream is = ExcelUtil.generateExcel(reportData, realPath + "/report_" + eid + ".xls");
     	//设置文件下载响应头
     	response.setContentType("application/zip");
     	//生成下载的文件名,解决中文文件名不显示的问题
@@ -217,7 +220,7 @@ public class ExamController {
     	is.close();
     	os.close();
     }
-    
+
     /**
      * 修改试卷的标题和时间限制
      * @param eid 试卷id
@@ -241,6 +244,16 @@ public class ExamController {
     		json.addElement("result", "1");
     	}
     	DataUtil.writeJSON(json, response);
+    }
+
+    /**
+     * 检查指定的目录是否存在，如果不存在那么建立
+     * @param path
+     */
+    private void checkPath(String path) {
+    	File file = new File(path);
+    	if (!file.exists())
+    		file.mkdirs();
     }
 
 }

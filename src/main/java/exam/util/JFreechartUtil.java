@@ -29,7 +29,7 @@ public abstract class JFreechartUtil {
 	 * 包括一个饼图、一个柱状图
 	 * @param data 统计数据
 	 * @param path 图片保存的路径，包含文件名
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	public static void generateChart(StatisticsData data, String path) throws IOException {
 		DefaultPieDataset dataSet = new DefaultPieDataset();
@@ -56,5 +56,5 @@ public abstract class JFreechartUtil {
 		//保存
 		ChartUtilities.saveChartAsPNG(new File(path), pie, 500, 500);
 	}
-	
+
 }
