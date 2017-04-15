@@ -41,7 +41,7 @@ public class StudentServiceImpl extends BaseServiceImpl<Student> implements Stud
 	
 	@Override
 	public void saveStudent(String id, String name, String password, int cid) {
-		studentDao.executeSql("insert into student values(?, ?, ?, ?)",
+		studentDao.executeSql("insert into student values(?, ?, ?, ?, 0)",
 				new Object[] {id, name, password, cid});
 	}
 	

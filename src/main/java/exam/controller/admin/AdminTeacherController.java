@@ -44,7 +44,6 @@ public class AdminTeacherController {
 	/**
 	 * 老师列表
 	 * @param id 教职工号
-	 * @param search 搜索内容
 	 */
 	@RequestMapping("/list")
 	public String list(String pn, String id, String name, Model model) {
