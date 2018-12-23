@@ -14,3 +14,12 @@ Spring、Spring jdbcTemplate、Spring MVC、jQuery
 ## 出题界面
 ![试卷列表](screenshots/exam_add.png)
 
+# 使用方法
+
+首先安装好MySQL，然后使用命令导入数据库表:
+
+```bash
+mysql -u root -p123456 < onlineexam.sql
+```
+
+之后修改jdbc.properties即可。
