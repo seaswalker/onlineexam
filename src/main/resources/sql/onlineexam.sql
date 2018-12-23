@@ -13,6 +13,9 @@ File Encoding         : 65001
 Date: 2015-09-27 10:45:31
 */
 
+create database onlineexam;
+use onlineexam;
+
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
@@ -48,7 +51,7 @@ CREATE TABLE `exam` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(255) NOT NULL,
   `timelimit` int(11) DEFAULT '60',
-  `endtime` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `endtime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
   `status` varchar(10) NOT NULL,
   `points` int(11) NOT NULL,
   `singlepoints` int(11) NOT NULL,
