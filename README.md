@@ -19,7 +19,7 @@ Spring、Spring jdbcTemplate、Spring MVC、jQuery
 首先安装好MySQL，然后使用命令导入数据库表:
 
 ```bash
-mysql -u root -p123456 < onlineexam.sql
+mysql -u root -p123456 --default_character_set utf8 < onlineexam.sql
 ```
 
 之后修改jdbc.properties即可。
