@@ -23,3 +23,9 @@ mysql -u root -p123456 --default_character_set utf8 < onlineexam.sql
 ```
 
 之后修改jdbc.properties即可。
+
+# 初始密码
+
+- 管理员角色： admin/admin
+- 老师角色: skywalker/1234
+- 学生角色: skywalker/1234
