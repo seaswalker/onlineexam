@@ -101,7 +101,8 @@ public abstract class BaseDaoImpl<T> implements BaseDao<T> {
 			for(String key : orderbys.keySet()) {
 				sqlBuilder.append(key).append(" ").append(orderbys.get(key)).append(",");
 			}
-			sqlBuilder.deleteCharAt(sql.length() - 1);
+// 			sqlBuilder.deleteCharAt(sql.length() - 1);
+			sqlBuilder.deleteCharAt(sqlBuilder.toString().length() - 1);
 		}
 		//设置分页
 		int begin = (pageCode - 1) * pageSize;
